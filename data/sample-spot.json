@@ -1,0 +1,32 @@
+[
+  {
+    "sku": "SPOT-7701",
+    "name": "Squeeze Plástico 700ml",
+    "category": "Canecas e Garrafas",
+    "description": "Squeeze em plástico livre de BPA, tampa com canudo integrado.",
+    "images": ["https://placehold.co/600x600?text=Squeeze+700ml"],
+    "colors": ["Transparente", "Azul", "Rosa"],
+    "minQuantity": 100,
+    "priceFrom": 16.9
+  },
+  {
+    "sku": "SPOT-8802",
+    "name": "Chaveiro em Bambu",
+    "category": "Diversos",
+    "description": "Chaveiro sustentável em bambu, ótimo para gravação a laser.",
+    "images": ["https://placehold.co/600x600?text=Chaveiro+Bambu"],
+    "colors": ["Natural"],
+    "minQuantity": 200,
+    "priceFrom": 6.5
+  },
+  {
+    "sku": "SPOT-9903",
+    "name": "Power Bank 5000mAh",
+    "category": "Eletrônicos",
+    "description": "Carregador portátil com cabo USB-C incluso.",
+    "images": ["https://placehold.co/600x600?text=Power+Bank"],
+    "colors": ["Preto", "Branco"],
+    "minQuantity": 50,
+    "priceFrom": 45.0
+  }
+]

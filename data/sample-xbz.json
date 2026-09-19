@@ -1,0 +1,32 @@
+[
+  {
+    "sku": "XBZ-1001",
+    "name": "Caneca Inox 350ml",
+    "category": "Canecas e Garrafas",
+    "description": "Caneca em aço inox com parede dupla, ideal para personalização a laser.",
+    "images": ["https://placehold.co/600x600?text=Caneca+Inox"],
+    "colors": ["Prata", "Preto"],
+    "minQuantity": 50,
+    "priceFrom": 24.9
+  },
+  {
+    "sku": "XBZ-1042",
+    "name": "Mochila Executiva Impermeável",
+    "category": "Mochilas e Malas",
+    "description": "Mochila com compartimento para notebook até 15,6 polegadas.",
+    "images": ["https://placehold.co/600x600?text=Mochila+Executiva"],
+    "colors": ["Preto", "Cinza"],
+    "minQuantity": 20,
+    "priceFrom": 89.9
+  },
+  {
+    "sku": "XBZ-2010",
+    "name": "Kit Caneta e Bloco de Anotações",
+    "category": "Escritório",
+    "description": "Kit com caneta metálica e bloco de anotações em capa dura.",
+    "images": ["https://placehold.co/600x600?text=Kit+Caneta+e+Bloco"],
+    "colors": ["Azul", "Preto"],
+    "minQuantity": 100,
+    "priceFrom": 18.5
+  }
+]

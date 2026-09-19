@@ -1,0 +1,32 @@
+[
+  {
+    "sku": "ASIA-3301",
+    "name": "Garrafa Térmica Inox 500ml",
+    "category": "Canecas e Garrafas",
+    "description": "Garrafa térmica com parede dupla, mantém temperatura por até 6 horas.",
+    "images": ["https://placehold.co/600x600?text=Garrafa+Termica"],
+    "colors": ["Preto", "Branco", "Verde"],
+    "minQuantity": 30,
+    "priceFrom": 39.9
+  },
+  {
+    "sku": "ASIA-4410",
+    "name": "Necessaire em Nylon",
+    "category": "Mochilas e Malas",
+    "description": "Necessaire resistente à água, ótima para brindes de eventos.",
+    "images": ["https://placehold.co/600x600?text=Necessaire"],
+    "colors": ["Preto", "Azul Marinho"],
+    "minQuantity": 50,
+    "priceFrom": 14.9
+  },
+  {
+    "sku": "ASIA-5502",
+    "name": "Caderno Capa em PU A5",
+    "category": "Escritório",
+    "description": "Caderno com capa em couro sintético e elástico de fechamento.",
+    "images": ["https://placehold.co/600x600?text=Caderno+A5"],
+    "colors": ["Marrom", "Preto"],
+    "minQuantity": 50,
+    "priceFrom": 22.0
+  }
+]
