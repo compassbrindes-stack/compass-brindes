@@ -3,7 +3,7 @@ import Link from "next/link";
 const WHATSAPP_NUMBER = process.env.NEXT_PUBLIC_WHATSAPP_NUMBER ?? "";
 const whatsappUrl = WHATSAPP_NUMBER
   ? `https://wa.me/${WHATSAPP_NUMBER}?text=${encodeURIComponent(
-      "Ola! Vim pelo site da Compass Brindes e gostaria de um orcamento."
+      "Olá! Vim pelo site da Compass Brindes e gostaria de um orçamento."
     )}`
   : "/orcamento";
 
@@ -32,13 +32,13 @@ export function SiteFooter() {
             Falar pelo WhatsApp
           </a>
           <div style={{ marginTop: 8 }}>
-            <Link href="/produtos">Catalogo online</Link>
+            <Link href="/produtos">Catálogo online</Link>
           </div>
         </div>
       </div>
 
       <div className="container site-footer__bottom">
-        <span>&copy; {new Date().getFullYear()} Compass Brindes Corporativos &mdash; todos os produtos sob consulta, precos podem variar por quantidade.</span>
+        <span>&copy; {new Date().getFullYear()} Compass Brindes Corporativos &mdash; todos os produtos sob consulta, preços podem variar por quantidade.</span>
         <span>Feito para aproximar.</span>
       </div>
     </footer>
