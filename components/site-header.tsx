@@ -3,7 +3,7 @@ import Link from "next/link";
 const WHATSAPP_NUMBER = process.env.NEXT_PUBLIC_WHATSAPP_NUMBER ?? "";
 const whatsappUrl = WHATSAPP_NUMBER
   ? `https://wa.me/${WHATSAPP_NUMBER}?text=${encodeURIComponent(
-      "Ola! Vim pelo site da Compass Brindes e gostaria de um orcamento."
+      "Olá! Vim pelo site da Compass Brindes e gostaria de um orçamento."
     )}`
   : "/orcamento";
 
@@ -16,10 +16,10 @@ export function SiteHeader() {
           <span>Brindes corporativos</span>
         </Link>
         <nav className="main-nav">
-          <Link href="/">Inicio</Link>
+          <Link href="/">Início</Link>
           <Link href="/produtos">Produtos</Link>
           <Link href="/#como-funciona">Como funciona</Link>
-          <Link href="/orcamento">Meu orcamento</Link>
+          <Link href="/orcamento">Meu orçamento</Link>
           <a
             className="btn btn-primary"
             href={whatsappUrl}
