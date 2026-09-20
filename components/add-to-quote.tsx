@@ -1,6 +1,7 @@
 "use client";
 
 import { useState } from "react";
+import Link from "next/link";
 import { addQuoteItem } from "@/lib/quote-storage";
 
 const QUANTIDADE_MINIMA_PADRAO = 10;
@@ -45,16 +46,33 @@ export function AddToQuote({
       <p style={{ fontSize: 13, color: "var(--color-dark-2, #4a5c60)", margin: "4px 0 12px" }}>
         Pedido mínimo de {minimo} unidades.
       </p>
-      <button
-        className="btn btn-primary"
-        onClick={() => {
-          const quantidadeFinal = quantity < minimo ? minimo : quantity;
-          addQuoteItem({ productId, name, supplierName, slug }, quantidadeFinal);
-          setAdded(true);
-        }}
-      >
-        {added ? "Adicionado ✓" : "Adicionar ao orçamento"}
-      </button>
+
+      {!added ? (
+        <button
+          className="btn btn-primary"
+          onClick={() => {
+            const quantidadeFinal = quantity < minimo ? minimo : quantity;
+            addQuoteItem({ productId, name, supplierName, slug }, quantidadeFinal);
+            setAdded(true);
+          }}
+        >
+          Adicionar ao orçamento
+        </button>
+      ) : (
+        <div>
+          <p style={{ fontWeight: 700, color: "var(--color-primary, #16a34a)", margin: "0 0 12px" }}>
+            Adicionado ao orçamento ✓
+          </p>
+          <div style={{ display: "flex", gap: 10, flexWrap: "wrap" }}>
+            <Link className="btn btn-primary" href="/orcamento">
+              Finalizar orçamento
+            </Link>
+            <Link className="btn btn-outline" href="/produtos">
+              Voltar para produtos
+            </Link>
+          </div>
+        </div>
+      )}
     </div>
   );
 }
