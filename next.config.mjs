@@ -8,6 +8,7 @@ const nextConfig = {
       { protocol: "https", hostname: "**.spotgifts.com.br" },
       { protocol: "https", hostname: "**.asiaimport.com.br" },
       { protocol: "https", hostname: "media.asiaimport.com.br" },
+      { protocol: "https", hostname: "**.digitaloceanspaces.com" },
     ],
   },
 };
