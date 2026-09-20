@@ -1,3 +1,4 @@
+import Image from "next/image";
 import Link from "next/link";
 
 const WHATSAPP_NUMBER = process.env.NEXT_PUBLIC_WHATSAPP_NUMBER ?? "";
@@ -12,8 +13,14 @@ export function SiteHeader() {
     <header className="site-header">
       <div className="site-header__inner">
         <Link className="logo" href="/">
-          COMPASS
-          <span>Brindes corporativos</span>
+          <Image
+            src="/logo-compass.png"
+            alt="Compass Brindes Corporativos"
+            width={168}
+            height={69}
+            priority
+            className="logo-img"
+          />
         </Link>
         <nav className="main-nav">
           <Link href="/">Início</Link>
