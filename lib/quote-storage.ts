@@ -48,3 +48,9 @@ export function removeQuoteItem(productId: string) {
   const items = getQuoteItems().filter((i) => i.productId !== productId);
   saveQuoteItems(items);
 }
+
+// Esvazia o orçamento atual (usado após finalizar um pedido, para que o
+// próximo pedido comece do zero e não se misture com o anterior).
+export function clearQuoteItems() {
+  saveQuoteItems([]);
+}
