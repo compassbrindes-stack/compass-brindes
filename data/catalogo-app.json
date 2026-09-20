@@ -94,7 +94,8 @@
     "description": "DESCRICAO: Caneta metálica com carga esferográfica azul 1.0mm e acionamento por clique. MEDIDAS: Tamanho total aproximado (CxL): 13,7 cm x 1,2 cm APRESENTACAO: CAIXA COM 50UN",
     "images": [
       "https://supliutech.nyc3.cdn.digitaloceanspaces.com/products2/90347eab-acca-44da-a4ef-807b935f816b.jpeg"
-    ]
+    ],
+    "minQuantity": 50
   },
   {
     "sku": "1947196-caneta-metal-lisa-c082b670",
@@ -103,7 +104,8 @@
     "description": "DESCRICAO: Essa caneta metálica é perfeita para tornar as anotações do dia a dia mais eficientes. Com acionamento por clique e carga esferográfica azul de 1.0mm, ela garante uma escrita suave e confortável em qualquer ocasião. MEDIDAS: Altura : 13,6 cm Largura : 1,4 cm APRESENTACAO: CAIXA COM 50UN",
     "images": [
       "https://supliutech.nyc3.cdn.digitaloceanspaces.com/products2/366e65e6-e150-4ecb-a66f-d03db2e0f0a0.jpeg"
-    ]
+    ],
+    "minQuantity": 50
   },
   {
     "sku": "1947206-caneta-metal-touch-c050b120",
@@ -112,7 +114,8 @@
     "description": "DESCRICAO: Caneta metálica touchscreen com acionamento por clique, carga esferográfica azul 1.0mm. MEDIDAS: Largura : 1,5 cm Comprimento : 14,1 cm APRESENTACAO: CAIXA COM 50UN",
     "images": [
       "https://supliutech.nyc3.cdn.digitaloceanspaces.com/products2/4572b76b-8086-466a-a265-00cf59ca81c5.jpeg"
-    ]
+    ],
+    "minQuantity": 50
   },
   {
     "sku": "1947202-caneta-metal-touch-c050b190",
@@ -123,17 +126,19 @@
       "https://supliutech.nyc3.cdn.digitaloceanspaces.com/products2/aec8345f-a4dc-4a87-82f2-58f91151ca75.jpeg",
       "https://supliutech.nyc3.cdn.digitaloceanspaces.com/products2/b60e126b-bcd6-4e9b-8141-a7a796157b69.jpeg",
       "https://supliutech.nyc3.cdn.digitaloceanspaces.com/products2/8ab42900-5120-45e8-b08c-2c2e109a25ee.jpeg"
-    ]
+    ],
+    "minQuantity": 50
   },
   {
     "sku": "1947208-chaveiro-abridor-c098b240",
     "name": "CHAVEIRO ABRIDOR C098B240",
-    "category": "Diversos",
+    "category": "Chaveiros",
     "description": "DESCRICAO: Chaveiro abridor de garrafas em metal com argola em ferro niquelado. MEDIDAS: Altura : 8,6 cm Largura : 1,2 cm Profundidade : 1,4 cm Tamanho total aproximado (CxL): 8,5 cm -comprimento com argola Peso aproximado (g): 120 APRESENTACAO: PACOTE COM 100UN",
     "images": [
       "https://supliutech.nyc3.cdn.digitaloceanspaces.com/products2/0669cb93-b495-4594-aff0-f048fa80e181.jpeg",
       "https://supliutech.nyc3.cdn.digitaloceanspaces.com/products2/67280b34-5c3e-4a60-8474-147373893d4f.jpeg"
-    ]
+    ],
+    "minQuantity": 100
   },
   {
     "sku": "1942482-chaveiro-trena-plastico-1m-c082b040",
