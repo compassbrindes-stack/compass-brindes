@@ -3,6 +3,8 @@
 import { useState } from "react";
 import { addQuoteItem } from "@/lib/quote-storage";
 
+const QUANTIDADE_MINIMA_PADRAO = 10;
+
 export function AddToQuote({
   productId,
   name,
@@ -16,7 +18,8 @@ export function AddToQuote({
   slug: string;
   minQuantity?: number;
 }) {
-  const [quantity, setQuantity] = useState(minQuantity ?? 1);
+  const minimo = Math.max(minQuantity ?? QUANTIDADE_MINIMA_PADRAO, QUANTIDADE_MINIMA_PADRAO);
+  const [quantity, setQuantity] = useState(minimo);
   const [added, setAdded] = useState(false);
 
   return (
@@ -26,16 +29,27 @@ export function AddToQuote({
         <input
           id="quantity"
           type="number"
-          min={1}
+          min={minimo}
+          step={1}
           value={quantity}
-          onChange={(e) => setQuantity(Number(e.target.value))}
+          onChange={(e) => {
+            const value = Number(e.target.value);
+            setQuantity(Number.isNaN(value) ? minimo : value);
+          }}
+          onBlur={() => {
+            if (quantity < minimo) setQuantity(minimo);
+          }}
           style={{ width: 90 }}
         />
       </div>
+      <p style={{ fontSize: 13, color: "var(--color-dark-2, #4a5c60)", margin: "4px 0 12px" }}>
+        Pedido mínimo de {minimo} unidades.
+      </p>
       <button
         className="btn btn-primary"
         onClick={() => {
-          addQuoteItem({ productId, name, supplierName, slug }, quantity);
+          const quantidadeFinal = quantity < minimo ? minimo : quantity;
+          addQuoteItem({ productId, name, supplierName, slug }, quantidadeFinal);
           setAdded(true);
         }}
       >
