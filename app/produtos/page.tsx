@@ -21,7 +21,10 @@ export default async function ProdutosPage({
     <div className="container section">
       <h2>Produtos</h2>
 
-      <div style={{ display: "flex", gap: 8, flexWrap: "wrap", marginBottom: 24 }}>
+      <div
+        className="produtos-filters"
+        style={{ display: "flex", gap: 8, flexWrap: "wrap" }}
+      >
         <Link className="btn btn-outline" href="/produtos">
           Todas as categorias
         </Link>
@@ -39,7 +42,7 @@ export default async function ProdutosPage({
       {products.length === 0 ? (
         <p className="empty-state">Nenhum produto encontrado para este filtro.</p>
       ) : (
-        <div className="product-grid">
+        <div className="product-grid" style={{ marginTop: 24 }}>
           {products.map((product) => (
             <ProductCard key={product.id} product={product} />
           ))}
