@@ -2,7 +2,7 @@
 // Cada conector (lib/suppliers/*.ts) é responsável por traduzir o retorno
 // da API do fornecedor para este formato.
 
-export type SupplierId = "xbz" | "asia" | "spot";
+export type SupplierId = "xbz" | "asia" | "spot" | "compassapp";
 
 export interface ProductVariant {
   sku: string;
@@ -12,7 +12,6 @@ export interface ProductVariant {
 }
 
 export interface Product {
-  /** Identificador único no site: `${supplier}-${supplierSku}` */
   id: string;
   supplier: SupplierId;
   supplierName: string;
@@ -24,10 +23,9 @@ export interface Product {
   images: string[];
   variants: ProductVariant[];
   minQuantity?: number;
-  /** Preço de referência ("a partir de"), quando o fornecedor informa. */
   priceFrom?: number;
   material?: string;
-  updatedAt: string; // ISO 8601
+  updatedAt: string;
 }
 
 export interface SupplierSyncResult {
@@ -41,8 +39,6 @@ export interface SupplierSyncResult {
 export interface SupplierConnector {
   id: SupplierId;
   name: string;
-  /** true quando as credenciais reais (token/CNPJ/etc.) estão configuradas. */
   isConfigured: () => boolean;
-  /** Busca e normaliza os produtos. Usa dados de exemplo se não configurado. */
   fetchProducts: () => Promise<{ products: Product[]; result: SupplierSyncResult }>;
 }
