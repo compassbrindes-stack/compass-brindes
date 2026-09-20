@@ -621,3 +621,25 @@ a {
   padding: 12px 0;
   margin-bottom: 8px;
 }
+
+.form-row {
+  display: flex;
+  gap: 14px;
+  flex-wrap: wrap;
+  max-width: 480px;
+}
+
+.form-row .form-field {
+  flex: 1;
+  min-width: 130px;
+}
+
+.form-error {
+  color: #b3261e;
+  font-size: 0.8rem;
+}
+
+.form-hint {
+  color: var(--color-muted);
+  font-size: 0.8rem;
+}
