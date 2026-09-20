@@ -589,3 +589,26 @@ a {
     background: none;
     padding: 0;
 }
+
+
+.logo-img {
+      height: 44px;
+      width: auto;
+      display: block;
+}
+
+.site-footer__social {
+      display: flex;
+      gap: 14px;
+      margin-top: 14px;
+}
+
+.site-footer__social a {
+      color: #dfe4ee;
+      display: inline-flex;
+      transition: color 0.15s ease;
+}
+
+.site-footer__social a:hover {
+      color: var(--color-accent);
+}
