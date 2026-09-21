@@ -29,7 +29,9 @@
       "https://www.xbzbrindes.com.br/img/produtos/3/Bolsa-Termica-6-Litros-CINZA-ESCURO-18955-1733493857.jpg",
       "https://www.xbzbrindes.com.br/img/produtos/3/Bolsa-Termica-6-Litros-17564d1-1698082753.jpg"
     ],
-    "colors": ["Cinza"],
+    "colors": [
+      "Cinza"
+    ],
     "supplierCode": "02798"
   },
   {
@@ -503,7 +505,10 @@
       "https://www.xbzbrindes.com.br/img/produtos/3/Copo-Termico-Inox-500ml-14313d2-1721311042.jpg",
       "https://www.xbzbrindes.com.br/img/produtos/3/Copo-Termico-Inox-500ml-14313d3-1721311042.jpg"
     ],
-    "colors": ["Branco", "Preto"],
+    "colors": [
+      "Branco",
+      "Preto"
+    ],
     "supplierCode": "14724"
   },
   {
@@ -516,7 +521,10 @@
       "https://www.xbzbrindes.com.br/img/produtos/3/Copo-Termico-Inox-380ml-Multiuso-17064d1-1693255735.jpg",
       "https://www.xbzbrindes.com.br/img/produtos/3/Copo-Termico-Inox-380ml-Multiuso-17064d2-1693255735.jpg"
     ],
-    "colors": ["Bronze", "Preto"],
+    "colors": [
+      "Bronze",
+      "Preto"
+    ],
     "supplierCode": "04014"
   },
   {
@@ -540,5 +548,33 @@
       "https://www.xbzbrindes.com.br/img/produtos/3/Kit-Garrafa-Termica-17871d1-1702554422.jpg",
       "https://www.xbzbrindes.com.br/img/produtos/3/Kit-Garrafa-Termica-17871d2-1716389943.jpg"
     ]
+  },
+  {
+    "sku": "xbz-09059-kit-jardinagem-3-pecas",
+    "name": "Kit Jardinagem 3 Peças",
+    "category": "Agro",
+    "description": "Descrição: Kit de jardinagem com três peças em aço inox 410 e cabos de madeira. O conjunto é composto por um ancinho de três pontas, uma pazinha estreita e uma pazinha larga. Acompanha estojo em Oxford com fechamento em velcro. Largura: 12cm Comprimento: 32cm Espessura: 8,3cm Peso aproximado: 503g",
+    "images": [
+      "https://www.xbzbrindes.com.br/img/produtos/3/Kit-Jardinagem-3-Pecas-PRETO-26827-1767960698.jpg",
+      "https://www.xbzbrindes.com.br/img/produtos/3/Kit-Jardinagem-3-Pecas-26825d1-1767818969.jpg"
+    ],
+    "colors": [
+      "Preto"
+    ],
+    "supplierCode": "09059"
+  },
+  {
+    "sku": "xbz-09362-elastico-extensor",
+    "name": "Elástico Extensor",
+    "category": "Fitness",
+    "description": "Descrição: Elástico extensor para exercícios físicos. Possui estrutura formada por pedais e pegadores em PVC revestidos com revestimento de borracha, arcos para apoio de pés em plástico polietileno (PE) e cordas elásticas em borracha termoplástica (TPE). Altura: 41,1cm Largura: 22,9cm Peso aproximado: 162g",
+    "images": [
+      "https://www.xbzbrindes.com.br/img/produtos/3/Elastico-Extensor-30107-1789145542.jpg",
+      "https://www.xbzbrindes.com.br/img/produtos/3/Elastico-Extensor-30107d1-1789145547.jpg"
+    ],
+    "colors": [
+      "Preto"
+    ],
+    "supplierCode": "09362"
   }
 ]
