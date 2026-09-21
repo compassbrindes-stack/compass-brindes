@@ -1,7 +1,6 @@
 import Link from "next/link";
 import { getAllProducts, getCategories } from "@/lib/products";
 import { ProductCard } from "@/components/product-card";
-import { HeroCarousel } from "@/components/hero-carousel";
 
 export const revalidate = 0;
 const WHATSAPP_NUMBER = process.env.NEXT_PUBLIC_WHATSAPP_NUMBER ?? "";
