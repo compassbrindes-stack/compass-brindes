@@ -584,6 +584,9 @@ a {
   position: fixed;
   right: 20px;
   bottom: 20px;
+  display: inline-flex;
+  align-items: center;
+  gap: 8px;
   background: #25d366;
   color: white;
   border-radius: 999px;
