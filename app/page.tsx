@@ -1,6 +1,7 @@
 import Link from "next/link";
 import { getAllProducts, getCategories } from "@/lib/products";
 import { ProductCard } from "@/components/product-card";
+import { getCategoryIcon } from "@/lib/category-icons";
 
 export const revalidate = 0;
 const WHATSAPP_NUMBER = process.env.NEXT_PUBLIC_WHATSAPP_NUMBER ?? "";
@@ -67,7 +68,12 @@ export default async function HomePage() {
               className="category-card"
               href={"/produtos?categoria=" + encodeURIComponent(category)}
             >
-              <span>{category}</span>
+              <span>
+                <span aria-hidden="true" style={{ marginRight: 8 }}>
+                  {getCategoryIcon(category)}
+                </span>
+                {category}
+              </span>
               <span className="category-card__arrow">Ver seleção &#8594;</span>
             </Link>
           ))}
