@@ -1,5 +1,6 @@
 import { getAllProducts, getCategories } from "@/lib/products";
 import { ProductCard } from "@/components/product-card";
+import { getCategoryIcon } from "@/lib/category-icons";
 import Link from "next/link";
 
 export const revalidate = 0;
@@ -55,6 +56,9 @@ export default async function ProdutosPage({
             className="btn btn-outline"
             href={`/produtos?categoria=${encodeURIComponent(category)}`}
           >
+            <span aria-hidden="true" style={{ marginRight: 6 }}>
+              {getCategoryIcon(category)}
+            </span>
             {category}
           </Link>
         ))}
