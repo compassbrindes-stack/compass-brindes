@@ -17,6 +17,11 @@ export default async function ProdutoPage({ params }: { params: { slug: string }
       <div>
         <span className="badge">{product.supplierName}</span>
         <h1>{product.name}</h1>
+        {product.supplierCode && (
+          <p style={{ fontSize: 13, color: "var(--color-dark-2, #4a5c60)", margin: "4px 0 0" }}>
+            Código do fornecedor: {product.supplierCode}
+          </p>
+        )}
         <p>{product.description}</p>
 
         {product.variants.some((v) => v.color) && (
