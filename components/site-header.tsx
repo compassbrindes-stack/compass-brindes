@@ -38,6 +38,7 @@ export function SiteHeader() {
           <Link href="/produtos">Produtos</Link>
           <Link href="/#como-funciona">Como funciona</Link>
           <Link href="/orcamento">Meu orçamento</Link>
+          <Link href="/catalogo">Catálogo em PDF</Link>
           <a
             className="btn btn-primary"
             href={whatsappUrl}
