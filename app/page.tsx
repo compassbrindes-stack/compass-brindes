@@ -1,6 +1,7 @@
 import Link from "next/link";
 import { getAllProducts, getCategories } from "@/lib/products";
 import { ProductCard } from "@/components/product-card";
+import { HeroCarousel } from "@/components/hero-carousel";
 
 export const revalidate = 0;
 
@@ -17,24 +18,26 @@ export default async function HomePage() {
 
   return (
     <>
-      <section className="hero">
-        <div className="container">
-          <p className="hero-eyebrow">Personalização que vira presença</p>
-          <h1>
-            Brindes que fazem sua marca <em>ser lembrada.</em>
-          </h1>
-          <p>
-            Curadoria de produtos corporativos para empresas que querem presentear com intenção —
-            do primeiro contato ao momento que fica.
-          </p>
-          <div className="hero-actions">
-            <Link className="btn btn-primary" href="/produtos">
-              Explorar catálogo
-            </Link>
-            <Link className="btn btn-outline" href="/orcamento">
-              Meu orçamento
-            </Link>
-          </div>
+      <section className="hero hero--carousel">
+        <HeroCarousel />
+      </section>
+
+      <section className="hero-message container">
+        <p className="hero-eyebrow">Personalização que vira presença</p>
+        <h1>
+          Brindes que fazem sua marca <em>ser lembrada.</em>
+        </h1>
+        <p>
+          Curadoria de produtos corporativos para empresas que querem presentear com intenção —
+          do primeiro contato ao momento que fica.
+        </p>
+        <div className="hero-actions">
+          <Link className="btn btn-primary" href="/produtos">
+            Explorar catálogo
+          </Link>
+          <Link className="btn btn-outline" href="/orcamento">
+            Meu orçamento
+          </Link>
         </div>
       </section>
 
