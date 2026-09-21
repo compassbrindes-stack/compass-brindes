@@ -7,19 +7,40 @@ export const revalidate = 0;
 export default async function ProdutosPage({
   searchParams,
 }: {
-  searchParams: { categoria?: string; fornecedor?: string };
+  searchParams: { categoria?: string; fornecedor?: string; q?: string };
 }) {
   const [allProducts, categories] = await Promise.all([getAllProducts(), getCategories()]);
+
+  const query = searchParams.q?.trim().toLowerCase();
 
   const products = allProducts.filter((p) => {
     if (searchParams.categoria && p.category !== searchParams.categoria) return false;
     if (searchParams.fornecedor && p.supplier !== searchParams.fornecedor) return false;
+    if (query) {
+      const haystack = `${p.name} ${p.description ?? ""} ${p.category}`.toLowerCase();
+      if (!haystack.includes(query)) return false;
+    }
     return true;
   });
 
   return (
     <div className="container section">
       <h2>Produtos</h2>
+
+      <form action="/produtos" method="GET" className="form-row" style={{ marginBottom: 16 }}>
+        <div className="form-field" style={{ marginBottom: 0 }}>
+          <input
+            type="search"
+            name="q"
+            defaultValue={searchParams.q ?? ""}
+            placeholder="Buscar por nome, descrição ou categoria..."
+            aria-label="Buscar produtos"
+          />
+        </div>
+        <button className="btn btn-outline" type="submit">
+          Buscar
+        </button>
+      </form>
 
       <div
         className="produtos-filters"
