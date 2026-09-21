@@ -12,7 +12,10 @@ export function ProductCard({ product }: { product: Product }) {
       {/* eslint-disable-next-line @next/next/no-img-element */}
       <img src={product.images[0]} alt={product.name} loading="lazy" />
       <div className="product-card__body">
-        <span className="product-card__supplier">{product.supplierName}</span>
+        <span className="product-card__supplier">
+          {product.supplierName}
+          {product.supplierCode ? ` · Cód. ${product.supplierCode}` : ""}
+        </span>
         <span className="product-card__name">{product.name}</span>
         <span className="product-card__price">{formatPrice(product.priceFrom)}</span>
       </div>
