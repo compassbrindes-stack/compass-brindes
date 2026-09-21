@@ -16,12 +16,23 @@ export function SiteHeader() {
           <Image
             src="/logo-compass.png"
             alt="Compass Brindes Corporativos"
-            width={168}
-            height={69}
+            width={336}
+            height={138}
             priority
-            className="logo-img"
+            className="logo-img logo-img--header"
           />
         </Link>
+        <form className="site-search" action="/produtos" method="GET">
+          <input
+            type="search"
+            name="q"
+            placeholder="Buscar produtos..."
+            aria-label="Buscar produtos"
+          />
+          <button type="submit" aria-label="Buscar">
+            Buscar
+          </button>
+        </form>
         <nav className="main-nav">
           <Link href="/">Início</Link>
           <Link href="/produtos">Produtos</Link>
