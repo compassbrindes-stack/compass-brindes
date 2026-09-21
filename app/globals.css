@@ -13,6 +13,8 @@
   --color-dark-2: #e1e4db;
   --color-accent: #d4ec9a;
   --color-accent-text: #102b32;
+  --color-cta: #4d4d4d;
+  --color-cta-text: #ffffff;
   --color-sage: #b9c9a8;
   --color-card-dark: #0f2a30;
   --color-on-light: #102b32;
@@ -108,6 +110,17 @@ a {
   color: var(--color-dark);
 }
 
+.site-header__phone {
+  font-size: 0.85rem;
+  font-weight: 700;
+  color: var(--color-cta);
+  white-space: nowrap;
+}
+
+.site-header__phone:hover {
+  color: var(--color-primary-dark);
+}
+
 .btn {
   display: inline-flex;
   align-items: center;
@@ -121,12 +134,12 @@ a {
 }
 
 .btn-primary {
-  background: var(--color-accent);
-  color: var(--color-accent-text);
+  background: var(--color-cta);
+  color: var(--color-cta-text);
 }
 
 .btn-primary:hover {
-  background: #c3e37f;
+  background: #383838;
 }
 
 .btn-outline {
