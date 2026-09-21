@@ -25,6 +25,8 @@ export interface Product {
   minQuantity?: number;
   priceFrom?: number;
   material?: string;
+  /** Código do produto no site do fornecedor (ex.: código XBZ), para referência/pedido. */
+  supplierCode?: string;
   updatedAt: string;
 }
 
