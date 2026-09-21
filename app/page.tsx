@@ -35,10 +35,6 @@ export default async function HomePage() {
               Meu orçamento
             </Link>
           </div>
-          <div className="hero-stats">
-            <span>Catálogo com {products.length} itens</span>
-            <span>Atendimento direto</span>
-          </div>
         </div>
       </section>
 
