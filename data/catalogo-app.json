@@ -490,7 +490,9 @@
       "https://www.xbzbrindes.com.br/img/produtos/3/Copo-Termico-Inox-500ml-14313d1-1656614228.jpg",
       "https://www.xbzbrindes.com.br/img/produtos/3/Copo-Termico-Inox-500ml-14313d2-1721311042.jpg",
       "https://www.xbzbrindes.com.br/img/produtos/3/Copo-Termico-Inox-500ml-14313d3-1721311042.jpg"
-    ]
+    ],
+    "colors": ["Branco", "Preto"],
+    "supplierCode": "14724"
   },
   {
     "sku": "xbz-04014-copo-termico-inox-380ml-multiuso",
@@ -501,7 +503,9 @@
       "https://www.xbzbrindes.com.br/img/produtos/3/Copo-Termico-Inox-380ml-Multiuso-BRONZE-17068-1693255738.jpg",
       "https://www.xbzbrindes.com.br/img/produtos/3/Copo-Termico-Inox-380ml-Multiuso-17064d1-1693255735.jpg",
       "https://www.xbzbrindes.com.br/img/produtos/3/Copo-Termico-Inox-380ml-Multiuso-17064d2-1693255735.jpg"
-    ]
+    ],
+    "colors": ["Bronze", "Preto"],
+    "supplierCode": "04014"
   },
   {
     "sku": "xbz-18639-garrafa-termica-inox-450ml",
