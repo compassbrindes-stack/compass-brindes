@@ -1,6 +1,7 @@
 import { notFound } from "next/navigation";
 import { getProductBySlug } from "@/lib/products";
 import { AddToQuote } from "@/components/add-to-quote";
+import { ProductGallery } from "@/components/product-gallery";
 
 export const revalidate = 0;
 
@@ -11,8 +12,7 @@ export default async function ProdutoPage({ params }: { params: { slug: string }
   return (
     <div className="container product-detail">
       <div>
-        {/* eslint-disable-next-line @next/next/no-img-element */}
-        <img src={product.images[0]} alt={product.name} />
+        <ProductGallery images={product.images} alt={product.name} />
       </div>
       <div>
         <span className="badge">{product.supplierName}</span>
