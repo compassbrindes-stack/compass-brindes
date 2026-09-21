@@ -609,10 +609,14 @@ a {
   height: 44px;
   width: auto;
   display: block;
+  background: var(--color-primary-dark);
+  border-radius: var(--radius);
+  padding: 6px 14px;
 }
 
 .logo-img--header {
   height: 88px;
+  padding: 10px 20px;
 }
 
 .site-search {
