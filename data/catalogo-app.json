@@ -148,7 +148,8 @@
     "images": [
       "https://supliutech.nyc3.cdn.digitaloceanspaces.com/products2/dfbdb0ff-4d96-43ba-8d52-21635cb32514.jpeg",
       "https://supliutech.nyc3.cdn.digitaloceanspaces.com/products2/9cc43253-aacd-4827-a7cd-2a482c3289fd.jpeg"
-    ]
+    ],
+    "minQuantity": 50
   },
   {
     "sku": "1942487-chaveiro-trena-plastico-2-metros-c082b320",
@@ -158,7 +159,8 @@
     "images": [
       "https://supliutech.nyc3.cdn.digitaloceanspaces.com/products2/b3d742b4-2591-4537-8513-88e44269498d.jpeg",
       "https://supliutech.nyc3.cdn.digitaloceanspaces.com/products2/58d61f51-01e0-4282-a4f1-21251346b271.jpeg"
-    ]
+    ],
+    "minQuantity": 50
   },
   {
     "sku": "1938314-copo-c040b800",
