@@ -20,6 +20,8 @@ export interface MockSupplierItem {
   colors?: string[];
   minQuantity?: number;
   priceFrom?: number;
+  /** Código do produto no site do fornecedor (ex.: código XBZ), para referência/pedido. */
+  supplierCode?: string;
 }
 
 export function mockItemToProduct(
@@ -46,6 +48,7 @@ export function mockItemToProduct(
     minQuantity: item.minQuantity,
     priceFrom: item.priceFrom,
     material: undefined,
+    supplierCode: item.supplierCode,
     updatedAt: new Date().toISOString(),
   };
 }
