@@ -46,6 +46,9 @@ export function SiteFooter() {
           <div style={{ marginTop: 8 }}>
             <Link href="/produtos">Catálogo online ↗</Link>
           </div>
+          <div style={{ marginTop: 8 }}>
+            <Link href="/catalogo">Baixar catálogo em PDF ↗</Link>
+          </div>
         </div>
       </div>
 
