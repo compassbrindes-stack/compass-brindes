@@ -39,6 +39,9 @@ export function SiteHeader() {
           <Link href="/#como-funciona">Como funciona</Link>
           <Link href="/orcamento">Meu orçamento</Link>
           <Link href="/catalogo">Catálogo em PDF</Link>
+          <a className="site-header__phone" href="tel:+5549936180446">
+            (49) 93618-0446
+          </a>
           <a
             className="btn btn-primary"
             href={whatsappUrl}
