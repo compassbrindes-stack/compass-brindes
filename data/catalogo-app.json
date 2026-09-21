@@ -341,7 +341,7 @@
   {
     "sku": "1941594-garrafa-termica-15l-c190b330",
     "name": "Garrafa Térmica 1,5L C190B330",
-    "category": "Térmico",
+    "category": "Garrafa Térmica",
     "description": "DESCRIÇÃO: Garrafa térmica com capacidade máxima de 1,5 litro. Possui estrutura de parede dupla com interior em inox 304 com pintura eletrostática. Possui revestimento superior e cabo em plástico, além de base antiderrapante. Conta ainda com tampa rosqueável com acionamento por pressão para servir o conteúdo. MEDIDAS: Altura: 22,5cm Largura: 16,7cm PESO 675G",
     "images": [
       "https://supliutech.nyc3.cdn.digitaloceanspaces.com/products2/23455815-0c2d-4435-84ef-b73607b4cf20.jpeg",
@@ -351,7 +351,7 @@
   {
     "sku": "1941224-garrafa-termica-780ml-c185b180",
     "name": "Garrafa térmica 780ml C185B180",
-    "category": "Térmico",
+    "category": "Garrafa Térmica",
     "description": "DESCRIÇÃO: Garrafa térmica 780ml em inox de alta qualidade. Possui tampa rosqueável com detalhe superior em relevo, pode ser utilizada com líquidos quentes ou frios. MEDIDAS: Altura: 30,3 cm Largura: 7,9 cm PESO 410G",
     "images": [
       "https://supliutech.nyc3.cdn.digitaloceanspaces.com/products2/ae64c521-dbce-4215-a854-dea5887d38b7.jpeg"
@@ -360,7 +360,7 @@
   {
     "sku": "1941593-garrafa-termica-800ml-c190b140",
     "name": "Garrafa Térmica 800ml C190B140",
-    "category": "Térmico",
+    "category": "Garrafa Térmica",
     "description": "DESCRIÇÃO: Garrafa térmica em inox com pintura eletrostática e capacidade de até 800ml. Apresenta estrutura interna de parede dupla e vedação a vácuo, o que ajuda a conservar a temperatura de líquidos por mais tempo. Conta ainda com fundo removível. Possui tampa plástica rosqueável com protetor para o bocal, bico flip, canudo interno removível e alça fixa para transporte. MEDIDA: Altura: 28,6cm Largura: 9cm PESO 515G",
     "images": [
       "https://supliutech.nyc3.cdn.digitaloceanspaces.com/products2/ffda6325-32f4-4554-b1ec-e5cb348ba2e9.jpeg",
@@ -467,6 +467,62 @@
     "images": [
       "https://supliutech.nyc3.cdn.digitaloceanspaces.com/products2/9cc92f53-5e96-4e5d-ba5b-5ff273abeb78.jpeg",
       "https://supliutech.nyc3.cdn.digitaloceanspaces.com/products2/f740b53e-2742-42ad-b9df-ac223c5a6b02.jpeg"
+    ]
+  },
+  {
+    "sku": "xbz-06033-caneca-termica-12l",
+    "name": "Caneca Térmica 1,2L",
+    "category": "Copos",
+    "description": "Descrição: Caneca térmica com capacidade de 1,2 litros feita em inox 304 com parede dupla, contém tampa acrílica rosqueável com acesso para canudo e pegador plástico. Acompanha canudo plástico. Altura: 26,9cm Largura: 14,9cm Circunferência: 31,3cm Peso aproximado: 539g",
+    "images": [
+      "https://www.xbzbrindes.com.br/img/produtos/3/Caneca-Termica-1-2L-AMARELO-COM-AZUL-27317-1771595129.jpg",
+      "https://www.xbzbrindes.com.br/img/produtos/3/Caneca-Termica-1-2L-16950d1-1716388358.jpg",
+      "https://www.xbzbrindes.com.br/img/produtos/3/Caneca-Termica-1-2L-16950d5-1771595149.jpg"
+    ]
+  },
+  {
+    "sku": "xbz-14724-copo-termico-inox-500ml",
+    "name": "Copo Térmico Inox 500ml",
+    "category": "Copos",
+    "description": "Descrição: Copo térmico de inox 500ml com parede dupla, parte inferior com borracha antideslizante e tampa rosqueável com abertura de bocal. Altura: 17,2cm Largura: 8,9cm Circunferência: 28,2cm Peso aproximado: 294g",
+    "images": [
+      "https://www.xbzbrindes.com.br/img/produtos/3/Copo-Termico-Inox-500ml-BRANCO-14518-1656613736.jpg",
+      "https://www.xbzbrindes.com.br/img/produtos/3/Copo-Termico-Inox-500ml-14313d1-1656614228.jpg",
+      "https://www.xbzbrindes.com.br/img/produtos/3/Copo-Termico-Inox-500ml-14313d2-1721311042.jpg",
+      "https://www.xbzbrindes.com.br/img/produtos/3/Copo-Termico-Inox-500ml-14313d3-1721311042.jpg"
+    ]
+  },
+  {
+    "sku": "xbz-04014-copo-termico-inox-380ml-multiuso",
+    "name": "Copo Térmico Inox 380ml Multiuso",
+    "category": "Copos",
+    "description": "Descrição: Copo térmico multiuso com parede dupla em inox, capacidade de 380ml. Pode ser utilizado como copo, porta long neck ou porta lata. Contém abridor de garrafa na parte inferior do copo. Altura: 15,8cm Largura: 7,9cm Circunferência: 25,3cm Peso aproximado: 244g",
+    "images": [
+      "https://www.xbzbrindes.com.br/img/produtos/3/Copo-Termico-Inox-380ml-Multiuso-BRONZE-17068-1693255738.jpg",
+      "https://www.xbzbrindes.com.br/img/produtos/3/Copo-Termico-Inox-380ml-Multiuso-17064d1-1693255735.jpg",
+      "https://www.xbzbrindes.com.br/img/produtos/3/Copo-Termico-Inox-380ml-Multiuso-17064d2-1693255735.jpg"
+    ]
+  },
+  {
+    "sku": "xbz-18639-garrafa-termica-inox-450ml",
+    "name": "Garrafa Térmica Inox 450ml",
+    "category": "Garrafa Térmica",
+    "description": "Descrição: Garrafa térmica 450ml em inox com tampa que pode ser utilizada como caneca, tampa interna em plástico resistente (basta um clique para abrir ou fechar), base com borracha antiderrapante. Conservação líquidos quentes: ±7 horas. Conservação líquidos gelados: ±8 horas. Altura: 23,9cm Largura: 9,9cm Circunferência: 21cm Peso aproximado: 290g",
+    "images": [
+      "https://www.xbzbrindes.com.br/img/produtos/3/Garrafa-Termica-Inox-450ml-INOX-14063-1708535556.jpg",
+      "https://www.xbzbrindes.com.br/img/produtos/3/Garrafa-Termica-Inox-450ml-13933d1-1716307808.jpg",
+      "https://www.xbzbrindes.com.br/img/produtos/3/Garrafa-Termica-Inox-450ml-13933d2-1716307855.jpg"
+    ]
+  },
+  {
+    "sku": "xbz-18639kit-kit-garrafa-termica",
+    "name": "Kit Garrafa Térmica",
+    "category": "Garrafa Térmica",
+    "description": "Descrição: Kit garrafa térmica 450ml com duas tampas extras que podem ser utilizadas como xícaras. Garrafa produzida em inox com base antiderrapante e tampas de inox com revestimento plástico. Acompanha sacola de papel com berço de papelão para acomodação das peças. Altura: 25,5cm Largura: 16cm Profundidade: 7,2cm Peso aproximado: 354g",
+    "images": [
+      "https://www.xbzbrindes.com.br/img/produtos/3/Kit-Garrafa-Termica-AZUL-17896-1716389917.jpg",
+      "https://www.xbzbrindes.com.br/img/produtos/3/Kit-Garrafa-Termica-17871d1-1702554422.jpg",
+      "https://www.xbzbrindes.com.br/img/produtos/3/Kit-Garrafa-Termica-17871d2-1716389943.jpg"
     ]
   }
 ]
