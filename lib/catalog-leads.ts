@@ -54,3 +54,21 @@ export async function saveCatalogLead(input: CatalogLeadInput): Promise<CatalogL
 
   return lead;
 }
+
+// Lista todos os leads salvos, mais recentes primeiro. Usado apenas pela
+// página/rota de administração (protegida por LEADS_ADMIN_SECRET).
+export async function listCatalogLeads(): Promise<CatalogLead[]> {
+  const raw = await redisCommand<string[]>(["LRANGE", CHAVE_LISTA, 0, -1]);
+
+  const leads = (raw ?? [])
+    .map((item) => {
+      try {
+        return JSON.parse(item) as CatalogLead;
+      } catch {
+        return null;
+      }
+    })
+    .filter((lead): lead is CatalogLead => lead !== null);
+
+  return leads.reverse();
+}
