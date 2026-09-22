@@ -1,5 +1,5 @@
-import Image from "next/image";
 import Link from "next/link";
+import { LOGO_DATA_URI } from "@/lib/logo";
 
 const WHATSAPP_NUMBER = process.env.NEXT_PUBLIC_WHATSAPP_NUMBER ?? "";
 const whatsappUrl = WHATSAPP_NUMBER
@@ -13,12 +13,9 @@ export function SiteHeader() {
     <header className="site-header">
       <div className="site-header__inner">
         <Link className="logo" href="/">
-          <Image
-            src="/logo-compass.jpg"
+          <img
+            src={LOGO_DATA_URI}
             alt="Compass Brindes Corporativos"
-            width={1253}
-            height={751}
-            priority
             className="logo-img logo-img--header"
           />
         </Link>
