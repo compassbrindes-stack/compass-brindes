@@ -1,6 +1,7 @@
 // Geração do catálogo em PDF com os produtos atuais do site.
-// Usa pdf-lib para montar o PDF, com a logo na capa e a foto de cada
-// produto ao lado da sua descrição (quando a imagem está disponível).
+// Layout inspirado em catálogos profissionais do setor de brindes: capa com
+// logo, página de índice por categoria e páginas de produto com fotos
+// grandes ao lado de um bloco de texto enxuto (código, nome, descrição).
 
 import { PDFDocument, PDFFont, PDFImage, PDFPage, StandardFonts, rgb } from "pdf-lib";
 import type { Product } from "@/lib/types";
@@ -9,17 +10,28 @@ import { LOGO_DATA_URI } from "@/lib/logo";
 const PAGE_WIDTH = 595.28; // A4 em pontos
 const PAGE_HEIGHT = 841.89;
 const MARGIN_X = 48;
-const MARGIN_BOTTOM = 56;
+const MARGIN_TOP = 56;
+const MARGIN_BOTTOM = 44;
 const CONTENT_WIDTH = PAGE_WIDTH - MARGIN_X * 2;
 
-const IMAGE_SIZE = 58; // caixa (quadrada) reservada para a foto do produto
-const IMAGE_GAP = 12; // espaço entre a foto e o texto
+const TEXT_COL_WIDTH = 168; // largura do bloco de texto de cada produto
+const COL_GAP = 22;
+const IMAGE_MAX = 196; // lado máximo (quadrado) da foto do produto
 
-const COLOR_DARK = rgb(0x10 / 255, 0x2b / 255, 0x32 / 255);
-const COLOR_ACCENT = rgb(0x3d / 255, 0x6b / 255, 0x5c / 255);
-const COLOR_TEXT = rgb(0.15, 0.15, 0.15);
-const COLOR_MUTED = rgb(0.42, 0.42, 0.42);
-const COLOR_LINE = rgb(0.85, 0.85, 0.85);
+const COLOR_PRIMARY_DARK = rgb(0x0b / 255, 0x44 / 255, 0x36 / 255); // verde escuro da marca
+const COLOR_PRIMARY = rgb(0x16 / 255, 0xa3 / 255, 0x4a / 255); // verde da marca
+const COLOR_TEXT = rgb(0.13, 0.15, 0.15);
+const COLOR_MUTED = rgb(0.44, 0.46, 0.44);
+const COLOR_LINE = rgb(0.85, 0.86, 0.82);
+const COLOR_PAGE_BG_SOFT = rgb(0xf4 / 255, 0xf4 / 255, 0xed / 255);
+
+// Paleta usada nos cartões da página de índice, alternada por categoria.
+const INDEX_PALETTE = [
+  rgb(0x0b / 255, 0x44 / 255, 0x36 / 255),
+  rgb(0x16 / 255, 0xa3 / 255, 0x4a / 255),
+  rgb(0x5c / 255, 0x6f / 255, 0x6a / 255),
+  rgb(0xb9 / 255, 0x8a / 255, 0x3a / 255),
+];
 
 function cleanDescription(description?: string): string {
   if (!description) return "";
@@ -103,7 +115,7 @@ export async function buildCatalogPdf(products: Product[]): Promise<Uint8Array> 
   const fontBold = await pdfDoc.embedFont(StandardFonts.HelveticaBold);
   const fontItalic = await pdfDoc.embedFont(StandardFonts.HelveticaOblique);
 
-  // Logo (usada na capa) — embutida localmente, sem depender de rede.
+  // Logo — embutida localmente, sem depender de rede.
   let logoImage: PDFImage | null = null;
   try {
     logoImage = await pdfDoc.embedPng(base64ToBytes(LOGO_DATA_URI));
@@ -135,12 +147,23 @@ export async function buildCatalogPdf(products: Product[]): Promise<Uint8Array> 
     }
   }
 
+  const byCategory = new Map<string, Product[]>();
+  for (const product of products) {
+    const list = byCategory.get(product.category) ?? [];
+    list.push(product);
+    byCategory.set(product.category, list);
+  }
+  const categories = Array.from(byCategory.keys()).sort();
+
   let page: PDFPage = pdfDoc.addPage([PAGE_WIDTH, PAGE_HEIGHT]);
-  let y = PAGE_HEIGHT - MARGIN_X;
+  let y = PAGE_HEIGHT - MARGIN_TOP;
+  const pageCategoryLabel = new Map<PDFPage, string>();
+  let currentCategoryLabel = "";
 
   function newPage() {
     page = pdfDoc.addPage([PAGE_WIDTH, PAGE_HEIGHT]);
-    y = PAGE_HEIGHT - MARGIN_X;
+    y = PAGE_HEIGHT - MARGIN_TOP;
+    if (currentCategoryLabel) pageCategoryLabel.set(page, currentCategoryLabel);
   }
 
   function ensureSpace(needed: number) {
@@ -149,21 +172,10 @@ export async function buildCatalogPdf(products: Product[]): Promise<Uint8Array> 
     }
   }
 
-  function drawFooter() {
-    page.drawText(
-      "Compass Brindes Corporativos  ·  (49) 93618-0446  ·  @compassbrindes  ·  Todos os itens sob consulta",
-      {
-        x: MARGIN_X,
-        y: 28,
-        size: 8,
-        font: fontRegular,
-        color: COLOR_MUTED,
-      }
-    );
-  }
-
+  // ---------------------------------------------------------------------
   // Capa
-  page.drawRectangle({ x: 0, y: PAGE_HEIGHT - 220, width: PAGE_WIDTH, height: 220, color: COLOR_DARK });
+  // ---------------------------------------------------------------------
+  page.drawRectangle({ x: 0, y: PAGE_HEIGHT - 220, width: PAGE_WIDTH, height: 220, color: COLOR_PRIMARY_DARK });
   page.drawText("COMPASS BRINDES CORPORATIVOS", {
     x: MARGIN_X,
     y: PAGE_HEIGHT - 110,
@@ -193,7 +205,6 @@ export async function buildCatalogPdf(products: Product[]): Promise<Uint8Array> 
 
   y = PAGE_HEIGHT - 260;
 
-  // Logo, bem-visível sobre o fundo branco, acima do texto de apresentação.
   if (logoImage) {
     const logoHeight = 36;
     const logoWidth = (logoImage.width / logoImage.height) * logoHeight;
@@ -219,121 +230,220 @@ export async function buildCatalogPdf(products: Product[]): Promise<Uint8Array> 
     y -= 16;
   }
 
+  // ---------------------------------------------------------------------
+  // Índice por categoria
+  // ---------------------------------------------------------------------
+  newPage();
+  page.drawText("ÍNDICE", { x: MARGIN_X, y, size: 20, font: fontBold, color: COLOR_PRIMARY_DARK });
+  y -= 30;
+
+  const INDEX_COLS = 2;
+  const INDEX_GAP = 16;
+  const indexCardWidth = (CONTENT_WIDTH - INDEX_GAP * (INDEX_COLS - 1)) / INDEX_COLS;
+  const indexCardHeight = 64;
+
+  for (let i = 0; i < categories.length; i++) {
+    const col = i % INDEX_COLS;
+    if (col === 0) ensureSpace(indexCardHeight + 14);
+
+    const cardX = MARGIN_X + col * (indexCardWidth + INDEX_GAP);
+    const cardTopY = y;
+    const accent = INDEX_PALETTE[i % INDEX_PALETTE.length];
+    const count = (byCategory.get(categories[i]) ?? []).length;
+
+    page.drawRectangle({
+      x: cardX,
+      y: cardTopY - indexCardHeight,
+      width: indexCardWidth,
+      height: indexCardHeight,
+      color: COLOR_PAGE_BG_SOFT,
+    });
+    page.drawRectangle({
+      x: cardX,
+      y: cardTopY - indexCardHeight,
+      width: 4,
+      height: indexCardHeight,
+      color: accent,
+    });
+
+    const nameLines = wrapText(categories[i].toUpperCase(), fontBold, 10.5, indexCardWidth - 24).slice(0, 2);
+    let ny = cardTopY - 18;
+    for (const line of nameLines) {
+      page.drawText(line, { x: cardX + 14, y: ny, size: 10.5, font: fontBold, color: accent });
+      ny -= 13;
+    }
+    page.drawText(`${count} ${count === 1 ? "produto" : "produtos"}`, {
+      x: cardX + 14,
+      y: cardTopY - indexCardHeight + 12,
+      size: 8.5,
+      font: fontRegular,
+      color: COLOR_MUTED,
+    });
+
+    if (col === INDEX_COLS - 1 || i === categories.length - 1) {
+      y -= indexCardHeight + 14;
+    }
+  }
+
   newPage();
 
-  const byCategory = new Map<string, Product[]>();
-  for (const product of products) {
-    const list = byCategory.get(product.category) ?? [];
-    list.push(product);
-    byCategory.set(product.category, list);
-  }
-  const categories = Array.from(byCategory.keys()).sort();
-
+  // ---------------------------------------------------------------------
+  // Páginas de produtos, por categoria
+  // ---------------------------------------------------------------------
   for (const category of categories) {
-    ensureSpace(40);
+    currentCategoryLabel = category;
+    ensureSpace(44);
+    if (!pageCategoryLabel.has(page)) pageCategoryLabel.set(page, currentCategoryLabel);
+
     page.drawText(category.toUpperCase(), {
       x: MARGIN_X,
       y,
-      size: 16,
+      size: 15,
       font: fontBold,
-      color: COLOR_ACCENT,
+      color: COLOR_PRIMARY_DARK,
     });
     y -= 6;
     page.drawLine({
       start: { x: MARGIN_X, y },
       end: { x: PAGE_WIDTH - MARGIN_X, y },
-      thickness: 1,
-      color: COLOR_LINE,
+      thickness: 1.2,
+      color: COLOR_PRIMARY,
     });
-    y -= 22;
+    y -= 26;
 
     const items = byCategory.get(category) ?? [];
     for (const product of items) {
       const productImage = imageByProduct.get(product);
-      const textX = productImage ? MARGIN_X + IMAGE_SIZE + IMAGE_GAP : MARGIN_X;
-      const textMaxWidth = productImage
-        ? CONTENT_WIDTH - IMAGE_SIZE - IMAGE_GAP
-        : CONTENT_WIDTH;
+      const photoColX = MARGIN_X + TEXT_COL_WIDTH + COL_GAP;
+      const photoColWidth = PAGE_WIDTH - MARGIN_X - photoColX;
 
+      const codigo = product.supplierCode ? product.supplierCode : product.supplierSku;
+      const nameLines = wrapText(product.name, fontBold, 11, TEXT_COL_WIDTH).slice(0, 3);
       const descriptionLines = wrapText(
-        cleanDescription(product.description).slice(0, 320),
+        cleanDescription(product.description).slice(0, 260),
         fontRegular,
-        9.5,
-        textMaxWidth
-      ).slice(0, 4);
+        9,
+        TEXT_COL_WIDTH
+      ).slice(0, 6);
 
       const colorsText = product.variants
         .map((v) => v.color)
         .filter((c): c is string => Boolean(c))
         .join(", ");
+      const colorLines = colorsText
+        ? wrapText(`Cores: ${colorsText}`, fontItalic, 8.5, TEXT_COL_WIDTH).slice(0, 2)
+        : [];
 
-      const textBlockHeight = 16 + descriptionLines.length * 13 + (colorsText ? 13 : 0) + 14;
-      const blockHeight = productImage
-        ? Math.max(textBlockHeight, IMAGE_SIZE + 14)
-        : textBlockHeight;
+      const extraLines: string[] = [];
+      if (product.material) extraLines.push(`Material: ${product.material}`);
+      if (product.minQuantity) extraLines.push(`Qtd. mínima: ${product.minQuantity} un.`);
+
+      const textBlockHeight =
+        12 + // código
+        nameLines.length * 13 +
+        4 +
+        descriptionLines.length * 11.5 +
+        extraLines.length * 11.5 +
+        colorLines.length * 11 +
+        10;
+
+      const photoDims = productImage ? scaledImageDims(productImage, IMAGE_MAX) : { width: 0, height: 0 };
+      const blockHeight = Math.max(textBlockHeight, photoDims.height) + 24;
       ensureSpace(blockHeight);
+      if (!pageCategoryLabel.has(page)) pageCategoryLabel.set(page, currentCategoryLabel);
 
       const blockTopY = y;
 
-      if (productImage) {
-        const dims = scaledImageDims(productImage, IMAGE_SIZE);
-        page.drawImage(productImage, {
-          x: MARGIN_X,
-          y: blockTopY - dims.height,
-          width: dims.width,
-          height: dims.height,
-        });
-      }
-
-      page.drawText(product.name, {
-        x: textX,
+      // Código do produto
+      page.drawText(codigo || "", {
+        x: MARGIN_X,
         y,
-        size: 11.5,
+        size: 8.5,
         font: fontBold,
-        color: COLOR_TEXT,
+        color: COLOR_PRIMARY,
       });
+      y -= 14;
 
-      const codigo = product.supplierCode ? `Cód. ${product.supplierCode}` : product.supplierSku;
-      const codigoWidth = fontRegular.widthOfTextAtSize(codigo, 9);
-      page.drawText(codigo, {
-        x: PAGE_WIDTH - MARGIN_X - codigoWidth,
-        y: y + 1,
-        size: 9,
-        font: fontItalic,
-        color: COLOR_MUTED,
-      });
-      y -= 16;
+      for (const line of nameLines) {
+        page.drawText(line, { x: MARGIN_X, y, size: 11, font: fontBold, color: COLOR_TEXT });
+        y -= 13;
+      }
+      y -= 4;
 
       for (const line of descriptionLines) {
-        page.drawText(line, { x: textX, y, size: 9.5, font: fontRegular, color: COLOR_TEXT });
-        y -= 13;
+        page.drawText(line, { x: MARGIN_X, y, size: 9, font: fontRegular, color: COLOR_MUTED });
+        y -= 11.5;
       }
 
-      if (colorsText) {
-        page.drawText(`Cores disponíveis: ${colorsText}`, {
-          x: textX,
-          y,
-          size: 9,
-          font: fontItalic,
-          color: COLOR_MUTED,
-        });
-        y -= 13;
+      for (const line of extraLines) {
+        page.drawText(line, { x: MARGIN_X, y, size: 9, font: fontRegular, color: COLOR_TEXT });
+        y -= 11.5;
       }
 
+      for (const line of colorLines) {
+        page.drawText(line, { x: MARGIN_X, y, size: 8.5, font: fontItalic, color: COLOR_MUTED });
+        y -= 11;
+      }
+
+      // Foto, alinhada à direita do bloco, com o topo no início do bloco.
       if (productImage) {
-        const dims = scaledImageDims(productImage, IMAGE_SIZE);
-        y = Math.min(y, blockTopY - dims.height);
+        const photoX = photoColX + Math.max(0, (photoColWidth - photoDims.width) / 2);
+        const photoY = blockTopY - photoDims.height;
+        page.drawImage(productImage, {
+          x: photoX,
+          y: photoY,
+          width: photoDims.width,
+          height: photoDims.height,
+        });
       }
 
-      y -= 14;
+      y = blockTopY - blockHeight;
+
+      page.drawLine({
+        start: { x: MARGIN_X, y: y + 12 },
+        end: { x: PAGE_WIDTH - MARGIN_X, y: y + 12 },
+        thickness: 0.6,
+        color: COLOR_LINE,
+      });
     }
 
-    y -= 6;
+    y -= 10;
   }
 
-  for (const p of pdfDoc.getPages()) {
-    page = p;
-    drawFooter();
+  // ---------------------------------------------------------------------
+  // Rodapé em todas as páginas (exceto a capa)
+  // ---------------------------------------------------------------------
+  const allPages = pdfDoc.getPages();
+  for (let i = 1; i < allPages.length; i++) {
+    const p = allPages[i];
+    const label = pageCategoryLabel.get(p) ?? "";
+    const pageNumber = `${i + 1}`;
+
+    p.drawText(label.toUpperCase(), {
+      x: MARGIN_X,
+      y: 26,
+      size: 7.5,
+      font: fontRegular,
+      color: COLOR_MUTED,
+    });
+
+    const rightText = `${pageNumber}`;
+    const rightWidth = fontRegular.widthOfTextAtSize(rightText, 7.5);
+    p.drawText(rightText, {
+      x: PAGE_WIDTH - MARGIN_X - rightWidth,
+      y: 26,
+      size: 7.5,
+      font: fontRegular,
+      color: COLOR_MUTED,
+    });
+
+    p.drawText("Compass Brindes Corporativos · (49) 93618-0446 · @compassbrindes", {
+      x: MARGIN_X,
+      y: 14,
+      size: 7,
+      font: fontRegular,
+      color: COLOR_MUTED,
+    });
   }
 
   return pdfDoc.save();
