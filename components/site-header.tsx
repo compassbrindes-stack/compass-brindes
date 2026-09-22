@@ -14,10 +14,10 @@ export function SiteHeader() {
       <div className="site-header__inner">
         <Link className="logo" href="/">
           <Image
-            src="/logo-compass.png"
+            src="/logo-compass.jpg"
             alt="Compass Brindes Corporativos"
-            width={336}
-            height={138}
+            width={1253}
+            height={751}
             priority
             className="logo-img logo-img--header"
           />
