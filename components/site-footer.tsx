@@ -16,10 +16,10 @@ export function SiteFooter() {
       <div className="container site-footer__top">
         <div className="logo">
           <Image
-            src="/logo-compass.png"
+            src="/logo-compass.jpg"
             alt="Compass Brindes Corporativos"
-            width={150}
-            height={62}
+            width={1253}
+            height={751}
             className="logo-img"
           />
         </div>
