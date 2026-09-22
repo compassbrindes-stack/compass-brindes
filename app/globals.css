@@ -662,17 +662,13 @@ a.site-header__phone:hover {
 }
 
 .logo-img {
-  height: 44px;
+  height: 56px;
   width: auto;
   display: block;
-  background: var(--color-primary-dark);
-  border-radius: var(--radius);
-  padding: 6px 14px;
 }
 
 .logo-img--header {
-  height: 88px;
-  padding: 10px 20px;
+  height: 112px;
 }
 
 .site-search {
