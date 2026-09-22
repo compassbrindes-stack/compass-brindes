@@ -14,9 +14,11 @@ const MARGIN_TOP = 56;
 const MARGIN_BOTTOM = 44;
 const CONTENT_WIDTH = PAGE_WIDTH - MARGIN_X * 2;
 
-const TEXT_COL_WIDTH = 168; // largura do bloco de texto de cada produto
-const COL_GAP = 22;
-const IMAGE_MAX = 196; // lado máximo (quadrado) da foto do produto
+const PRODUCT_COLS = 2; // produtos lado a lado, na mesma linha
+const PRODUCT_COL_GAP = 24;
+const PRODUCT_COL_WIDTH = (CONTENT_WIDTH - PRODUCT_COL_GAP * (PRODUCT_COLS - 1)) / PRODUCT_COLS;
+const CARD_IMAGE_MAX = 168; // lado máximo (quadrado) da foto, no topo do card
+const ROW_GAP = 18; // espaço vertical entre uma linha de produtos e a próxima
 
 const COLOR_PRIMARY_DARK = rgb(0x0b / 255, 0x44 / 255, 0x36 / 255); // verde escuro da marca
 const COLOR_PRIMARY = rgb(0x16 / 255, 0xa3 / 255, 0x4a / 255); // verde da marca
@@ -103,6 +105,64 @@ async function mapWithConcurrency<T, R>(
 function scaledImageDims(img: PDFImage, maxSize: number): { width: number; height: number } {
   const ratio = Math.min(maxSize / img.width, maxSize / img.height, 1);
   return { width: img.width * ratio, height: img.height * ratio };
+}
+
+interface ProductCell {
+  product: Product;
+  image: PDFImage | undefined;
+  codigo: string;
+  nameLines: string[];
+  descriptionLines: string[];
+  extraLines: string[];
+  colorLines: string[];
+  photoDims: { width: number; height: number };
+  cellHeight: number;
+}
+
+// Monta o conteúdo (linhas de texto já quebradas e dimensões da foto) de um
+// card de produto, para o layout de 2 produtos lado a lado.
+function buildProductCell(
+  product: Product,
+  image: PDFImage | undefined,
+  fontRegular: PDFFont,
+  fontBold: PDFFont,
+  fontItalic: PDFFont
+): ProductCell {
+  const codigo = product.supplierCode ? product.supplierCode : product.supplierSku;
+  const nameLines = wrapText(product.name, fontBold, 10.5, PRODUCT_COL_WIDTH).slice(0, 3);
+  const descriptionLines = wrapText(
+    cleanDescription(product.description).slice(0, 220),
+    fontRegular,
+    8.5,
+    PRODUCT_COL_WIDTH
+  ).slice(0, 4);
+
+  const colorsText = product.variants
+    .map((v) => v.color)
+    .filter((c): c is string => Boolean(c))
+    .join(", ");
+  const colorLines = colorsText
+    ? wrapText(`Cores: ${colorsText}`, fontItalic, 8, PRODUCT_COL_WIDTH).slice(0, 2)
+    : [];
+
+  const extraLines: string[] = [];
+  if (product.material) extraLines.push(`Material: ${product.material}`);
+  if (product.minQuantity) extraLines.push(`Qtd. mínima: ${product.minQuantity} un.`);
+
+  const photoDims = image ? scaledImageDims(image, CARD_IMAGE_MAX) : { width: 0, height: 0 };
+
+  const textHeight =
+    12 + // código
+    nameLines.length * 12.5 +
+    3 +
+    descriptionLines.length * 10.5 +
+    extraLines.length * 10.5 +
+    colorLines.length * 10 +
+    6;
+
+  const cellHeight = (image ? photoDims.height + 10 : 0) + textHeight;
+
+  return { product, image, codigo, nameLines, descriptionLines, extraLines, colorLines, photoDims, cellHeight };
 }
 
 export async function buildCatalogPdf(products: Product[]): Promise<Uint8Array> {
@@ -312,96 +372,69 @@ export async function buildCatalogPdf(products: Product[]): Promise<Uint8Array> 
     y -= 26;
 
     const items = byCategory.get(category) ?? [];
-    for (const product of items) {
-      const productImage = imageByProduct.get(product);
-      const photoColX = MARGIN_X + TEXT_COL_WIDTH + COL_GAP;
-      const photoColWidth = PAGE_WIDTH - MARGIN_X - photoColX;
-
-      const codigo = product.supplierCode ? product.supplierCode : product.supplierSku;
-      const nameLines = wrapText(product.name, fontBold, 11, TEXT_COL_WIDTH).slice(0, 3);
-      const descriptionLines = wrapText(
-        cleanDescription(product.description).slice(0, 260),
-        fontRegular,
-        9,
-        TEXT_COL_WIDTH
-      ).slice(0, 6);
-
-      const colorsText = product.variants
-        .map((v) => v.color)
-        .filter((c): c is string => Boolean(c))
-        .join(", ");
-      const colorLines = colorsText
-        ? wrapText(`Cores: ${colorsText}`, fontItalic, 8.5, TEXT_COL_WIDTH).slice(0, 2)
-        : [];
-
-      const extraLines: string[] = [];
-      if (product.material) extraLines.push(`Material: ${product.material}`);
-      if (product.minQuantity) extraLines.push(`Qtd. mínima: ${product.minQuantity} un.`);
-
-      const textBlockHeight =
-        12 + // código
-        nameLines.length * 13 +
-        4 +
-        descriptionLines.length * 11.5 +
-        extraLines.length * 11.5 +
-        colorLines.length * 11 +
-        10;
-
-      const photoDims = productImage ? scaledImageDims(productImage, IMAGE_MAX) : { width: 0, height: 0 };
-      const blockHeight = Math.max(textBlockHeight, photoDims.height) + 24;
-      ensureSpace(blockHeight);
+    for (let i = 0; i < items.length; i += PRODUCT_COLS) {
+      const rowProducts = items.slice(i, i + PRODUCT_COLS);
+      const cells = rowProducts.map((product) =>
+        buildProductCell(product, imageByProduct.get(product), fontRegular, fontBold, fontItalic)
+      );
+      const rowHeight = Math.max(...cells.map((c) => c.cellHeight));
+      ensureSpace(rowHeight + ROW_GAP);
       if (!pageCategoryLabel.has(page)) pageCategoryLabel.set(page, currentCategoryLabel);
 
-      const blockTopY = y;
+      const rowTopY = y;
 
-      // Código do produto
-      page.drawText(codigo || "", {
-        x: MARGIN_X,
-        y,
-        size: 8.5,
-        font: fontBold,
-        color: COLOR_PRIMARY,
-      });
-      y -= 14;
+      cells.forEach((cell, col) => {
+        const cellX = MARGIN_X + col * (PRODUCT_COL_WIDTH + PRODUCT_COL_GAP);
+        let cy = rowTopY;
 
-      for (const line of nameLines) {
-        page.drawText(line, { x: MARGIN_X, y, size: 11, font: fontBold, color: COLOR_TEXT });
-        y -= 13;
-      }
-      y -= 4;
+        if (cell.image) {
+          const photoX = cellX + Math.max(0, (PRODUCT_COL_WIDTH - cell.photoDims.width) / 2);
+          const photoY = cy - cell.photoDims.height;
+          page.drawImage(cell.image, {
+            x: photoX,
+            y: photoY,
+            width: cell.photoDims.width,
+            height: cell.photoDims.height,
+          });
+          cy -= cell.photoDims.height + 10;
+        }
 
-      for (const line of descriptionLines) {
-        page.drawText(line, { x: MARGIN_X, y, size: 9, font: fontRegular, color: COLOR_MUTED });
-        y -= 11.5;
-      }
-
-      for (const line of extraLines) {
-        page.drawText(line, { x: MARGIN_X, y, size: 9, font: fontRegular, color: COLOR_TEXT });
-        y -= 11.5;
-      }
-
-      for (const line of colorLines) {
-        page.drawText(line, { x: MARGIN_X, y, size: 8.5, font: fontItalic, color: COLOR_MUTED });
-        y -= 11;
-      }
-
-      // Foto, alinhada à direita do bloco, com o topo no início do bloco.
-      if (productImage) {
-        const photoX = photoColX + Math.max(0, (photoColWidth - photoDims.width) / 2);
-        const photoY = blockTopY - photoDims.height;
-        page.drawImage(productImage, {
-          x: photoX,
-          y: photoY,
-          width: photoDims.width,
-          height: photoDims.height,
+        page.drawText(cell.codigo || "", {
+          x: cellX,
+          y: cy,
+          size: 8,
+          font: fontBold,
+          color: COLOR_PRIMARY,
         });
-      }
+        cy -= 12;
 
-      y = blockTopY - blockHeight;
+        for (const line of cell.nameLines) {
+          page.drawText(line, { x: cellX, y: cy, size: 10.5, font: fontBold, color: COLOR_TEXT });
+          cy -= 12.5;
+        }
+        cy -= 3;
+
+        for (const line of cell.descriptionLines) {
+          page.drawText(line, { x: cellX, y: cy, size: 8.5, font: fontRegular, color: COLOR_MUTED });
+          cy -= 10.5;
+        }
+
+        for (const line of cell.extraLines) {
+          page.drawText(line, { x: cellX, y: cy, size: 8.5, font: fontRegular, color: COLOR_TEXT });
+          cy -= 10.5;
+        }
+
+        for (const line of cell.colorLines) {
+          page.drawText(line, { x: cellX, y: cy, size: 8, font: fontItalic, color: COLOR_MUTED });
+          cy -= 10;
+        }
+      });
+
+      y = rowTopY - rowHeight - ROW_GAP;
 
       page.drawLine({
-        start: { x: MARGIN_X, y: y + 12 },
-        end: { x: PAGE_WIDTH - MARGIN_X, y: y + 12 },
+        start: { x: MARGIN_X, y: y + ROW_GAP / 2 },
+        end: { x: PAGE_WIDTH - MARGIN_X, y: y + ROW_GAP / 2 },
         thickness: 0.6,
         color: COLOR_LINE,
       });
