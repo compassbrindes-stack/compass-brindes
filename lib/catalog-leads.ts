@@ -72,3 +72,9 @@ export async function listCatalogLeads(): Promise<CatalogLead[]> {
 
   return leads.reverse();
 }
+
+// Apaga todos os leads salvos. Usado apenas pela página/rota de
+// administração (protegida por LEADS_ADMIN_SECRET) — ação irreversível.
+export async function clearCatalogLeads(): Promise<void> {
+  await redisCommand(["DEL", CHAVE_LISTA]);
+}
