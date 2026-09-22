@@ -3,6 +3,9 @@ import { getAllProducts } from "@/lib/products";
 import { buildCatalogPdf } from "@/lib/catalog-pdf";
 
 export const dynamic = "force-dynamic";
+// Gerar o PDF com as fotos dos produtos exige buscar várias imagens dos
+// fornecedores, o que pode levar mais que o tempo padrão de uma function.
+export const maxDuration = 60;
 
 export async function GET() {
   try {
