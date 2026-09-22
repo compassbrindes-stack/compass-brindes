@@ -1,5 +1,6 @@
 import { NextRequest, NextResponse } from "next/server";
-import { saveCatalogLead, type CatalogLeadInput } from "@/lib/catalog-leads";
+import { isAdminAuthorized } from "@/lib/admin-auth";
+import { clearCatalogLeads, saveCatalogLead, type CatalogLeadInput } from "@/lib/catalog-leads";
 
 export const dynamic = "force-dynamic";
 
@@ -42,6 +43,30 @@ export async function POST(request: NextRequest) {
     console.error("Erro ao salvar cadastro do catálogo:", error);
     return NextResponse.json(
       { error: "Não foi possível registrar seu cadastro agora. Tente novamente em instantes." },
+      { status: 500 }
+    );
+  }
+}
+
+// Apaga todos os leads salvos. Protegida por LEADS_ADMIN_SECRET — usada
+// apenas pela página /admin/leads. Ação irreversível.
+export async function DELETE(request: NextRequest) {
+  const key =
+    request.nextUrl.searchParams.get("key") ??
+    request.headers.get("authorization")?.replace(/^Bearer\s+/i, "") ??
+    null;
+
+  if (!isAdminAuthorized(key)) {
+    return NextResponse.json({ error: "Não autorizado." }, { status: 401 });
+  }
+
+  try {
+    await clearCatalogLeads();
+    return NextResponse.json({ ok: true });
+  } catch (error) {
+    console.error("Erro ao limpar leads do catálogo:", error);
+    return NextResponse.json(
+      { error: "Não foi possível limpar a lista agora. Tente novamente em instantes." },
       { status: 500 }
     );
   }
