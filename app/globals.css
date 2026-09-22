@@ -133,7 +133,7 @@ a {
   cursor: pointer;
 }
 
-.btn-primary {
+.btn.btn-primary {
   background: var(--color-cta);
   color: var(--color-cta-text);
 }
