@@ -1,5 +1,6 @@
 import { isAdminAuthorized } from "@/lib/admin-auth";
 import { listCatalogLeads } from "@/lib/catalog-leads";
+import ClearLeadsButton from "./clear-leads-button";
 
 export const dynamic = "force-dynamic";
 
@@ -56,12 +57,15 @@ export default async function AdminLeadsPage({
             agora.
           </p>
         </div>
-        <a
-          className="btn btn-outline"
-          href={`/api/catalogo-leads/export?key=${encodeURIComponent(key)}`}
-        >
-          Exportar CSV
-        </a>
+        <div style={{ display: "flex", gap: 10, flexWrap: "wrap" }}>
+          <a
+            className="btn btn-outline"
+            href={`/api/catalogo-leads/export?key=${encodeURIComponent(key)}`}
+          >
+            Exportar CSV
+          </a>
+          <ClearLeadsButton accessKey={key} />
+        </div>
       </div>
 
       <div style={{ overflowX: "auto", marginTop: 24 }}>
