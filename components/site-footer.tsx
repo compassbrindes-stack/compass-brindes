@@ -1,5 +1,5 @@
-import Image from "next/image";
 import Link from "next/link";
+import { LOGO_DATA_URI } from "@/lib/logo";
 
 const WHATSAPP_NUMBER = process.env.NEXT_PUBLIC_WHATSAPP_NUMBER ?? "";
 const whatsappUrl = WHATSAPP_NUMBER
@@ -15,13 +15,7 @@ export function SiteFooter() {
     <footer className="site-footer">
       <div className="container site-footer__top">
         <div className="logo">
-          <Image
-            src="/logo-compass.jpg"
-            alt="Compass Brindes Corporativos"
-            width={1253}
-            height={751}
-            className="logo-img"
-          />
+          <img src={LOGO_DATA_URI} alt="Compass Brindes Corporativos" className="logo-img" />
         </div>
 
         <div style={{ maxWidth: 280, fontSize: "0.85rem" }}>
