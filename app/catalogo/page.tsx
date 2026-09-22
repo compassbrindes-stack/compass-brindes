@@ -2,6 +2,16 @@
 
 import { useState } from "react";
 
+const WHATSAPP_NUMBER = process.env.NEXT_PUBLIC_WHATSAPP_NUMBER ?? "";
+
+function buildWhatsappMessage(nome: string, empresa: string): string {
+  return [
+    `Olá! Acabei de baixar o catálogo da Compass Brindes Corporativos.`,
+    `Meu nome é ${nome}, da empresa ${empresa}.`,
+    `Gostaria de saber mais sobre os produtos.`,
+  ].join("\n");
+}
+
 export default function CatalogoPage() {
   const [nome, setNome] = useState("");
   const [sobrenome, setSobrenome] = useState("");
@@ -23,6 +33,11 @@ export default function CatalogoPage() {
     setEnviando(true);
     setErro(null);
 
+    // Abre a aba do WhatsApp já no clique (síncrono), para não ser bloqueada
+    // pelo navegador como pop-up. O texto é preenchido depois, quando o
+    // cadastro terminar de ser salvo (mesmo padrão usado em /orcamento).
+    const whatsappTab = WHATSAPP_NUMBER ? window.open("", "_blank") : null;
+
     try {
       const res = await fetch("/api/catalogo-leads", {
         method: "POST",
@@ -33,14 +48,30 @@ export default function CatalogoPage() {
       const data = await res.json();
 
       if (!res.ok) {
+        whatsappTab?.close();
         setErro(data.error ?? "Não foi possível registrar seu cadastro.");
         return;
       }
 
       setConcluido(true);
-      // Dispara o download do PDF automaticamente, sem precisar de WhatsApp.
+
+      // Dispara o download do PDF automaticamente...
       window.location.href = "/api/catalogo/pdf";
+
+      // ...e também abre uma conversa no WhatsApp já com a mensagem pronta,
+      // para começar o contato direto além do e-mail/telefone cadastrados.
+      if (WHATSAPP_NUMBER) {
+        const url = `https://wa.me/${WHATSAPP_NUMBER}?text=${encodeURIComponent(
+          buildWhatsappMessage(nome, empresa)
+        )}`;
+        if (whatsappTab) {
+          whatsappTab.location.href = url;
+        } else {
+          window.open(url, "_blank", "noreferrer");
+        }
+      }
     } catch {
+      whatsappTab?.close();
       setErro("Não foi possível conectar ao servidor. Verifique sua internet e tente novamente.");
     } finally {
       setEnviando(false);
@@ -56,6 +87,12 @@ export default function CatalogoPage() {
             O download do catálogo em PDF começou automaticamente. Se não abrir sozinho,{" "}
             <a href="/api/catalogo/pdf">clique aqui para baixar</a>.
           </p>
+          {WHATSAPP_NUMBER && (
+            <p style={{ fontSize: 16, margin: "12px 0" }}>
+              Também abrimos uma conversa no WhatsApp para você em outra aba — é só continuar por
+              lá se quiser falar com a gente.
+            </p>
+          )}
         </div>
       </div>
     );
