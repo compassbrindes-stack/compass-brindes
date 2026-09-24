@@ -586,5 +586,15 @@
       "/produtos/canivete-chave-de-boca-1.jpg",
       "/produtos/canivete-chave-de-boca-2.jpg"
     ]
+  },
+  {
+    "sku": "canivete-inox-presilha-pesca-01",
+    "name": "Canivete Inox de Bolso Presilha Pesca Gancho Abridor Trava",
+    "category": "Canivetes",
+    "description": "DESCRIÇÃO: Canivete multifuncional em aço inoxidável, resistente e durável. Dobrável e compacto, com presilha (clip) para prender no bolso ou cinto com segurança. Possui trava de segurança que impede o fechamento acidental da lâmina, além de gancho auxiliar para manusear linhas de pesca e cordas finas. Cabo ergonômico para melhor empunhadura e controle. Ideal para pescadores, campistas, trilheiros e uso diário (EDC). Prático, leve, fácil de usar e de alta durabilidade.",
+    "images": [
+      "/produtos/canivete-inox-presilha-pesca-1.jpg",
+      "/produtos/canivete-inox-presilha-pesca-2.jpg"
+    ]
   }
 ]
