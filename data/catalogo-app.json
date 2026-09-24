@@ -596,5 +596,15 @@
       "/produtos/canivete-inox-presilha-pesca-1.jpg",
       "/produtos/canivete-inox-presilha-pesca-2.jpg"
     ]
+  },
+  {
+    "sku": "canivete-premium-hunter-clip-01",
+    "name": "Canivete Premium Clip De Bolso Inox com abridor",
+    "category": "Canivetes",
+    "description": "DESCRIÇÃO: Canivete Premium linha Hunter, modelo Clip de Bolso, na cor prateada. Cabo fabricado em aço inoxidável e lâmina em aço inox 440C, com fio liso e abertura tipo thumb stud. Lâmina dobrável, com furo de abertura rápida e abridor integrado na base do cabo. Possui clipe de bolso para carregar preso à calça ou jaqueta. Peso de 62 g, comprimento total de 15,8 cm (lâmina de 5,2 cm e cabo de 8,9 cm). Indicado para camping, caça, pesca e uso tático ao ar livre.",
+    "images": [
+      "/produtos/canivete-premium-hunter-clip-1.jpg",
+      "/produtos/canivete-premium-hunter-clip-2.jpg"
+    ]
   }
 ]
