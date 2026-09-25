@@ -606,5 +606,14 @@
       "/produtos/canivete-premium-hunter-clip-1.jpg",
       "/produtos/canivete-premium-hunter-clip-2.jpg"
     ]
+  },
+  {
+    "sku": "canivete-inox-cabo-anatomico-01",
+    "name": "Canivete Inox Cabo Anatômico",
+    "category": "Canivetes",
+    "description": "DESCRIÇÃO: Canivete com cabo e lâmina em aço inoxidável, acabamento escovado na cor prata e cabo anatômico com apoio para os dedos. Ficha técnica completa em breve — consulte-nos pelo WhatsApp para medidas, personalização e pedido mínimo.",
+    "images": [
+      "/produtos/canivete-inox-cabo-anatomico-1.jpg"
+    ]
   }
 ]
