@@ -601,5 +601,131 @@
     "images": [
       "/produtos/canivete-inox-cabo-anatomico-1.jpg"
     ]
+  },
+  {
+    "sku": "vestuario-camiseta-poliamida-masculina",
+    "name": "Camiseta Masculina Poliamida Premium",
+    "category": "Vestuário Masculino",
+    "description": "Camiseta masculina em poliamida premium, com tecido leve, macio e respirável, que mantém o frescor no dia a dia e durante atividades físicas. A modelagem confortável acompanha os movimentos e tem acabamento moderno. É ideal para uniformes, eventos esportivos e kits corporativos personalizados com a sua marca. Tamanhos: P, M, G e GG. Cores: preto, branco e azul-marinho. Quantidade mínima e prazo sob consulta.",
+    "images": [
+      "https://www.compassbrindes.com.br/vestuario-camiseta-masculina.jpg"
+    ],
+    "colors": [
+      "Preto",
+      "Branco",
+      "Azul Marinho"
+    ],
+    "apparel": {
+      "tipo": "Camiseta",
+      "colors": [
+        {
+          "name": "Preto",
+          "hex": "#141414"
+        },
+        {
+          "name": "Branco",
+          "hex": "#ffffff"
+        },
+        {
+          "name": "Azul Marinho",
+          "hex": "#1f2a44"
+        }
+      ],
+      "sizes": [
+        "P",
+        "M",
+        "G",
+        "GG"
+      ]
+    }
+  },
+  {
+    "sku": "vestuario-babylook-poliamida-feminina",
+    "name": "Babylook Feminina Poliamida Premium",
+    "category": "Vestuário Feminino",
+    "description": "Babylook feminina em poliamida premium com textura furadinha: leve, macia ao toque e com ótima respirabilidade. A modelagem acinturada valoriza a silhueta sem limitar os movimentos, perfeita para treinos, corridas, eventos e uniformes com a sua marca. Tamanhos: P, M, G e GG. Cores: preto, branco e rosa. Confira a tabela de medidas abaixo. Quantidade mínima e prazo sob consulta.",
+    "images": [
+      "https://www.compassbrindes.com.br/vestuario-babylook-feminina.jpg"
+    ],
+    "colors": [
+      "Preto",
+      "Branco",
+      "Rosa"
+    ],
+    "apparel": {
+      "tipo": "Babylook",
+      "colors": [
+        {
+          "name": "Preto",
+          "hex": "#141414"
+        },
+        {
+          "name": "Branco",
+          "hex": "#ffffff"
+        },
+        {
+          "name": "Rosa",
+          "hex": "#ec3b7a"
+        }
+      ],
+      "sizes": [
+        "P",
+        "M",
+        "G",
+        "GG"
+      ],
+      "sizeChart": {
+        "columns": [
+          "Peito",
+          "Ombro",
+          "Comp. frente",
+          "Comp. costas",
+          "Manga"
+        ],
+        "rows": [
+          {
+            "size": "P",
+            "values": [
+              "38 cm",
+              "40 cm",
+              "55 cm",
+              "60 cm",
+              "15 cm"
+            ]
+          },
+          {
+            "size": "M",
+            "values": [
+              "40 cm",
+              "42 cm",
+              "57 cm",
+              "62 cm",
+              "16 cm"
+            ]
+          },
+          {
+            "size": "G",
+            "values": [
+              "42 cm",
+              "44 cm",
+              "60 cm",
+              "63 cm",
+              "16 cm"
+            ]
+          },
+          {
+            "size": "GG",
+            "values": [
+              "44 cm",
+              "46 cm",
+              "63 cm",
+              "66 cm",
+              "16 cm"
+            ]
+          }
+        ],
+        "note": "Medidas aproximadas da peça, com a camiseta esticada sobre uma superfície plana. Podem variar um pouco conforme a produção e a elasticidade do tecido."
+      }
+    }
   }
 ]
