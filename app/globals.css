@@ -820,3 +820,191 @@ a.site-header__phone:hover {
     padding: 20px;
   }
 }
+
+/* Faixa "Trabalhos entregues" (components/work-banner.tsx) */
+.work-banner {
+  position: relative;
+  overflow: hidden;
+  color: #f4f1e8;
+  background:
+    radial-gradient(60% 80% at 88% 10%, rgba(212, 236, 154, 0.22), transparent 60%),
+    radial-gradient(50% 70% at 5% 100%, rgba(176, 124, 74, 0.28), transparent 60%),
+    repeating-linear-gradient(135deg, rgba(255, 255, 255, 0.025) 0 1px, transparent 1px 14px),
+    linear-gradient(160deg, #0f2a30 0%, #0b2027 55%, #081a1f 100%);
+}
+.work-banner__inner {
+  max-width: var(--max-width);
+  margin: 0 auto;
+  padding: 72px 24px 80px;
+  display: grid;
+  grid-template-columns: minmax(0, 5fr) minmax(0, 7fr);
+  gap: 48px;
+  align-items: center;
+}
+.work-banner__eyebrow {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  margin: 0 0 14px;
+  font-size: 0.78rem;
+  font-weight: 700;
+  letter-spacing: 0.1em;
+  text-transform: uppercase;
+  color: var(--color-accent);
+}
+.work-banner__eyebrow::before {
+  content: "";
+  width: 8px;
+  height: 8px;
+  border-radius: 50%;
+  background: var(--color-accent);
+}
+.work-banner h2 {
+  margin: 0 0 16px;
+  font-size: clamp(1.9rem, 3.6vw, 2.8rem);
+  line-height: 1.12;
+  font-weight: 800;
+  color: #ffffff;
+}
+.work-banner h2 em {
+  color: var(--color-accent);
+  font-style: italic;
+}
+.work-banner__lede {
+  margin: 0 0 22px;
+  max-width: 440px;
+  color: rgba(244, 241, 232, 0.78);
+  font-size: 1rem;
+}
+.work-banner__promises {
+  list-style: none;
+  margin: 0 0 28px;
+  padding: 0;
+  display: grid;
+  gap: 10px;
+}
+.work-banner__promises li {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  font-weight: 600;
+  font-size: 0.95rem;
+}
+.work-banner__promises li::before {
+  content: "";
+  width: 22px;
+  height: 22px;
+  flex: none;
+  border-radius: 50%;
+  border: 1.5px solid var(--color-accent);
+  background: radial-gradient(circle, var(--color-accent) 0 4px, transparent 4.5px);
+}
+.work-banner__cta {
+  display: inline-flex;
+  align-items: center;
+  gap: 10px;
+  padding: 13px 26px;
+  border-radius: 999px;
+  background: var(--color-accent);
+  color: #0b2027;
+  font-weight: 800;
+  text-decoration: none;
+  transition: transform 0.15s ease, box-shadow 0.15s ease;
+}
+.work-banner__cta::after {
+  content: "→";
+}
+.work-banner__cta:hover {
+  transform: translateY(-2px);
+  box-shadow: 0 10px 24px rgba(0, 0, 0, 0.3);
+}
+
+.work-card {
+  margin: 0;
+  position: relative;
+  background: #fbf8f1;
+  padding: 8px 8px 0;
+  border-radius: 10px;
+  box-shadow: 0 18px 40px rgba(0, 0, 0, 0.35);
+}
+.work-card img {
+  display: block;
+  width: 100%;
+  height: auto;
+  aspect-ratio: 4 / 5;
+  object-fit: cover;
+  border-radius: 6px;
+}
+.work-card figcaption {
+  padding: 8px 4px 10px;
+  font-size: 0.78rem;
+  font-weight: 700;
+  color: #102b32;
+  text-align: center;
+}
+
+.work-banner__collage {
+  display: grid;
+  grid-template-columns: repeat(3, 1fr);
+  gap: 34px 18px;
+}
+.work-banner__collage .work-card {
+  transition: transform 0.25s ease;
+}
+.work-card--1 { transform: rotate(-3deg) translateY(10px); }
+.work-card--2 { transform: rotate(2deg) translateY(-18px); }
+.work-card--3 { transform: rotate(-1.5deg) translateY(4px); }
+.work-card--4 { transform: rotate(2.5deg) translateY(-6px); }
+.work-card--5 { transform: rotate(-2deg) translateY(14px); }
+.work-card--6 { transform: rotate(1.5deg) translateY(-10px); }
+.work-banner__collage .work-card:hover {
+  transform: rotate(0) translateY(-4px) scale(1.04);
+  z-index: 2;
+}
+
+.work-banner__strip {
+  display: none;
+}
+
+.work-banner__stripe {
+  height: 6px;
+  background: linear-gradient(90deg, #1f8a3c 0 33.3%, #c8272e 33.3% 66.6%, #f2c230 66.6% 100%);
+}
+
+@media (max-width: 860px) {
+  .work-banner__inner {
+    grid-template-columns: 1fr;
+    gap: 28px;
+    padding: 48px 0 44px;
+  }
+  .work-banner__text {
+    padding: 0 16px;
+  }
+  .work-banner__collage {
+    display: none;
+  }
+  .work-banner__strip {
+    display: flex;
+    gap: 14px;
+    overflow-x: auto;
+    scroll-snap-type: x mandatory;
+    scroll-padding-inline: 16px;
+    padding: 6px 16px 18px;
+    scrollbar-width: none;
+  }
+  .work-banner__strip::-webkit-scrollbar {
+    display: none;
+  }
+  .work-banner__strip .work-card {
+    flex: 0 0 58%;
+    scroll-snap-align: start;
+    box-shadow: 0 10px 24px rgba(0, 0, 0, 0.3);
+  }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .work-banner__collage .work-card,
+  .work-banner__cta {
+    transition: none;
+  }
+}

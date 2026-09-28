@@ -2,6 +2,7 @@ import Link from "next/link";
 import { getAllProducts, getCategories } from "@/lib/products";
 import { ProductCard } from "@/components/product-card";
 import { getCategoryIcon } from "@/lib/category-icons";
+import { WorkBanner } from "@/components/work-banner";
 
 export const revalidate = 0;
 const WHATSAPP_NUMBER = process.env.NEXT_PUBLIC_WHATSAPP_NUMBER ?? "";
@@ -37,6 +38,7 @@ export default async function HomePage() {
           </div>
         </div>
       </section>
+      <WorkBanner />
       <section className="benefits-grid container">
         <div>
           <h3>Resposta rápida</h3>
