@@ -4,9 +4,9 @@
 // Cada combinação (cor + tamanho) entra no orçamento como uma linha separada,
 // com o nome já dizendo a cor e o tamanho (ex.: "Babylook ... — Rosa, tam. M").
 
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import Link from "next/link";
-import { addQuoteItem } from "@/lib/quote-storage";
+import { addQuoteItem, getQuoteItems } from "@/lib/quote-storage";
 import type { ApparelInfo } from "@/lib/types";
 
 function slug(value: string): string {
@@ -23,16 +23,34 @@ export function ApparelOptions({
   supplierName,
   productSlug,
   apparel,
+  minQuantity,
 }: {
   productId: string;
   name: string;
   supplierName: string;
   productSlug: string;
   apparel: ApparelInfo;
+  /** Pedido mínimo do modelo, somando todas as cores e tamanhos. */
+  minQuantity?: number;
 }) {
+  const minimo = minQuantity ?? 1;
   const [color, setColor] = useState<string | null>(null);
   const [size, setSize] = useState<string | null>(null);
-  const [quantity, setQuantity] = useState(10);
+  const [quantity, setQuantity] = useState(minimo > 1 ? minimo : 10);
+  const [totalModelo, setTotalModelo] = useState(0);
+
+  // Soma o que já está no orçamento deste modelo (todas as cores e tamanhos).
+  useEffect(() => {
+    const somar = () =>
+      setTotalModelo(
+        getQuoteItems()
+          .filter((i) => i.productId.startsWith(productId + "__"))
+          .reduce((acc, i) => acc + i.quantity, 0)
+      );
+    somar();
+    window.addEventListener("compass-brindes-quote-updated", somar);
+    return () => window.removeEventListener("compass-brindes-quote-updated", somar);
+  }, [productId]);
   const [added, setAdded] = useState<string[]>([]);
 
   const pronto = Boolean(color && size && quantity >= 1);
@@ -119,7 +137,11 @@ export function ApparelOptions({
           }}
         />
       </div>
-      <p className="apparel__hint">Quantidade mínima, prazo e personalização sob consulta.</p>
+      <p className="apparel__hint">
+        {minimo > 1
+          ? "Pedido mínimo de " + minimo + " peças deste modelo, podendo combinar cores e tamanhos. Prazo e personalização sob consulta."
+          : "Quantidade mínima, prazo e personalização sob consulta."}
+      </p>
 
       <button
         type="button"
@@ -142,6 +164,14 @@ export function ApparelOptions({
               <li key={i}>{a}</li>
             ))}
           </ul>
+          {minimo > 1 && (
+            <p className={"apparel__total" + (totalModelo < minimo ? " is-low" : "")}>
+              Total deste modelo no orçamento: <strong>{totalModelo} peças</strong>
+              {totalModelo < minimo
+                ? " — faltam " + (minimo - totalModelo) + " para o mínimo de " + minimo + "."
+                : " ✓"}
+            </p>
+          )}
           <p className="apparel__hint">Quer outra cor ou tamanho? Escolha acima e adicione de novo.</p>
           <div style={{ display: "flex", gap: 10, flexWrap: "wrap", marginTop: 8 }}>
             <Link className="btn btn-primary" href="/orcamento">
