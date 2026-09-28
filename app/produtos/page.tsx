@@ -9,7 +9,7 @@ export const revalidate = 0;
 export default async function ProdutosPage({
   searchParams,
 }: {
-  searchParams: { categoria?: string; fornecedor?: string; q?: string; tema?: string };
+  searchParams: { categoria?: string; fornecedor?: string; q?: string; tema?: string; genero?: string };
 }) {
   const [allProducts, categories] = await Promise.all([getAllProducts(), getCategories()]);
 
@@ -21,12 +21,26 @@ export default async function ProdutosPage({
     if (searchParams.categoria && p.category !== searchParams.categoria) return false;
     if (searchParams.fornecedor && p.supplier !== searchParams.fornecedor) return false;
     if (themeSkus && !themeSkus.has(p.supplierSku)) return false;
+    if (searchParams.genero && p.apparel?.genero !== searchParams.genero) return false;
     if (query) {
       const haystack = `${p.name} ${p.description ?? ""} ${p.category}`.toLowerCase();
       if (!haystack.includes(query)) return false;
     }
     return true;
   });
+
+  // Dentro da aba Vestuário, sub-abas para separar Masculino e Feminino.
+  const categoriaAtual = searchParams.categoria;
+  const generos = categoriaAtual
+    ? Array.from(
+        new Set(
+          allProducts
+            .filter((p) => p.category === categoriaAtual && p.apparel?.genero)
+            .map((p) => p.apparel!.genero as string)
+        )
+      ).sort((a, b) => b.localeCompare(a))
+    : [];
+  const iconeGenero: Record<string, string> = { Masculino: "👕", Feminino: "👚" };
 
   return (
     <div className="container section">
@@ -80,6 +94,29 @@ export default async function ProdutosPage({
           </Link>
         ))}
       </div>
+
+      {generos.length > 0 && categoriaAtual && (
+        <div className="subfilters" aria-label="Filtrar por modelo">
+          <Link
+            className={"subfilter" + (!searchParams.genero ? " is-active" : "")}
+            href={"/produtos?categoria=" + encodeURIComponent(categoriaAtual)}
+          >
+            Todos
+          </Link>
+          {generos.map((g) => (
+            <Link
+              key={g}
+              className={"subfilter" + (searchParams.genero === g ? " is-active" : "")}
+              href={
+                "/produtos?categoria=" + encodeURIComponent(categoriaAtual) + "&genero=" + encodeURIComponent(g)
+              }
+            >
+              <span aria-hidden="true">{iconeGenero[g] ?? ""} </span>
+              {g}
+            </Link>
+          ))}
+        </div>
+      )}
 
       {products.length === 0 ? (
         <p className="empty-state">Nenhum produto encontrado para este filtro.</p>
