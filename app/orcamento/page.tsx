@@ -106,8 +106,21 @@ export default function OrcamentoPage() {
     telefone.trim() &&
     formaPagamento;
 
+  // Vestuário: o pedido mínimo vale por modelo, somando cores e tamanhos.
+  const grupos = new Map<string, { nome: string; slug: string; minimo: number; total: number }>();
+  for (const i of items) {
+    if (!i.groupId || !i.groupMin) continue;
+    const g = grupos.get(i.groupId) ?? { nome: i.groupName ?? i.name, slug: i.slug, minimo: i.groupMin, total: 0 };
+    g.total += Number(i.quantity) || 0;
+    grupos.set(i.groupId, g);
+  }
+  const pendencias = Array.from(grupos.values()).filter((g) => g.total < g.minimo);
+
   const formularioValido =
-    Boolean(camposObrigatoriosPreenchidos) && cpfCnpjValido === true && cepValido === true;
+    Boolean(camposObrigatoriosPreenchidos) &&
+    cpfCnpjValido === true &&
+    cepValido === true &&
+    pendencias.length === 0;
 
   function buildWhatsappMessage(orderNumber: string) {
     const enderecoCompleto = [
@@ -311,6 +324,28 @@ export default function OrcamentoPage() {
             </tbody>
           </table>
 
+          {pendencias.length > 0 && (
+            <div className="quote-min-alert" role="alert">
+              {pendencias.map((g) => (
+                <div key={g.slug + g.nome} className="quote-min-alert__row">
+                  <span>
+                    <strong>{g.nome}</strong>: {g.total} de {g.minimo} peças · faltam{" "}
+                    {g.minimo - g.total} para o pedido mínimo
+                  </span>
+                  <Link className="btn btn-primary" href={`/produtos/${g.slug}`}>
+                    Adicionar mais peças
+                  </Link>
+                </div>
+              ))}
+            </div>
+          )}
+
+          <div style={{ display: "flex", gap: 10, flexWrap: "wrap", marginTop: 14 }}>
+            <Link className="btn btn-outline" href="/produtos">
+              + Continuar comprando
+            </Link>
+          </div>
+
           <h3 style={{ marginTop: 32 }}>Seus dados</h3>
 
           <div className="form-row">
@@ -462,7 +497,9 @@ export default function OrcamentoPage() {
           </button>
           {!formularioValido && (
             <p className="form-hint" style={{ marginTop: 8 }}>
-              Preencha todos os dados corretamente para habilitar o envio.
+              {pendencias.length > 0
+                ? "Complete o pedido mínimo de cada modelo de camiseta para habilitar o envio."
+                : "Preencha todos os dados corretamente para habilitar o envio."}
             </p>
           )}
           {!WHATSAPP_NUMBER && (
