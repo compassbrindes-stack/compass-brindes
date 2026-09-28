@@ -11,6 +11,25 @@ export interface ProductVariant {
   stock?: number;
 }
 
+/** Linha de vestuário: cores com amostra, tamanhos e tabela de medidas opcional. */
+export interface ApparelColor {
+  name: string;
+  hex: string;
+}
+
+export interface ApparelSizeChart {
+  columns: string[];
+  rows: { size: string; values: string[] }[];
+  note?: string;
+}
+
+export interface ApparelInfo {
+  tipo?: string;
+  colors: ApparelColor[];
+  sizes: string[];
+  sizeChart?: ApparelSizeChart;
+}
+
 export interface Product {
   id: string;
   supplier: SupplierId;
@@ -27,6 +46,8 @@ export interface Product {
   material?: string;
   /** Código do produto no site do fornecedor (ex.: código XBZ), para referência/pedido. */
   supplierCode?: string;
+  /** Presente apenas nos itens de vestuário (camisetas, babylooks...). */
+  apparel?: ApparelInfo;
   updatedAt: string;
 }
 

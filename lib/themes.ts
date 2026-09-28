@@ -72,6 +72,8 @@ const SKU = {
   canivetePesca: "canivete-inox-presilha-pesca-01",
   canivetePremium: "canivete-premium-hunter-clip-01",
   caniveteAnatomico: "canivete-inox-cabo-anatomico-01",
+  camisetaMasc: "vestuario-camiseta-poliamida-masculina",
+  babylookFem: "vestuario-babylook-poliamida-feminina",
 } as const;
 
 const autocuidado = [SKU.escovaCoracao, SKU.escovaRedonda, SKU.escova, SKU.necessaire, SKU.portaJoias];
@@ -174,7 +176,7 @@ export const THEMES: Theme[] = [
     nome: "Esporte / Fitness",
     emoji: "🏋️",
     descricao: "Hidratação e acessórios para quem se exercita.",
-    skus: [...hidratacao, SKU.mochila, SKU.fone],
+    skus: [SKU.camisetaMasc, SKU.babylookFem, ...hidratacao, SKU.mochila, SKU.fone],
   },
   {
     slug: "hora-do-lazer",
