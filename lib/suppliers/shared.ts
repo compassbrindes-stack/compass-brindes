@@ -1,4 +1,4 @@
-import type { Product, ProductVariant, SupplierId } from "@/lib/types";
+import type { ApparelInfo, Product, ProductVariant, SupplierId } from "@/lib/types";
 
 export function slugify(input: string): string {
   return input
@@ -22,6 +22,7 @@ export interface MockSupplierItem {
   priceFrom?: number;
   /** Código do produto no site do fornecedor (ex.: código XBZ), para referência/pedido. */
   supplierCode?: string;
+  apparel?: ApparelInfo;
 }
 
 export function mockItemToProduct(
@@ -49,6 +50,7 @@ export function mockItemToProduct(
     priceFrom: item.priceFrom,
     material: undefined,
     supplierCode: item.supplierCode,
+    apparel: item.apparel,
     updatedAt: new Date().toISOString(),
   };
 }
