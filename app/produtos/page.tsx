@@ -2,21 +2,25 @@ import { getAllProducts, getCategories } from "@/lib/products";
 import { ProductCard } from "@/components/product-card";
 import { getCategoryIcon } from "@/lib/category-icons";
 import Link from "next/link";
+import { getTheme } from "@/lib/themes";
 
 export const revalidate = 0;
 
 export default async function ProdutosPage({
   searchParams,
 }: {
-  searchParams: { categoria?: string; fornecedor?: string; q?: string };
+  searchParams: { categoria?: string; fornecedor?: string; q?: string; tema?: string };
 }) {
   const [allProducts, categories] = await Promise.all([getAllProducts(), getCategories()]);
 
   const query = searchParams.q?.trim().toLowerCase();
+  const theme = getTheme(searchParams.tema);
+  const themeSkus = theme ? new Set(theme.skus) : null;
 
   const products = allProducts.filter((p) => {
     if (searchParams.categoria && p.category !== searchParams.categoria) return false;
     if (searchParams.fornecedor && p.supplier !== searchParams.fornecedor) return false;
+    if (themeSkus && !themeSkus.has(p.supplierSku)) return false;
     if (query) {
       const haystack = `${p.name} ${p.description ?? ""} ${p.category}`.toLowerCase();
       if (!haystack.includes(query)) return false;
@@ -26,7 +30,20 @@ export default async function ProdutosPage({
 
   return (
     <div className="container section">
-      <h2>Produtos</h2>
+      {theme ? (
+        <>
+          <p className="hero-eyebrow" style={{ marginBottom: 4 }}>
+            <Link href="/brindes-por-tema">Brindes por tema</Link>
+          </p>
+          <h2>
+            <span aria-hidden="true">{theme.emoji} </span>
+            {theme.nome}
+          </h2>
+          <p className="section-lede">{theme.descricao}</p>
+        </>
+      ) : (
+        <h2>Produtos</h2>
+      )}
 
       <form action="/produtos" method="GET" className="form-row" style={{ marginBottom: 16 }}>
         <div className="form-field" style={{ marginBottom: 0 }}>
