@@ -76,7 +76,7 @@ export default async function HomePage() {
                 </span>
                 {category}
               </span>
-              <span className="category-card__arrow">Ver seleção &#8594;</span>
+              <span className="category-card__arrow" aria-hidden="true">&#8594;</span>
             </Link>
           ))}
         </div>

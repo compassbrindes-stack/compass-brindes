@@ -1008,3 +1008,37 @@ a.site-header__phone:hover {
     transition: none;
   }
 }
+
+/* Categorias da home em formato compacto (27/09) */
+.category-grid {
+  grid-template-columns: repeat(auto-fill, minmax(200px, 1fr));
+  gap: 10px;
+}
+.category-grid .category-card {
+  flex-direction: row;
+  align-items: center;
+  justify-content: space-between;
+  gap: 8px;
+  padding: 11px 16px;
+  border-radius: 12px;
+  font-size: 0.92rem;
+  white-space: nowrap;
+}
+.category-grid .category-card__arrow {
+  font-size: 0.95rem;
+  opacity: 0.55;
+  transition: opacity 0.15s ease, transform 0.15s ease;
+}
+.category-grid .category-card:hover .category-card__arrow {
+  opacity: 1;
+  transform: translateX(2px);
+}
+@media (max-width: 480px) {
+  .category-grid {
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+  }
+  .category-grid .category-card {
+    padding: 10px 12px;
+    font-size: 0.86rem;
+  }
+}
