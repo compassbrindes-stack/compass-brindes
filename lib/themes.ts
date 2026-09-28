@@ -68,7 +68,6 @@ const SKU = {
   xbzGarrafa450: "xbz-18639-garrafa-termica-inox-450ml",
   xbzKitGarrafa: "xbz-18639kit-kit-garrafa-termica",
   jardinagem: "xbz-09059-kit-jardinagem-3-pecas",
-  elastico: "xbz-09362-elastico-extensor",
   caniveteChave: "canivete-chave-de-boca-01",
   canivetePesca: "canivete-inox-presilha-pesca-01",
   canivetePremium: "canivete-premium-hunter-clip-01",
@@ -91,14 +90,14 @@ export const THEMES: Theme[] = [
     emoji: "🎗️",
     descricao:
       "Brindes de autocuidado e bem-estar para campanhas de conscientização sobre a saúde da mulher. Consulte as cores disponíveis de cada item.",
-    skus: [...autocuidado, SKU.squeeze500a, SKU.squeeze500b, SKU.flip550, SKU.copoCafe, SKU.elastico],
+    skus: [...autocuidado, SKU.squeeze500a, SKU.squeeze500b, SKU.flip550, SKU.copoCafe],
   },
   {
     slug: "novembro-azul",
     nome: "Novembro Azul",
     emoji: "💙",
     descricao: "Brindes para campanhas de cuidado com a saúde do homem.",
-    skus: [SKU.churrasco5, SKU.churrasco2, ...canivetes, SKU.canecaChopp, SKU.squeeze750, SKU.elastico, SKU.chaveiroAbridor],
+    skus: [SKU.churrasco5, SKU.churrasco2, ...canivetes, SKU.canecaChopp, SKU.squeeze750, SKU.chaveiroAbridor],
   },
   {
     slug: "para-elas",
@@ -175,7 +174,7 @@ export const THEMES: Theme[] = [
     nome: "Esporte / Fitness",
     emoji: "🏋️",
     descricao: "Hidratação e acessórios para quem se exercita.",
-    skus: [SKU.elastico, ...hidratacao, SKU.mochila, SKU.fone],
+    skus: [...hidratacao, SKU.mochila, SKU.fone],
   },
   {
     slug: "hora-do-lazer",
@@ -189,7 +188,7 @@ export const THEMES: Theme[] = [
     nome: "Brindes SIPAT",
     emoji: "🦺",
     descricao: "Brindes úteis para a Semana Interna de Prevenção de Acidentes.",
-    skus: [SKU.trena1, SKU.trena2, SKU.squeeze500a, SKU.squeeze600, SKU.garrafa400, SKU.xbzGarrafa450, SKU.elastico, SKU.canetaLisa],
+    skus: [SKU.trena1, SKU.trena2, SKU.squeeze500a, SKU.squeeze600, SKU.garrafa400, SKU.xbzGarrafa450, SKU.canetaLisa],
   },
   {
     slug: "feira-e-eventos",
