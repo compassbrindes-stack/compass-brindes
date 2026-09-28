@@ -1,62 +1,45 @@
 import Link from "next/link";
-
-// Página em preparação — intencionalmente sem link em nenhum menu do site.
-// Assim que estiver pronta para publicação, basta adicionar um link para
-// "/brindes-por-tema" no site-header ou na home.
+import { FEATURED_THEME_SLUG, THEMES } from "@/lib/themes";
 
 export const metadata = {
   title: "Brindes por Tema — Compass Brindes Corporativos",
+  description:
+    "Brindes corporativos por ocasião: Outubro Rosa, Novembro Azul, SIPAT, datas comemorativas, viagem, lazer e mais.",
 };
 
-const TEMAS = [
-  { nome: "Para Elas", emoji: "💐", busca: "para elas" },
-  { nome: "Para Eles", emoji: "🕶️", busca: "para eles" },
-  { nome: "Para Crianças", emoji: "🧸", busca: "criança" },
-  { nome: "Para Verão", emoji: "☀️", busca: "verão" },
-  { nome: "Para Inverno", emoji: "🧣", busca: "inverno" },
-  { nome: "Sol e Chuva", emoji: "🌦️", busca: "sol chuva" },
-  { nome: "Usar em Casa", emoji: "🏠", busca: "casa" },
-  { nome: "Levar na Viagem", emoji: "🧳", busca: "viagem" },
-  { nome: "Esporte / Fitness", emoji: "🏋️", busca: "esporte" },
-  { nome: "Dia das Mães", emoji: "🌷", busca: "dia das mães" },
-  { nome: "Dia dos Pais", emoji: "👔", busca: "dia dos pais" },
-  { nome: "Hora do Lazer", emoji: "🎲", busca: "lazer" },
-  { nome: "Outubro Rosa", emoji: "🎗️", busca: "outubro rosa" },
-  { nome: "Dia da Secretária", emoji: "🗂️", busca: "secretária" },
-  { nome: "Dia da Mulher", emoji: "💜", busca: "dia da mulher" },
-  { nome: "Novembro Azul", emoji: "💙", busca: "novembro azul" },
-  { nome: "Ecológicos", emoji: "🌱", busca: "ecológico" },
-  { nome: "Brindes SIPAT", emoji: "🦺", busca: "sipat" },
-  { nome: "Brindes Bambu", emoji: "🎋", busca: "bambu" },
-  { nome: "Feira e Eventos", emoji: "🎪", busca: "evento" },
-  { nome: "Brindes Agro", emoji: "🌾", busca: "agro" },
-  { nome: "Para Pets", emoji: "🐾", busca: "pet" },
-];
-
 export default function BrindesPorTemaPage() {
+  const temas = THEMES.filter((t) => t.skus.length > 0);
+  const destaque = temas.find((t) => t.slug === FEATURED_THEME_SLUG);
+  const outros = temas.filter((t) => t.slug !== FEATURED_THEME_SLUG);
+
   return (
     <div className="container section">
-      <h2>Brindes por Tema</h2>
+      <h2>Brindes por tema</h2>
       <p className="section-lede">
-        Selecione um tema e encontre os brindes ideais para cada ocasião. (Página em preparação —
-        ainda não divulgada no menu do site.)
+        Escolha a ocasião e veja os brindes que combinam com ela. Não achou o que procura? Fale com a
+        gente pelo WhatsApp que montamos uma seleção para a sua ação.
       </p>
 
-      <div
-        style={{
-          display: "grid",
-          gridTemplateColumns: "repeat(auto-fill, minmax(150px, 1fr))",
-          gap: 14,
-        }}
-      >
-        {TEMAS.map((tema) => (
-          <Link
-            key={tema.nome}
-            href={`/produtos?q=${encodeURIComponent(tema.busca)}`}
-            className="category-card"
-            style={{ alignItems: "center", textAlign: "center", gap: 10 }}
-          >
-            <span style={{ fontSize: "2rem" }}>{tema.emoji}</span>
+      {destaque && (
+        <Link href={"/produtos?tema=" + destaque.slug} className="theme-featured">
+          <span className="theme-featured__emoji" aria-hidden="true">
+            {destaque.emoji}
+          </span>
+          <span className="theme-featured__body">
+            <span className="theme-featured__eyebrow">Em destaque este mês</span>
+            <span className="theme-featured__title">{destaque.nome}</span>
+            <span className="theme-featured__text">{destaque.descricao}</span>
+          </span>
+          <span className="theme-featured__cta">Ver brindes →</span>
+        </Link>
+      )}
+
+      <div className="theme-grid">
+        {outros.map((tema) => (
+          <Link key={tema.slug} href={"/produtos?tema=" + tema.slug} className="category-card theme-card">
+            <span className="theme-card__emoji" aria-hidden="true">
+              {tema.emoji}
+            </span>
             <span>{tema.nome}</span>
           </Link>
         ))}
