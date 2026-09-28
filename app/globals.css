@@ -1042,3 +1042,138 @@ a.site-header__phone:hover {
     font-size: 0.86rem;
   }
 }
+
+/* Vestuário: cor, tamanho e tabela de medidas (components/apparel-options.tsx) */
+.apparel {
+  margin-top: 8px;
+}
+.apparel__group {
+  margin-bottom: 16px;
+}
+.apparel__label {
+  margin: 0 0 8px;
+  font-size: 0.9rem;
+  font-weight: 600;
+}
+.apparel__colors,
+.apparel__sizes {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 8px;
+}
+.apparel__color {
+  display: inline-flex;
+  align-items: center;
+  gap: 8px;
+  padding: 6px 12px 6px 6px;
+  border: 1.5px solid var(--color-border);
+  border-radius: 10px;
+  background: var(--color-surface);
+  font: inherit;
+  font-size: 0.88rem;
+  cursor: pointer;
+}
+.apparel__swatch {
+  width: 26px;
+  height: 26px;
+  border-radius: 6px;
+  border: 1px solid rgba(0, 0, 0, 0.18);
+  flex: none;
+}
+.apparel__size {
+  min-width: 48px;
+  padding: 9px 12px;
+  border: 1.5px solid var(--color-border);
+  border-radius: 10px;
+  background: var(--color-surface);
+  font: inherit;
+  font-weight: 700;
+  cursor: pointer;
+}
+.apparel__color:hover,
+.apparel__size:hover {
+  border-color: var(--color-primary-dark);
+}
+.apparel__color.is-active,
+.apparel__size.is-active {
+  border-color: var(--color-primary-dark);
+  box-shadow: 0 0 0 2px var(--color-accent);
+}
+.apparel__size.is-active {
+  background: var(--color-primary-dark);
+  color: #ffffff;
+}
+.apparel__qty {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  margin-bottom: 4px;
+}
+.apparel__qty .apparel__label {
+  margin: 0;
+}
+.apparel__qty input {
+  width: 90px;
+}
+.apparel__hint {
+  font-size: 13px;
+  color: var(--color-muted);
+  margin: 4px 0 12px;
+}
+.apparel__added {
+  margin-top: 14px;
+  padding: 12px 14px;
+  border-radius: 10px;
+  background: #eef5e3;
+}
+.apparel__added p {
+  margin: 0;
+}
+.apparel__added ul {
+  margin: 6px 0;
+  padding-left: 18px;
+  font-size: 0.9rem;
+}
+
+.size-chart {
+  margin-top: 28px;
+}
+.size-chart h2 {
+  font-size: 1.1rem;
+  margin: 0 0 10px;
+}
+.size-chart__scroll {
+  overflow-x: auto;
+}
+.size-chart table {
+  width: 100%;
+  border-collapse: collapse;
+  font-size: 0.88rem;
+  background: var(--color-surface);
+  border: 1px solid var(--color-border);
+  border-radius: 10px;
+  overflow: hidden;
+}
+.size-chart th,
+.size-chart td {
+  padding: 9px 10px;
+  text-align: center;
+  border-bottom: 1px solid var(--color-border);
+  white-space: nowrap;
+}
+.size-chart thead th {
+  background: var(--color-dark);
+  font-size: 0.8rem;
+}
+.size-chart tbody th {
+  font-weight: 800;
+}
+.size-chart tbody tr:last-child th,
+.size-chart tbody tr:last-child td {
+  border-bottom: none;
+}
+.size-chart__note {
+  font-size: 12.5px;
+  color: var(--color-muted);
+  margin: 8px 0 0;
+}
