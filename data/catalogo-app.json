@@ -605,7 +605,7 @@
   {
     "sku": "vestuario-camiseta-poliamida-masculina",
     "name": "Camiseta Masculina Poliamida Premium",
-    "category": "Vestuário Masculino",
+    "category": "Vestuário",
     "description": "Camiseta masculina em poliamida premium, com tecido leve, macio e respirável, que mantém o frescor no dia a dia e durante atividades físicas. A modelagem confortável acompanha os movimentos e tem acabamento moderno. É ideal para uniformes, eventos esportivos e kits corporativos personalizados com a sua marca. Tamanhos: P, M, G e GG. Cores: preto, branco e azul-marinho. Quantidade mínima e prazo sob consulta.",
     "images": [
       "https://www.compassbrindes.com.br/vestuario-camiseta-masculina.jpg"
@@ -636,13 +636,14 @@
         "M",
         "G",
         "GG"
-      ]
+      ],
+      "genero": "Masculino"
     }
   },
   {
     "sku": "vestuario-babylook-poliamida-feminina",
     "name": "Babylook Feminina Poliamida Premium",
-    "category": "Vestuário Feminino",
+    "category": "Vestuário",
     "description": "Babylook feminina em poliamida premium com textura furadinha: leve, macia ao toque e com ótima respirabilidade. A modelagem acinturada valoriza a silhueta sem limitar os movimentos, perfeita para treinos, corridas, eventos e uniformes com a sua marca. Tamanhos: P, M, G e GG. Cores: preto, branco e rosa. Confira a tabela de medidas abaixo. Quantidade mínima e prazo sob consulta.",
     "images": [
       "https://www.compassbrindes.com.br/vestuario-babylook-feminina.jpg"
@@ -725,7 +726,141 @@
           }
         ],
         "note": "Medidas aproximadas da peça, com a camiseta esticada sobre uma superfície plana. Podem variar um pouco conforme a produção e a elasticidade do tecido."
-      }
+      },
+      "genero": "Feminino"
+    }
+  },
+  {
+    "sku": "vestuario-camiseta-algodao-confort-masculina",
+    "name": "Camiseta Masculina Algodão Confort",
+    "category": "Vestuário",
+    "description": "Camiseta masculina 100% algodão, fio 30.1 e gramatura 160 g/m², com toque macio e caimento confortável para o dia inteiro. Tem reforço de ombro a ombro e gola em ribana de 1,5 cm, acabamento que mantém a forma depois de muitas lavagens. Ótima base para personalizar com silk, transfer ou bordado: uniformes de empresa, eventos, escolas, igrejas e equipes. Disponível em 22 cores. Tamanhos: P, M, G e GG. Quantidade mínima e prazo sob consulta.",
+    "images": [
+      "https://www.compassbrindes.com.br/vestuario-camiseta-algodao-masculina.jpg"
+    ],
+    "colors": [
+      "Preto",
+      "Branco",
+      "Off White",
+      "Mescla",
+      "Chumbo",
+      "Areia",
+      "Marrom",
+      "Azul Marinho",
+      "Azul Royal",
+      "Azul Claro",
+      "Turquesa",
+      "Verde Água",
+      "Verde Bandeira",
+      "Verde Militar",
+      "Amarelo Canário",
+      "Amarelo Claro",
+      "Laranja",
+      "Coral",
+      "Vermelho",
+      "Bordô",
+      "Rosa Chiclete",
+      "Roxo"
+    ],
+    "apparel": {
+      "tipo": "Camiseta",
+      "genero": "Masculino",
+      "colors": [
+        {
+          "name": "Preto",
+          "hex": "#1c1c1c"
+        },
+        {
+          "name": "Branco",
+          "hex": "#ffffff"
+        },
+        {
+          "name": "Off White",
+          "hex": "#f0ede4"
+        },
+        {
+          "name": "Mescla",
+          "hex": "#aaaaaa"
+        },
+        {
+          "name": "Chumbo",
+          "hex": "#4b5563"
+        },
+        {
+          "name": "Areia",
+          "hex": "#e8d5a3"
+        },
+        {
+          "name": "Marrom",
+          "hex": "#795548"
+        },
+        {
+          "name": "Azul Marinho",
+          "hex": "#1f2a44"
+        },
+        {
+          "name": "Azul Royal",
+          "hex": "#1f4fb5"
+        },
+        {
+          "name": "Azul Claro",
+          "hex": "#8ec5ea"
+        },
+        {
+          "name": "Turquesa",
+          "hex": "#1bb5b8"
+        },
+        {
+          "name": "Verde Água",
+          "hex": "#5fc9b7"
+        },
+        {
+          "name": "Verde Bandeira",
+          "hex": "#009b3a"
+        },
+        {
+          "name": "Verde Militar",
+          "hex": "#4a5c3f"
+        },
+        {
+          "name": "Amarelo Canário",
+          "hex": "#ffd500"
+        },
+        {
+          "name": "Amarelo Claro",
+          "hex": "#fce98a"
+        },
+        {
+          "name": "Laranja",
+          "hex": "#f97316"
+        },
+        {
+          "name": "Coral",
+          "hex": "#f47a68"
+        },
+        {
+          "name": "Vermelho",
+          "hex": "#dc2626"
+        },
+        {
+          "name": "Bordô",
+          "hex": "#6d1a2b"
+        },
+        {
+          "name": "Rosa Chiclete",
+          "hex": "#f062a8"
+        },
+        {
+          "name": "Roxo",
+          "hex": "#7c3aed"
+        }
+      ],
+      "sizes": [
+        "P",
+        "M",
+        "G",
+        "GG"
+      ]
     }
   }
 ]
