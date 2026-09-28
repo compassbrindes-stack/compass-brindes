@@ -33,6 +33,7 @@ export function SiteHeader() {
         <nav className="main-nav">
           <Link href="/">Início</Link>
           <Link href="/produtos">Produtos</Link>
+          <Link href="/brindes-por-tema">Brindes por tema</Link>
           <Link href="/#como-funciona">Como funciona</Link>
           <Link href="/orcamento">Meu orçamento</Link>
           <Link href="/catalogo">Catálogo em PDF</Link>
