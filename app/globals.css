@@ -1440,3 +1440,11 @@ a.site-header__phone:hover {
     height: 28px;
   }
 }
+
+.apparel__total {
+  margin: 8px 0 0 !important;
+  font-size: 0.9rem;
+}
+.apparel__total.is-low {
+  color: #9a3412;
+}
