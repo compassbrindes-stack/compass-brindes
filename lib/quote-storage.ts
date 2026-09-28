@@ -9,6 +9,11 @@ export interface QuoteItem {
   supplierName: string;
   slug: string;
   quantity: number;
+  /** Vestuário: todas as cores/tamanhos do mesmo modelo têm o mesmo groupId. */
+  groupId?: string;
+  groupName?: string;
+  /** Pedido mínimo somando todas as linhas do grupo. */
+  groupMin?: number;
 }
 
 const STORAGE_KEY = "compass-brindes-quote";
