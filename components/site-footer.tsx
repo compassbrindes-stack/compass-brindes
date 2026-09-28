@@ -46,6 +46,33 @@ export function SiteFooter() {
         </div>
       </div>
 
+      <div className="container site-footer__payments">
+        <span className="site-footer__payments-label">Formas de pagamento</span>
+        <ul className="payment-badges">
+          <li className="payment-badge">
+            <svg width="20" height="20" viewBox="0 0 24 24" fill="none" aria-hidden="true">
+              <rect x="2.5" y="5" width="19" height="14" rx="2.5" stroke="currentColor" strokeWidth="1.7" />
+              <path d="M2.5 9.5h19" stroke="currentColor" strokeWidth="1.7" />
+              <path d="M6 15h4" stroke="currentColor" strokeWidth="1.7" strokeLinecap="round" />
+            </svg>
+            Cartão de crédito
+          </li>
+          <li className="payment-badge">
+            <svg width="20" height="20" viewBox="0 0 24 24" fill="none" aria-hidden="true">
+              <path d="M12 2.8l9.2 9.2-9.2 9.2L2.8 12z" stroke="currentColor" strokeWidth="1.7" strokeLinejoin="round" />
+              <path d="M8.6 12L12 8.6 15.4 12 12 15.4z" fill="currentColor" />
+            </svg>
+            PIX
+          </li>
+          <li className="payment-badge">
+            <svg width="20" height="20" viewBox="0 0 24 24" fill="none" aria-hidden="true">
+              <path d="M4 5v14M7 5v14M9.5 5v14M13 5v14M15.5 5v14M19 5v14M21 5v14" stroke="currentColor" strokeWidth="1.5" />
+            </svg>
+            Boleto
+          </li>
+        </ul>
+      </div>
+
       <div className="container site-footer__bottom">
         <span>&copy; {new Date().getFullYear()} Compass Brindes Corporativos &mdash; todos os produtos sob consulta, preços podem variar por quantidade.</span>
         <span>
