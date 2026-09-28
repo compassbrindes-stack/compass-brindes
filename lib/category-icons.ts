@@ -15,8 +15,7 @@ const CATEGORY_ICONS: Record<string, string> = {
   Mochilas: "🎒",
   Necessaires: "👝",
   Térmico: "☕",
-  "Vestuário Feminino": "👚",
-  "Vestuário Masculino": "👕",
+  Vestuário: "👕",
 };
 
 const DEFAULT_ICON = "🎁";

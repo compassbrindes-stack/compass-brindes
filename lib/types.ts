@@ -25,6 +25,8 @@ export interface ApparelSizeChart {
 
 export interface ApparelInfo {
   tipo?: string;
+  /** Divide a aba Vestuário em Masculino e Feminino. */
+  genero?: "Masculino" | "Feminino";
   colors: ApparelColor[];
   sizes: string[];
   sizeChart?: ApparelSizeChart;

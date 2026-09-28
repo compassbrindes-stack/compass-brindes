@@ -19,6 +19,8 @@ export interface OrderCustomer {
   cidade: string;
   estado: string;
   telefone: string;
+  /** Forma de pagamento escolhida no orçamento (Cartão de crédito, PIX ou Boleto). */
+  formaPagamento?: string;
 }
 
 export interface Order {
