@@ -21,6 +21,12 @@ import type { Order } from "@/lib/orders";
 
 const WHATSAPP_NUMBER = process.env.NEXT_PUBLIC_WHATSAPP_NUMBER ?? "";
 
+const FORMAS_PAGAMENTO = [
+  { valor: "Cartão de crédito", icone: "💳", detalhe: "Pagamento no cartão" },
+  { valor: "PIX", icone: "⚡", detalhe: "Aprovação imediata" },
+  { valor: "Boleto", icone: "🧾", detalhe: "Boleto bancário" },
+];
+
 export default function OrcamentoPage() {
   const [items, setItems] = useState<QuoteItem[]>([]);
 
@@ -34,6 +40,7 @@ export default function OrcamentoPage() {
   const [cidade, setCidade] = useState("");
   const [estado, setEstado] = useState("");
   const [telefone, setTelefone] = useState("");
+  const [formaPagamento, setFormaPagamento] = useState("");
 
   const [cepStatus, setCepStatus] = useState<"idle" | "loading" | "ok" | "erro">("idle");
   const [cpfCnpjTocado, setCpfCnpjTocado] = useState(false);
@@ -96,7 +103,8 @@ export default function OrcamentoPage() {
     numero.trim() &&
     cidade.trim() &&
     estado.trim() &&
-    telefone.trim();
+    telefone.trim() &&
+    formaPagamento;
 
   const formularioValido =
     Boolean(camposObrigatoriosPreenchidos) && cpfCnpjValido === true && cepValido === true;
@@ -122,6 +130,7 @@ export default function OrcamentoPage() {
       `Cidade: ${cidade}`,
       `Estado: ${estado}`,
       `Telefone: ${telefone}`,
+      `Forma de pagamento: ${formaPagamento}`,
     ];
     return lines.join("\n");
   }
@@ -154,6 +163,7 @@ export default function OrcamentoPage() {
             cidade,
             estado,
             telefone,
+            formaPagamento,
           },
         }),
       });
@@ -408,6 +418,32 @@ export default function OrcamentoPage() {
               inputMode="tel"
               placeholder="(49) 99999-9999"
             />
+          </div>
+
+          <div className="form-field">
+            <span className="payment-label" id="forma-pagamento-label">
+              Forma de pagamento
+            </span>
+            <div className="payment-options" role="radiogroup" aria-labelledby="forma-pagamento-label">
+              {FORMAS_PAGAMENTO.map((f) => (
+                <button
+                  key={f.valor}
+                  type="button"
+                  role="radio"
+                  aria-checked={formaPagamento === f.valor}
+                  className={"payment-option" + (formaPagamento === f.valor ? " is-active" : "")}
+                  onClick={() => setFormaPagamento(f.valor)}
+                >
+                  <span className="payment-option__icon" aria-hidden="true">
+                    {f.icone}
+                  </span>
+                  <span>
+                    <strong>{f.valor}</strong>
+                    <small>{f.detalhe}</small>
+                  </span>
+                </button>
+              ))}
+            </div>
           </div>
 
           {erroEnvio && (
