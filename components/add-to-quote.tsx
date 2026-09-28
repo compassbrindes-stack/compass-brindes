@@ -21,7 +21,7 @@ export function AddToQuote({
 }) {
   const minimo = Math.max(minQuantity ?? QUANTIDADE_MINIMA_PADRAO, QUANTIDADE_MINIMA_PADRAO);
   const [quantity, setQuantity] = useState(minimo);
-  const [added, setAdded] = useState(false);
+  const [added, setAdded] = useState(0);
 
   return (
     <div>
@@ -47,28 +47,26 @@ export function AddToQuote({
         Pedido mínimo de {minimo} unidades.
       </p>
 
-      {!added ? (
-        <button
-          className="btn btn-primary"
-          onClick={() => {
-            const quantidadeFinal = quantity < minimo ? minimo : quantity;
-            addQuoteItem({ productId, name, supplierName, slug }, quantidadeFinal);
-            setAdded(true);
-          }}
-        >
-          Adicionar ao orçamento
-        </button>
-      ) : (
-        <div>
-          <p style={{ fontWeight: 700, color: "var(--color-primary, #16a34a)", margin: "0 0 12px" }}>
-            Adicionado ao orçamento ✓
-          </p>
+      <button
+        className="btn btn-primary"
+        onClick={() => {
+          const quantidadeFinal = quantity < minimo ? minimo : quantity;
+          addQuoteItem({ productId, name, supplierName, slug }, quantidadeFinal);
+          setAdded((n) => n + quantidadeFinal);
+        }}
+      >
+        {added > 0 ? "Adicionar mais" : "Adicionar ao orçamento"}
+      </button>
+
+      {added > 0 && (
+        <div className="apparel__toast" role="status" style={{ marginTop: 14 }}>
+          <span>✓ {added} unidades no seu orçamento</span>
           <div style={{ display: "flex", gap: 10, flexWrap: "wrap" }}>
             <Link className="btn btn-primary" href="/orcamento">
               Finalizar orçamento
             </Link>
             <Link className="btn btn-outline" href="/produtos">
-              Voltar para produtos
+              Continuar comprando
             </Link>
           </div>
         </div>

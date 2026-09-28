@@ -1,6 +1,7 @@
 import Link from "next/link";
 import { LOGO_DATA_URI } from "@/lib/logo";
 import { MobileMenuCloser } from "@/components/mobile-menu-closer";
+import { QuoteBadge } from "@/components/quote-badge";
 
 const WHATSAPP_NUMBER = process.env.NEXT_PUBLIC_WHATSAPP_NUMBER ?? "";
 const whatsappUrl = WHATSAPP_NUMBER
@@ -43,7 +44,9 @@ export function SiteHeader() {
           <Link href="/produtos">Produtos</Link>
           <Link href="/brindes-por-tema">Brindes por tema</Link>
           <Link href="/#como-funciona">Como funciona</Link>
-          <Link href="/orcamento">Meu orçamento</Link>
+          <Link href="/orcamento">
+            Meu orçamento <QuoteBadge />
+          </Link>
           <Link href="/catalogo">Catálogo em PDF</Link>
           <a className="site-header__phone" href="tel:+5549936180446">
             (49) 93618-0446
