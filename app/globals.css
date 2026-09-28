@@ -374,7 +374,7 @@ a.site-header__phone:hover {
 
 @media (max-width: 720px) {
   .product-detail {
-    grid-template-columns: 1fr;
+    grid-template-columns: minmax(0, 1fr);
   }
 }
 
@@ -1294,4 +1294,149 @@ a.site-header__phone:hover {
 }
 .payment-badge svg {
   color: var(--color-primary-dark);
+}
+
+/* ===== Celular (ajustes de 27/09) ===== */
+
+/* .section e .product-detail zeravam a margem lateral do .container. */
+.container.section,
+.container.product-detail {
+  padding-left: 20px;
+  padding-right: 20px;
+}
+
+/* Menu do celular: no computador o botão fica escondido e o menu aparece normal. */
+.menu-toggle {
+  position: absolute;
+  opacity: 0;
+  pointer-events: none;
+}
+.menu-button {
+  display: none;
+}
+.site-header__menu {
+  display: contents;
+}
+
+@media (max-width: 900px) {
+  .site-header__inner {
+    padding: 10px 16px;
+    gap: 10px;
+    flex-wrap: wrap;
+  }
+  .logo-img--header {
+    height: 52px;
+  }
+  .menu-button {
+    display: inline-flex;
+    align-items: center;
+    gap: 8px;
+    padding: 10px 14px;
+    border-radius: 999px;
+    background: var(--color-cta);
+    color: var(--color-cta-text);
+    font-weight: 700;
+    font-size: 0.9rem;
+    cursor: pointer;
+    user-select: none;
+  }
+  .menu-button__icon,
+  .menu-button__icon::before,
+  .menu-button__icon::after {
+    display: block;
+    width: 16px;
+    height: 2px;
+    border-radius: 2px;
+    background: currentColor;
+    position: relative;
+    transition: transform 0.2s ease, background 0.2s ease;
+  }
+  .menu-button__icon::before,
+  .menu-button__icon::after {
+    content: "";
+    position: absolute;
+    left: 0;
+  }
+  .menu-button__icon::before {
+    top: -5px;
+  }
+  .menu-button__icon::after {
+    top: 5px;
+  }
+  .menu-toggle:checked + .menu-button .menu-button__icon {
+    background: transparent;
+  }
+  .menu-toggle:checked + .menu-button .menu-button__icon::before {
+    transform: translateY(5px) rotate(45deg);
+  }
+  .menu-toggle:checked + .menu-button .menu-button__icon::after {
+    transform: translateY(-5px) rotate(-45deg);
+  }
+  .menu-toggle:focus-visible + .menu-button {
+    outline: 2px solid var(--color-primary-dark);
+    outline-offset: 2px;
+  }
+
+  .site-header__menu {
+    display: none;
+    width: 100%;
+    flex-direction: column;
+    gap: 14px;
+    padding: 6px 0 12px;
+  }
+  .menu-toggle:checked ~ .site-header__menu {
+    display: flex;
+  }
+  .site-header__menu .site-search {
+    max-width: none;
+    width: 100%;
+  }
+  .site-header__menu .main-nav {
+    flex-direction: column;
+    align-items: stretch;
+    gap: 0;
+  }
+  .site-header__menu .main-nav a {
+    padding: 12px 4px;
+    border-bottom: 1px solid #d5d8cd;
+    font-size: 1rem;
+  }
+  .site-header__menu .main-nav a.btn {
+    margin-top: 12px;
+    border-bottom: none;
+    justify-content: center;
+  }
+
+  /* Categorias em Produtos: uma linha só, rolando para o lado, sem grudar no topo. */
+  .produtos-filters {
+    position: static;
+    flex-wrap: nowrap !important;
+    overflow-x: auto;
+    margin-left: -20px;
+    margin-right: -20px;
+    padding: 8px 20px 12px;
+    scrollbar-width: none;
+  }
+  .produtos-filters::-webkit-scrollbar {
+    display: none;
+  }
+  .produtos-filters .btn {
+    flex: none;
+    white-space: nowrap;
+  }
+}
+
+/* Botão flutuante do WhatsApp: só o ícone no celular, para não cobrir o conteúdo. */
+@media (max-width: 600px) {
+  .whatsapp-fab {
+    font-size: 0;
+    gap: 0;
+    padding: 14px;
+    right: 16px;
+    bottom: 16px;
+  }
+  .whatsapp-fab svg {
+    width: 28px;
+    height: 28px;
+  }
 }
