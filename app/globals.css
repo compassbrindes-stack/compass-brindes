@@ -1448,3 +1448,167 @@ a.site-header__phone:hover {
 .apparel__total.is-low {
   color: #9a3412;
 }
+
+/* Pedido de vestuário estilo "vai colocando no carrinho" (components/apparel-options.tsx) */
+.apparel__progress {
+  padding: 12px 14px;
+  margin-bottom: 18px;
+  border-radius: 10px;
+  background: #fff7e6;
+  border: 1px solid #f2c230;
+}
+.apparel__progress.is-done {
+  background: #ecf8ef;
+  border-color: #1f8a3c;
+}
+.apparel__progress-text {
+  font-size: 0.95rem;
+  margin-bottom: 8px;
+}
+.apparel__progress-bar {
+  height: 8px;
+  border-radius: 999px;
+  background: rgba(0, 0, 0, 0.08);
+  overflow: hidden;
+}
+.apparel__progress-bar span {
+  display: block;
+  height: 100%;
+  background: #f2c230;
+  transition: width 0.3s ease;
+}
+.apparel__progress.is-done .apparel__progress-bar span {
+  background: #1f8a3c;
+}
+.qty-stepper {
+  display: flex;
+  align-items: center;
+  gap: 6px;
+  flex-wrap: wrap;
+}
+.qty-stepper button {
+  min-width: 40px;
+  height: 40px;
+  border: 1px solid #cfd8d6;
+  border-radius: 8px;
+  background: #fff;
+  font-size: 1.1rem;
+  font-weight: 700;
+  cursor: pointer;
+}
+.qty-stepper button:hover {
+  border-color: var(--color-primary, #0f2a30);
+}
+.qty-stepper .qty-quick {
+  font-size: 0.85rem;
+  padding: 0 10px;
+}
+.qty-stepper input {
+  width: 72px;
+  height: 40px;
+  text-align: center;
+  font-size: 1rem;
+  border: 1px solid #cfd8d6;
+  border-radius: 8px;
+}
+.apparel__add {
+  width: 100%;
+  margin-top: 6px;
+}
+.apparel__toast {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  justify-content: space-between;
+  gap: 10px;
+  margin-top: 12px;
+  padding: 12px 14px;
+  border-radius: 10px;
+  background: #ecf8ef;
+  border: 1px solid #1f8a3c;
+  color: #14532d;
+  font-weight: 600;
+}
+.apparel__cart {
+  margin-top: 18px;
+  padding: 14px;
+  border: 1px solid #e3e8e7;
+  border-radius: 10px;
+  background: #fafbfb;
+}
+.apparel__cart ul {
+  list-style: none;
+  margin: 0 0 12px;
+  padding: 0;
+}
+.apparel__cart li {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  padding: 7px 0;
+  border-bottom: 1px dashed #e3e8e7;
+  font-size: 0.93rem;
+}
+.apparel__cart li > span:first-child {
+  flex: 1;
+  min-width: 0;
+}
+.apparel__cart-qty {
+  font-weight: 700;
+  white-space: nowrap;
+}
+.apparel__cart-remove {
+  width: 28px;
+  height: 28px;
+  border: none;
+  border-radius: 50%;
+  background: #f3dede;
+  color: #c8272e;
+  font-size: 1.1rem;
+  line-height: 1;
+  cursor: pointer;
+}
+.apparel__cart-actions {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 10px;
+}
+.quote-badge {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  min-width: 20px;
+  height: 20px;
+  padding: 0 6px;
+  margin-left: 4px;
+  border-radius: 999px;
+  background: #c8272e;
+  color: #fff;
+  font-size: 0.72rem;
+  font-weight: 800;
+  vertical-align: middle;
+}
+.quote-min-alert {
+  margin-top: 16px;
+  padding: 12px 14px;
+  border-radius: 10px;
+  background: #fff7e6;
+  border: 1px solid #f2c230;
+  display: grid;
+  gap: 10px;
+}
+.quote-min-alert__row {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  justify-content: space-between;
+  gap: 10px;
+}
+@media (max-width: 600px) {
+  .apparel__cart-actions .btn,
+  .apparel__toast .btn,
+  .quote-min-alert__row .btn {
+    width: 100%;
+    text-align: center;
+  }
+}
