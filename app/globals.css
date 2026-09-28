@@ -1255,3 +1255,43 @@ a.site-header__phone:hover {
   border-color: var(--color-primary-dark);
   color: #ffffff;
 }
+
+/* Formas de pagamento no rodapé (components/site-footer.tsx) */
+.site-footer__payments {
+  display: flex;
+  align-items: center;
+  flex-wrap: wrap;
+  gap: 12px 16px;
+  padding: 14px 0;
+  border-top: 1px solid #d5d8cd;
+}
+.site-footer__payments-label {
+  font-size: 0.68rem;
+  font-weight: 700;
+  letter-spacing: 0.06em;
+  text-transform: uppercase;
+  color: var(--color-on-light-muted);
+}
+.payment-badges {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 8px;
+  margin: 0;
+  padding: 0;
+  list-style: none;
+}
+.payment-badge {
+  display: inline-flex;
+  align-items: center;
+  gap: 7px;
+  padding: 6px 12px;
+  border-radius: 999px;
+  background: var(--color-surface);
+  border: 1px solid #d5d8cd;
+  color: var(--color-on-light);
+  font-size: 0.8rem;
+  font-weight: 700;
+}
+.payment-badge svg {
+  color: var(--color-primary-dark);
+}
