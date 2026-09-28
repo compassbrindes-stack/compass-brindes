@@ -52,6 +52,7 @@ export default async function ProdutoPage({ params }: { params: { slug: string }
             supplierName={product.supplierName}
             productSlug={product.slug}
             apparel={product.apparel}
+            minQuantity={product.minQuantity}
           />
         ) : (
           <AddToQuote
