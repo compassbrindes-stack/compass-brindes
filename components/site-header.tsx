@@ -1,5 +1,6 @@
 import Link from "next/link";
 import { LOGO_DATA_URI } from "@/lib/logo";
+import { MobileMenuCloser } from "@/components/mobile-menu-closer";
 
 const WHATSAPP_NUMBER = process.env.NEXT_PUBLIC_WHATSAPP_NUMBER ?? "";
 const whatsappUrl = WHATSAPP_NUMBER
@@ -19,6 +20,13 @@ export function SiteHeader() {
             className="logo-img logo-img--header"
           />
         </Link>
+        {/* Menu do celular: checkbox + label abrem/fecham o menu sem precisar de JavaScript. */}
+        <input type="checkbox" id="menu-toggle" className="menu-toggle" aria-label="Abrir menu" />
+        <label htmlFor="menu-toggle" className="menu-button" aria-hidden="true">
+          <span className="menu-button__icon" />
+          Menu
+        </label>
+        <div className="site-header__menu" id="site-menu">
         <form className="site-search" action="/produtos" method="GET">
           <input
             type="search"
@@ -49,6 +57,8 @@ export function SiteHeader() {
             Falar com a Compass
           </a>
         </nav>
+        </div>
+        <MobileMenuCloser />
       </div>
     </header>
   );
