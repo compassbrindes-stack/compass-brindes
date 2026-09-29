@@ -14,6 +14,7 @@ const CATEGORY_ICONS: Record<string, string> = {
   "Garrafa inox": "🍶",
   "Kit Churrasco": "🥩",
   Kits: "🎁",
+  "Kits Corporativos": "🎁",
   Mochilas: "🎒",
   Necessaires: "👝",
   Térmico: "☕",
