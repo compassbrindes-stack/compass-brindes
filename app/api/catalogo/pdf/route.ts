@@ -7,10 +7,10 @@ export const dynamic = "force-dynamic";
 // fornecedores, o que pode levar mais que o tempo padrão de uma function.
 export const maxDuration = 60;
 
-export async function GET() {
+export async function GET(request: Request) {
   try {
     const products = await getAllProducts();
-    const pdfBytes = await buildCatalogPdf(products);
+    const pdfBytes = await buildCatalogPdf(products, new URL(request.url).origin);
 
     return new NextResponse(Buffer.from(pdfBytes), {
       status: 200,
