@@ -1239,7 +1239,8 @@
     ],
     "colors": [
       "Preto"
-    ]
+    ],
+    "minQuantity": 50
   },
   {
     "sku": "xbz-08003-caixa-de-som-multimidia-tws-rgb",
@@ -1468,6 +1469,7 @@
     ],
     "colors": [
       "Preto"
-    ]
+    ],
+    "minQuantity": 50
   }
 ]
