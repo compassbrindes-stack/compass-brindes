@@ -1612,3 +1612,42 @@ a.site-header__phone:hover {
     text-align: center;
   }
 }
+
+/* Seta "voltar ao topo" (canto inferior esquerdo; o WhatsApp fica à direita). */
+.back-to-top {
+  position: fixed;
+  left: 20px;
+  bottom: 20px;
+  width: 48px;
+  height: 48px;
+  border: none;
+  border-radius: 999px;
+  background: #0b4436;
+  color: #ffffff;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  cursor: pointer;
+  box-shadow: 0 8px 20px rgba(0, 0, 0, 0.2);
+  z-index: 30;
+  opacity: 0;
+  visibility: hidden;
+  transform: translateY(10px);
+  transition: opacity 0.2s ease, transform 0.2s ease, visibility 0.2s;
+}
+.back-to-top.is-visible {
+  opacity: 1;
+  visibility: visible;
+  transform: translateY(0);
+}
+.back-to-top:hover {
+  background: #16a34a;
+}
+@media (max-width: 600px) {
+  .back-to-top {
+    left: 16px;
+    bottom: 16px;
+    width: 52px;
+    height: 52px;
+  }
+}

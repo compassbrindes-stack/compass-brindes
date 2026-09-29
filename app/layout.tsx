@@ -3,6 +3,7 @@ import "@/app/globals.css";
 import { SiteHeader } from "@/components/site-header";
 import { SiteFooter } from "@/components/site-footer";
 import { WhatsappFab } from "@/components/whatsapp-fab";
+import { BackToTop } from "@/components/back-to-top";
 
 export const metadata: Metadata = {
   title: "Compass Brindes Corporativos",
@@ -18,6 +19,7 @@ export default function RootLayout({ children }: { children: React.ReactNode }) 
         <main>{children}</main>
         <SiteFooter />
         <WhatsappFab />
+        <BackToTop />
       </body>
     </html>
   );
