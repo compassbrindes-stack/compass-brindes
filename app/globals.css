@@ -2152,3 +2152,7 @@ a.site-header__phone:hover {
   width: 100%;
   max-width: none;
 }
+.conta__card .form-field,
+.conta__card .form-row {
+  max-width: none;
+}
