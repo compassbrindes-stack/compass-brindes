@@ -15,6 +15,7 @@ export interface MockSupplierItem {
   sku: string;
   name: string;
   category: string;
+  extraCategories?: string[];
   description?: string;
   images: string[];
   colors?: string[];
@@ -56,6 +57,7 @@ export function mockItemToProduct(
     name: nameWithoutCode(item.name, item.supplierCode),
     slug: `${slugify(item.name)}-${slugify(item.sku)}`,
     category: item.category,
+    extraCategories: item.extraCategories,
     description: item.description,
     images: item.images,
     variants,
