@@ -38,6 +38,9 @@ export function SiteFooter() {
             Falar pelo WhatsApp ↗
           </a>
           <div style={{ marginTop: 8 }}>
+            <a href="mailto:compassbrindes@gmail.com">compassbrindes@gmail.com</a>
+          </div>
+          <div style={{ marginTop: 8 }}>
             <Link href="/produtos">Catálogo online ↗</Link>
           </div>
           <div style={{ marginTop: 8 }}>
