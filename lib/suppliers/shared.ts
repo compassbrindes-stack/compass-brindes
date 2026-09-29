@@ -25,6 +25,19 @@ export interface MockSupplierItem {
   apparel?: ApparelInfo;
 }
 
+// Tira o código (ex.: "C082B450") do nome exibido, já que ele aparece
+// separado, depois da descrição. O endereço da página (slug) continua usando
+// o nome original, para não quebrar links já compartilhados.
+function nameWithoutCode(name: string, code?: string): string {
+  if (!code) return name;
+  const escaped = code.replace(/[.*+?^${}()|[\]\\]/g, "\\$&");
+  const cleaned = name
+    .replace(new RegExp(`\\s*\\b${escaped}\\b`, "gi"), "")
+    .replace(/\s{2,}/g, " ")
+    .trim();
+  return cleaned || name;
+}
+
 export function mockItemToProduct(
   item: MockSupplierItem,
   supplier: SupplierId,
@@ -40,7 +53,7 @@ export function mockItemToProduct(
     supplier,
     supplierName,
     supplierSku: item.sku,
-    name: item.name,
+    name: nameWithoutCode(item.name, item.supplierCode),
     slug: `${slugify(item.name)}-${slugify(item.sku)}`,
     category: item.category,
     description: item.description,
