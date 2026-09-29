@@ -24,12 +24,14 @@ export function AccountLink() {
   if (estado === "oculto") return null;
 
   return (
-    <Link href="/conta" className="account-link">
-      <svg width="18" height="18" viewBox="0 0 24 24" fill="none" aria-hidden="true">
-        <circle cx="12" cy="8" r="4" stroke="currentColor" strokeWidth="1.8" />
-        <path d="M4 20c1.5-4 4.5-6 8-6s6.5 2 8 6" stroke="currentColor" strokeWidth="1.8" strokeLinecap="round" />
-      </svg>
-      {estado === "logado" ? "Minha conta" : "Entrar"}
+    <Link href="/conta" className="hd__icon" aria-label={estado === "logado" ? "Minha conta" : "Entrar"}>
+      <span className="hd__icon-img">
+        <svg width="22" height="22" viewBox="0 0 24 24" fill="none" aria-hidden="true">
+          <circle cx="12" cy="8" r="4" stroke="currentColor" strokeWidth="1.8" />
+          <path d="M4 20c1.5-4 4.5-6 8-6s6.5 2 8 6" stroke="currentColor" strokeWidth="1.8" strokeLinecap="round" />
+        </svg>
+      </span>
+      <span className="hd__icon-label">{estado === "logado" ? "Minha conta" : "Entrar"}</span>
     </Link>
   );
 }
