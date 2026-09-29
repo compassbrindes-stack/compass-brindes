@@ -442,15 +442,57 @@
   },
   {
     "sku": "1947225-mochila-c013b200",
-    "name": "MOCHILA C013B200",
+    "name": "Mochila de Nylon USB 20L C013B200",
     "category": "Mochilas",
-    "description": "DESCRICAO: Mochila de nylon 20 litros com três compartimentos, sendo o principal com bolso para notebook 15,6. Com divisórias internas para acessórios, a mochila possui bolso lateral e suporte externo usb. MEDIDAS: Altura : 42 cm Largura : 30 cm Profundidade : 11,5 cm Peso aproximado (g): 522",
+    "description": "Descrição: Mochila de nylon 20 litros com três compartimentos, sendo o principal com bolso para notebook 15,6\". Com divisórias internas para acessórios, a mochila possui bolso lateral e suporte externo USB. Altura: 42cm Largura: 30cm Profundidade: 11,5cm Área de gravação: 23cm x 10cm Peso aproximado: 522g",
     "images": [
+      "https://www.xbzbrindes.com.br/img/produtos/3/Mochila-de-Nylon-31L-USB-AZUL-12533-1611948017.jpg",
+      "https://www.xbzbrindes.com.br/img/produtos/3/Mochila-de-Nylon-USB-21L-CINZA-12774-1716321256.jpg",
+      "https://www.xbzbrindes.com.br/img/produtos/3/Mochila-de-Nylon-31L-USB-PRETO-12107-1611948017.jpg",
+      "https://www.xbzbrindes.com.br/img/produtos/3/Mochila-de-Nylon-USB-20L-VERMELHO-12534-1768397610.jpg",
+      "https://www.xbzbrindes.com.br/img/produtos/3/Mochila-de-Nylon-USB-20L-12105d1-1768397610.jpg",
+      "https://www.xbzbrindes.com.br/img/produtos/3/Mochila-de-Nylon-31L-USB-12105d2-1611948059.jpg",
+      "https://www.xbzbrindes.com.br/img/produtos/3/Mochila-de-Nylon-USB-12105d3-1596811966.jpg",
+      "https://www.xbzbrindes.com.br/img/produtos/3/Mochila-de-Nylon-USB-20L-12105d4-1768397610.jpg",
+      "https://www.xbzbrindes.com.br/img/produtos/3/Mochila-de-Nylon-31L-USB-12105d5-1611948060.jpg",
+      "https://www.xbzbrindes.com.br/img/produtos/3/Mochila-de-Nylon-USB-21L-12105d6-1716321255.jpg",
+      "https://www.xbzbrindes.com.br/img/produtos/3/Mochila-de-Nylon-USB-21L-12105d7-1633015437.jpg",
       "https://supliutech.nyc3.cdn.digitaloceanspaces.com/products2/244c48d1-8059-42a7-bda5-8447bf8a6705.jpeg",
       "https://supliutech.nyc3.cdn.digitaloceanspaces.com/products2/201bebe3-658c-469f-a7ac-127949cd51cb.jpeg",
       "https://supliutech.nyc3.cdn.digitaloceanspaces.com/products2/f3dd184b-65e5-447c-9db5-fe172e2571a0.jpeg"
     ],
-    "supplierCode": "C013B200"
+    "supplierCode": "C013B200",
+    "colors": [
+      "Azul",
+      "Cinza",
+      "Preto",
+      "Vermelho"
+    ]
+  },
+  {
+    "sku": "xbz-01325-mochila-de-nylon-usb-18l",
+    "name": "Mochila de Nylon USB 18L",
+    "category": "Mochilas",
+    "description": "Descrição: Mochila confeccionada em nylon resistente à água e capacidade de até 18 litros. Possui três compartimentos em tamanhos diferentes, sendo o principal com divisória para notebooks de até 15,6 polegadas. Conta ainda com bolso lateral, suporte USB externo e alças para as costas com revestimento em espuma de tecido respirável. Altura: 40cm Largura: 30cm Profundidade: 11cm Área de gravação: 18cm x 21cm Peso aproximado: 487g",
+    "images": [
+      "https://www.xbzbrindes.com.br/img/produtos/3/Mochila-de-Nylon-USB-18L-13153-1626186083.jpg",
+      "https://www.xbzbrindes.com.br/img/produtos/3/Mochila-de-Nylon-USB-18L-CINZA-13155-1626188543.jpg",
+      "https://www.xbzbrindes.com.br/img/produtos/3/Mochila-de-Nylon-USB-18L-PRETO-13156-1626188544.jpg",
+      "https://www.xbzbrindes.com.br/img/produtos/3/Mochila-de-Nylon-USB-18L-VERMELHO-13157-1626188544.jpg",
+      "https://www.xbzbrindes.com.br/img/produtos/3/Mochila-de-Nylon-USB-18L-13153d1-1626188542.jpg",
+      "https://www.xbzbrindes.com.br/img/produtos/3/Mochila-de-Nylon-USB-18L-13153d2-1626188542.jpg",
+      "https://www.xbzbrindes.com.br/img/produtos/3/Mochila-de-Nylon-USB-18L-13153d3-1626188543.jpg",
+      "https://www.xbzbrindes.com.br/img/produtos/3/Mochila-de-Nylon-USB-18L-13153d4-1626188627.jpg",
+      "https://www.xbzbrindes.com.br/img/produtos/3/Mochila-de-Nylon-USB-18L-13153d5-1626190670.jpg",
+      "https://www.xbzbrindes.com.br/img/produtos/3/Mochila-de-Nylon-USB-21L-13153d6-1719865590.jpg"
+    ],
+    "colors": [
+      "Azul",
+      "Cinza",
+      "Preto",
+      "Vermelho"
+    ],
+    "supplierCode": "C013B250"
   },
   {
     "sku": "1947227-necessaire-c190b190",
