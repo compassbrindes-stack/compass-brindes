@@ -1471,5 +1471,20 @@
       "Preto"
     ],
     "minQuantity": 50
+  },
+  {
+    "sku": "copo-termico-inox-360ml-tampa-acrilica",
+    "name": "Copo Térmico Inox 360ml com Tampa Acrílica",
+    "category": "Térmicos",
+    "subcategory": "Copos",
+    "description": "Descrição: Copo térmico de 360ml em aço inox com parede dupla, que mantém a temperatura da bebida por mais tempo. Acabamento pintado com borda em inox escovado e tampa acrílica removível com abertura deslizante. Ideal para café, chá, água ou cerveja.",
+    "images": [
+      "/produtos/copo-termico-inox-360ml-1.jpg",
+      "/produtos/copo-termico-inox-360ml-2.jpg"
+    ],
+    "colors": [
+      "Preto",
+      "Branco"
+    ]
   }
 ]
