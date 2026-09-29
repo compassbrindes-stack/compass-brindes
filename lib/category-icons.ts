@@ -8,6 +8,7 @@ const CATEGORY_ICONS: Record<string, string> = {
   Copos: "🥤",
   Diversos: "✨",
   Eletrônicos: "🎧",
+  Escritório: "📒",
   Fitness: "🏋️",
   "Garrafa Térmica": "🧉",
   "Garrafa inox": "🍶",
