@@ -1182,14 +1182,13 @@
     "category": "Eletrônicos",
     "description": "Descrição: Mini compressor de ar digital portátil e sem fio, recarregável via USB-C. Compacto e fácil de transportar, é ideal para calibrar pneus de carros, motos e bicicletas e para encher bolas, colchões, boias e outros infláveis. Possui display digital de fácil leitura, regulador de pressão, lanterna integrada e acompanha bicos adaptadores. Corpo em ABS de alta resistência. Pressão máxima: 150 psi Fluxo de ar: 35 L/min Comprimento: 13,7cm Largura: 4,7cm Altura: 8,9cm Peso aproximado: 370g",
     "images": [
-      "https://http2.mlstatic.com/D_NQ_NP_2X_812857-MLA109586548676_042026-F.jpg",
-      "https://http2.mlstatic.com/D_NQ_NP_2X_985028-MLA112946349480_072026-F.jpg",
-      "https://http2.mlstatic.com/D_NQ_NP_2X_680074-MLA115267128147_072026-F.jpg",
-      "https://http2.mlstatic.com/D_NQ_NP_2X_783577-MLA113992336094_072026-F.jpg",
-      "https://http2.mlstatic.com/D_NQ_NP_2X_695808-MLA113991641246_072026-F.jpg",
-      "https://http2.mlstatic.com/D_NQ_NP_2X_925710-MLA115307903707_072026-F.jpg",
-      "https://http2.mlstatic.com/D_NQ_NP_2X_862547-MLA117771090563_092026-F.jpg",
-      "https://http2.mlstatic.com/D_NQ_NP_2X_787755-MLA116215776541_082026-F.jpg"
+      "/produtos/mini-compressor-ar-1.jpg",
+      "/produtos/mini-compressor-ar-2.jpg",
+      "/produtos/mini-compressor-ar-3.jpg",
+      "/produtos/mini-compressor-ar-4.jpg",
+      "/produtos/mini-compressor-ar-5.jpg",
+      "/produtos/mini-compressor-ar-6.jpg",
+      "/produtos/mini-compressor-ar-7.jpg"
     ],
     "colors": [
       "Preto"
@@ -1322,13 +1321,13 @@
   },
   {
     "sku": "mini-lanterna-recarregavel-cob",
-    "name": "Mini Lanterna Tática Recarregável com Luz COB",
+    "name": "Mini Lanterna Tática Recarregável com Luz LED",
     "category": "Eletrônicos",
-    "description": "Descrição: Mini lanterna tática de LED, compacta e recarregável via USB (acompanha cabo). Possui zoom, luz lateral COB e 3 modos de iluminação: normal, piscante e luz lateral. Acompanha estojo protetor. Ideal para carro, casa, camping e emergências. Comprimento: 9cm Diâmetro: 3cm",
+    "description": "Descrição: Mini lanterna tática de LED, compacta e recarregável via USB (acompanha cabo). Possui zoom, luz lateral de LED e 3 modos de iluminação: normal, piscante e luz lateral. Acompanha estojo protetor. Ideal para carro, casa, camping e emergências. Comprimento: 9cm Diâmetro: 3cm",
     "images": [
       "/produtos/mini-lanterna-recarregavel-cob-1.jpg",
-      "https://http2.mlstatic.com/D_NQ_NP_2X_815862-MLB108657036166_032026-F.jpg",
-      "https://http2.mlstatic.com/D_NQ_NP_2X_901937-MLB109467586727_032026-F.jpg"
+      "/produtos/mini-lanterna-recarregavel-2.jpg",
+      "/produtos/mini-lanterna-recarregavel-3.jpg"
     ],
     "colors": [
       "Preto"
