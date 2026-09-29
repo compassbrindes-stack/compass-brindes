@@ -138,7 +138,7 @@ function buildProductCell(
   fontBold: PDFFont,
   fontItalic: PDFFont
 ): ProductCell {
-  const codigo = product.supplierCode ? product.supplierCode : product.supplierSku;
+  const codigo = product.supplierCode ?? "";
   const nameLines = wrapText(product.name, fontBold, 10.5, PRODUCT_COL_WIDTH).slice(0, 3);
   const descriptionLines = wrapText(
     cleanDescription(product.description).slice(0, 220),
@@ -163,6 +163,7 @@ function buildProductCell(
 
   const textHeight =
     2 + // respiro entre a foto e o nome
+    (codigo ? 14 : 0) + // linha do código, depois da descrição
     nameLines.length * 12.5 +
     3 +
     descriptionLines.length * 10.5 +
@@ -413,9 +414,7 @@ export async function buildCatalogPdf(products: Product[], siteUrl?: string): Pr
           cy -= cell.photoDims.height + 10;
         }
 
-        // Código do produto não é mais exibido no catálogo; só um respiro
-        // entre a foto e o nome.
-        cy -= 2;
+        cy -= 2; // respiro entre a foto e o nome
 
         for (const line of cell.nameLines) {
           page.drawText(line, { x: cellX, y: cy, size: 10.5, font: fontBold, color: COLOR_TEXT });
@@ -426,6 +425,20 @@ export async function buildCatalogPdf(products: Product[], siteUrl?: string): Pr
         for (const line of cell.descriptionLines) {
           page.drawText(line, { x: cellX, y: cy, size: 8.5, font: fontRegular, color: COLOR_MUTED });
           cy -= 10.5;
+        }
+
+        // Código Compass (ex.: C043B620) logo depois da descrição, só quando
+        // o produto tem um.
+        if (cell.codigo) {
+          cy -= 2;
+          page.drawText(`Código: ${cell.codigo}`, {
+            x: cellX,
+            y: cy,
+            size: 8.5,
+            font: fontBold,
+            color: COLOR_PRIMARY,
+          });
+          cy -= 12;
         }
 
         for (const line of cell.extraLines) {
