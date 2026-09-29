@@ -18,7 +18,12 @@ export default async function ProdutosPage({
   const themeSkus = theme ? new Set(theme.skus) : null;
 
   const products = allProducts.filter((p) => {
-    if (searchParams.categoria && p.category !== searchParams.categoria) return false;
+    if (
+      searchParams.categoria &&
+      p.category !== searchParams.categoria &&
+      !p.extraCategories?.includes(searchParams.categoria)
+    )
+      return false;
     if (searchParams.fornecedor && p.supplier !== searchParams.fornecedor) return false;
     if (themeSkus && !themeSkus.has(p.supplierSku)) return false;
     if (searchParams.genero && p.apparel?.genero !== searchParams.genero) return false;
