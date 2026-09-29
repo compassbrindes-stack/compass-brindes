@@ -224,9 +224,11 @@ export async function buildCatalogPdf(products: Product[], siteUrl?: string): Pr
 
   const byCategory = new Map<string, Product[]>();
   for (const product of products) {
-    const list = byCategory.get(product.category) ?? [];
+    // Produtos com sub-aba (ex.: Térmicos - Copos) ganham uma seção própria no PDF.
+    const key = product.subcategory ? `${product.category} - ${product.subcategory}` : product.category;
+    const list = byCategory.get(key) ?? [];
     list.push(product);
-    byCategory.set(product.category, list);
+    byCategory.set(key, list);
   }
   const categories = Array.from(byCategory.keys()).sort();
 

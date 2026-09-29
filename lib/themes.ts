@@ -21,7 +21,7 @@ const SKU = {
   somC060: "1947192-caixa-de-som-c060b310",
   somC080: "1947185-caixa-de-som-c080b020",
   canecaChopp: "1938267-caneca-chopp-c040b700",
-  caneca12: "1941595-caneca-termica-12l-c188b960",
+  caneca12: "xbz-06033-caneca-termica-12l", // a C188B960 era repetida e foi excluída
   caneca900: "1941780-caneca-termica-900ml-c091b950",
   canecaC060: "1938400-caneca-termica-c060b610",
   canetaAros: "1947204-caneta-metal-aros-cb-er143b",

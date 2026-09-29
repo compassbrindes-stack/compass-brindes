@@ -42,6 +42,8 @@ export interface Product {
   category: string;
   /** Outras abas em que o produto também aparece (ex.: canivetes também em Agro). */
   extraCategories?: string[];
+  /** Sub-aba dentro da categoria (ex.: Térmicos → Copos, Canecas, Garrafas). */
+  subcategory?: string;
   description?: string;
   images: string[];
   variants: ProductVariant[];
