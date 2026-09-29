@@ -1319,5 +1319,19 @@
       "Preto"
     ],
     "supplierCode": "C140B120"
+  },
+  {
+    "sku": "mini-lanterna-recarregavel-cob",
+    "name": "Mini Lanterna Tática Recarregável com Luz COB",
+    "category": "Eletrônicos",
+    "description": "Descrição: Mini lanterna tática de LED, compacta e recarregável via USB (acompanha cabo). Possui zoom, luz lateral COB e 3 modos de iluminação: normal, piscante e luz lateral. Acompanha estojo protetor. Ideal para carro, casa, camping e emergências. Comprimento: 9cm Diâmetro: 3cm",
+    "images": [
+      "/produtos/mini-lanterna-recarregavel-cob-1.jpg",
+      "https://http2.mlstatic.com/D_NQ_NP_2X_815862-MLB108657036166_032026-F.jpg",
+      "https://http2.mlstatic.com/D_NQ_NP_2X_901937-MLB109467586727_032026-F.jpg"
+    ],
+    "colors": [
+      "Preto"
+    ]
   }
 ]
