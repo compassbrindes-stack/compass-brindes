@@ -9,7 +9,7 @@ export const revalidate = 0;
 export default async function ProdutosPage({
   searchParams,
 }: {
-  searchParams: { categoria?: string; fornecedor?: string; q?: string; tema?: string; genero?: string };
+  searchParams: { categoria?: string; fornecedor?: string; q?: string; tema?: string; genero?: string; tipo?: string };
 }) {
   const [allProducts, categories] = await Promise.all([getAllProducts(), getCategories()]);
 
@@ -27,6 +27,7 @@ export default async function ProdutosPage({
     if (searchParams.fornecedor && p.supplier !== searchParams.fornecedor) return false;
     if (themeSkus && !themeSkus.has(p.supplierSku)) return false;
     if (searchParams.genero && p.apparel?.genero !== searchParams.genero) return false;
+    if (searchParams.tipo && p.subcategory !== searchParams.tipo) return false;
     if (query) {
       const haystack = `${p.name} ${p.description ?? ""} ${p.category} ${p.supplierCode ?? ""}`.toLowerCase();
       if (!haystack.includes(query)) return false;
@@ -46,6 +47,23 @@ export default async function ProdutosPage({
       ).sort((a, b) => b.localeCompare(a))
     : [];
   const iconeGenero: Record<string, string> = { Masculino: "👕", Feminino: "👚" };
+
+  // Sub-abas por tipo (ex.: Térmicos → Copos, Canecas, Garrafas).
+  const ORDEM_TIPOS = ["Copos", "Canecas", "Garrafas"];
+  const tipos = categoriaAtual
+    ? Array.from(
+        new Set(
+          allProducts
+            .filter((p) => p.category === categoriaAtual && p.subcategory)
+            .map((p) => p.subcategory as string)
+        )
+      ).sort((a, b) => {
+        const ia = ORDEM_TIPOS.indexOf(a);
+        const ib = ORDEM_TIPOS.indexOf(b);
+        return (ia < 0 ? 99 : ia) - (ib < 0 ? 99 : ib) || a.localeCompare(b);
+      })
+    : [];
+  const iconeTipo: Record<string, string> = { Copos: "🥤", Canecas: "☕", Garrafas: "🧉" };
 
   return (
     <div className="container section">
@@ -118,6 +136,27 @@ export default async function ProdutosPage({
             >
               <span aria-hidden="true">{iconeGenero[g] ?? ""} </span>
               {g}
+            </Link>
+          ))}
+        </div>
+      )}
+
+      {tipos.length > 0 && categoriaAtual && (
+        <div className="subfilters" aria-label="Filtrar por tipo">
+          <Link
+            className={"subfilter" + (!searchParams.tipo ? " is-active" : "")}
+            href={"/produtos?categoria=" + encodeURIComponent(categoriaAtual)}
+          >
+            Todos
+          </Link>
+          {tipos.map((t) => (
+            <Link
+              key={t}
+              className={"subfilter" + (searchParams.tipo === t ? " is-active" : "")}
+              href={"/produtos?categoria=" + encodeURIComponent(categoriaAtual) + "&tipo=" + encodeURIComponent(t)}
+            >
+              <span aria-hidden="true">{iconeTipo[t] ?? ""} </span>
+              {t}
             </Link>
           ))}
         </div>
