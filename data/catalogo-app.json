@@ -1440,5 +1440,21 @@
       "Vinho"
     ],
     "supplierCode": "C186B210"
+  },
+  {
+    "sku": "copo-termico-inox-250ml-tampa-acrilico",
+    "name": "Copo Térmico Inox 250ml com Tampa Acrílica",
+    "category": "Térmicos",
+    "subcategory": "Copos",
+    "description": "Descrição: Copo térmico em aço inox 18/8 com parede dupla e isolamento a vácuo, que mantém a temperatura da bebida e não sua por fora. Tampa acrílica removível. Ideal para café, chá, água ou cerveja. Altura: 9 cm. Diâmetro: 8 cm.",
+    "images": [
+      "/produtos/copo-termico-inox-250ml-1.jpg",
+      "/produtos/copo-termico-inox-250ml-2.jpg",
+      "/produtos/copo-termico-inox-250ml-3.jpg",
+      "/produtos/copo-termico-inox-250ml-4.jpg"
+    ],
+    "colors": [
+      "Preto"
+    ]
   }
 ]
