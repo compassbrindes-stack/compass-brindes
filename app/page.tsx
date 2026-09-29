@@ -3,6 +3,7 @@ import { getAllProducts, getCategories } from "@/lib/products";
 import { ProductCard } from "@/components/product-card";
 import { getCategoryIcon } from "@/lib/category-icons";
 import { WorkBanner } from "@/components/work-banner";
+import { HeroCarousel } from "@/components/hero-carousel";
 
 export const revalidate = 0;
 const WHATSAPP_NUMBER = process.env.NEXT_PUBLIC_WHATSAPP_NUMBER ?? "";
@@ -18,26 +19,7 @@ export default async function HomePage() {
 
   return (
     <>
-      <section className="hero">
-        <div className="container">
-          <p className="hero-eyebrow">Personalização que vira presença</p>
-          <h1>
-            Brindes que fazem sua marca <em>ser lembrada.</em>
-          </h1>
-          <p>
-            Curadoria de produtos corporativos para empresas que querem presentear com intenção —
-            do primeiro contato ao momento que fica.
-          </p>
-          <div className="hero-actions">
-            <Link className="btn btn-primary" href="/produtos">
-              Explorar catálogo
-            </Link>
-            <Link className="btn btn-outline" href="/orcamento">
-              Meu orçamento
-            </Link>
-          </div>
-        </div>
-      </section>
+      <HeroCarousel />
       <WorkBanner />
       <section className="benefits-grid container">
         <div>

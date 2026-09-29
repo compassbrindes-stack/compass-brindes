@@ -1651,3 +1651,313 @@ a.site-header__phone:hover {
     height: 52px;
   }
 }
+
+/* ===== Carrossel de banners do topo (página inicial) ===== */
+.hc {
+  padding: 24px 0 8px;
+  background: var(--color-dark);
+}
+.hc__frame {
+  position: relative;
+  height: 440px;
+  border-radius: 22px;
+  overflow: hidden;
+  box-shadow: 0 18px 40px rgba(16, 43, 50, 0.18);
+}
+.hc__slide {
+  position: absolute;
+  inset: 0;
+  display: grid;
+  grid-template-columns: minmax(0, 1.1fr) minmax(0, 1fr);
+  align-items: center;
+  gap: 24px;
+  padding: 0 72px;
+  opacity: 0;
+  visibility: hidden;
+  transition: opacity 0.7s ease, visibility 0.7s;
+}
+.hc__slide.is-active {
+  opacity: 1;
+  visibility: visible;
+}
+.hc__text {
+  position: relative;
+  z-index: 2;
+  max-width: 520px;
+}
+.hc__eyebrow {
+  display: inline-flex;
+  align-items: center;
+  gap: 8px;
+  margin: 0 0 14px;
+  font-size: 0.75rem;
+  font-weight: 800;
+  letter-spacing: 0.1em;
+  text-transform: uppercase;
+}
+.hc__eyebrow::before {
+  content: "";
+  width: 8px;
+  height: 8px;
+  border-radius: 50%;
+  background: currentColor;
+}
+.hc__title {
+  margin: 0 0 14px;
+  font-size: clamp(2rem, 3.6vw, 3.1rem);
+  line-height: 1.08;
+  font-weight: 800;
+  letter-spacing: -0.01em;
+}
+.hc__title em {
+  font-style: italic;
+}
+.hc__lede {
+  margin: 0 0 24px;
+  font-size: 1.02rem;
+  line-height: 1.5;
+  max-width: 440px;
+}
+.hc__actions {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 10px;
+}
+.hc__btn {
+  display: inline-flex;
+  align-items: center;
+  padding: 12px 22px;
+  border-radius: 999px;
+  font-weight: 700;
+  font-size: 0.92rem;
+  border: 2px solid transparent;
+  transition: transform 0.15s ease, background 0.15s ease;
+}
+.hc__btn:hover {
+  transform: translateY(-1px);
+}
+.hc__btn--ghost {
+  background: transparent;
+  border-color: currentColor;
+}
+
+/* Fotos em estilo "polaroid", sobrepostas */
+.hc__art {
+  position: relative;
+  height: 100%;
+}
+.hc__photo {
+  position: absolute;
+  width: 46%;
+  aspect-ratio: 4 / 5;
+  object-fit: cover;
+  border-radius: 14px;
+  border: 6px solid #ffffff;
+  box-shadow: 0 16px 36px rgba(0, 0, 0, 0.28);
+  transition: transform 0.8s ease;
+}
+.hc__photo--1 {
+  top: 50%;
+  left: 8%;
+  transform: translateY(-54%) rotate(-5deg);
+  z-index: 1;
+}
+.hc__photo--2 {
+  top: 50%;
+  right: 6%;
+  transform: translateY(-44%) rotate(4deg);
+  z-index: 2;
+}
+.hc__slide.is-active .hc__photo--1 {
+  transform: translateY(-56%) rotate(-6deg);
+}
+.hc__slide.is-active .hc__photo--2 {
+  transform: translateY(-42%) rotate(5deg);
+}
+.hc__ribbon {
+  position: absolute;
+  top: 50%;
+  left: 50%;
+  width: 62%;
+  max-width: 260px;
+  transform: translate(-50%, -50%) rotate(-8deg);
+  filter: drop-shadow(0 16px 30px rgba(120, 20, 60, 0.35));
+}
+
+/* Temas de cor de cada banner */
+.hc__slide--brand {
+  background: radial-gradient(circle at 85% 20%, #1c6b52 0%, transparent 45%),
+    linear-gradient(120deg, #0b4436 0%, #0f2a30 100%);
+  color: #ffffff;
+}
+.hc__slide--brand .hc__eyebrow,
+.hc__slide--brand .hc__title em {
+  color: #d4ec9a;
+}
+.hc__slide--brand .hc__lede {
+  color: rgba(255, 255, 255, 0.82);
+}
+.hc__slide--brand .hc__btn--primary {
+  background: #d4ec9a;
+  color: #102b32;
+}
+
+.hc__slide--rosa {
+  background: radial-gradient(circle at 80% 30%, #ffe3ec 0%, transparent 50%),
+    linear-gradient(120deg, #fbd0dd 0%, #f49ab6 100%);
+  color: #5a0f2e;
+}
+.hc__slide--rosa .hc__eyebrow,
+.hc__slide--rosa .hc__title em {
+  color: #c2255c;
+}
+.hc__slide--rosa .hc__title {
+  font-size: clamp(2.4rem, 5vw, 4rem);
+  text-transform: uppercase;
+}
+.hc__slide--rosa .hc__btn--primary {
+  background: #c2255c;
+  color: #ffffff;
+}
+.hc__slide--rosa .hc__ribbon {
+  color: #e64980;
+}
+
+.hc__slide--laser {
+  background: radial-gradient(circle at 75% 25%, #4a3a2c 0%, transparent 50%),
+    linear-gradient(120deg, #1d1814 0%, #2f261f 100%);
+  color: #ffffff;
+}
+.hc__slide--laser .hc__eyebrow,
+.hc__slide--laser .hc__title em {
+  color: #f0c27b;
+}
+.hc__slide--laser .hc__lede {
+  color: rgba(255, 255, 255, 0.8);
+}
+.hc__slide--laser .hc__btn--primary {
+  background: #f0c27b;
+  color: #1d1814;
+}
+
+.hc__slide--agro {
+  background: radial-gradient(circle at 80% 20%, #fff4d6 0%, transparent 50%),
+    linear-gradient(120deg, #f6e7bf 0%, #e8c874 100%);
+  color: #2d2a12;
+}
+.hc__slide--agro .hc__eyebrow,
+.hc__slide--agro .hc__title em {
+  color: #7c5a0b;
+}
+.hc__slide--agro .hc__title em {
+  color: #0b4436;
+}
+.hc__slide--agro .hc__btn--primary {
+  background: #0b4436;
+  color: #ffffff;
+}
+
+/* Setas e bolinhas */
+.hc__arrow {
+  position: absolute;
+  top: 50%;
+  z-index: 5;
+  width: 44px;
+  height: 44px;
+  margin-top: -22px;
+  border: none;
+  border-radius: 999px;
+  background: rgba(255, 255, 255, 0.85);
+  color: #102b32;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  cursor: pointer;
+  box-shadow: 0 6px 16px rgba(0, 0, 0, 0.18);
+  transition: background 0.15s ease;
+}
+.hc__arrow:hover {
+  background: #ffffff;
+}
+.hc__arrow--prev {
+  left: 16px;
+}
+.hc__arrow--next {
+  right: 16px;
+}
+.hc__dots {
+  position: absolute;
+  left: 0;
+  right: 0;
+  bottom: 16px;
+  z-index: 5;
+  display: flex;
+  justify-content: center;
+  gap: 8px;
+}
+.hc__dot {
+  width: 10px;
+  height: 10px;
+  padding: 0;
+  border: none;
+  border-radius: 999px;
+  background: rgba(255, 255, 255, 0.55);
+  box-shadow: 0 0 0 1px rgba(0, 0, 0, 0.12);
+  cursor: pointer;
+  transition: width 0.25s ease, background 0.25s ease;
+}
+.hc__dot.is-active {
+  width: 28px;
+  background: #ffffff;
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .hc__slide,
+  .hc__photo {
+    transition: none;
+  }
+}
+
+/* Celular: texto em cima, fotos embaixo */
+@media (max-width: 760px) {
+  .hc {
+    padding: 14px 0 4px;
+  }
+  .hc__frame {
+    height: 620px;
+    border-radius: 18px;
+  }
+  .hc__slide {
+    grid-template-columns: 1fr;
+    grid-template-rows: auto 1fr;
+    align-items: start;
+    gap: 0;
+    padding: 34px 22px 44px;
+  }
+  .hc__title {
+    font-size: 2rem;
+  }
+  .hc__slide--rosa .hc__title {
+    font-size: 2.6rem;
+  }
+  .hc__lede {
+    font-size: 0.95rem;
+    margin-bottom: 18px;
+  }
+  .hc__btn {
+    padding: 10px 18px;
+    font-size: 0.88rem;
+  }
+  .hc__photo {
+    width: 40%;
+  }
+  .hc__slide.is-active .hc__photo--1 {
+    transform: translateY(-40%) rotate(-6deg);
+  }
+  .hc__slide.is-active .hc__photo--2 {
+    transform: translateY(-30%) rotate(5deg);
+  }
+  .hc__arrow {
+    display: none;
+  }
+}
