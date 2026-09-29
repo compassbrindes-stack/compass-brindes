@@ -18,6 +18,7 @@ import {
   onlyDigits,
 } from "@/lib/validators";
 import type { Order } from "@/lib/orders";
+import { buscarCliente, contaConfigurada, registrarOrcamento, salvarCliente, sessaoAtual } from "@/lib/conta";
 
 const WHATSAPP_NUMBER = process.env.NEXT_PUBLIC_WHATSAPP_NUMBER ?? "";
 
@@ -54,6 +55,32 @@ export default function OrcamentoPage() {
   const [buscaStatus, setBuscaStatus] = useState<"idle" | "loading" | "ok" | "erro">("idle");
   const [pedidosEncontrados, setPedidosEncontrados] = useState<Order[]>([]);
   const [buscaErro, setBuscaErro] = useState<string | null>(null);
+
+  // Conta do cliente (opcional): preenche os dados automaticamente.
+  const [conta, setConta] = useState<"sem" | "visitante" | "logado">("sem");
+
+  useEffect(() => {
+    if (!contaConfigurada()) return;
+    if (!sessaoAtual()) {
+      setConta("visitante");
+      return;
+    }
+    setConta("logado");
+    buscarCliente().then((c) => {
+      if (!c) return;
+      const preencher = (atual: string, novo: string | null) => (atual.trim() ? atual : novo ?? "");
+      setNome((v) => preencher(v, c.nome));
+      setSobrenome((v) => preencher(v, c.sobrenome));
+      setCpfCnpj((v) => preencher(v, c.cnpj));
+      setCep((v) => preencher(v, c.cep));
+      setEndereco((v) => preencher(v, c.endereco));
+      setNumero((v) => preencher(v, c.numero));
+      setComplemento((v) => preencher(v, c.complemento));
+      setCidade((v) => preencher(v, c.cidade));
+      setEstado((v) => preencher(v, c.estado));
+      setTelefone((v) => preencher(v, c.telefone));
+    });
+  }, []);
 
   useEffect(() => {
     const load = () => setItems(getQuoteItems());
@@ -202,6 +229,16 @@ export default function OrcamentoPage() {
         }
       }
 
+      if (conta === "logado") {
+        // Guarda o orçamento no histórico da conta e mantém os dados atualizados.
+        registrarOrcamento({
+          numero_pedido: order.orderNumber,
+          itens: items.map((i) => ({ nome: i.name, quantidade: Number(i.quantity) || 0, slug: i.slug })),
+          forma_pagamento: formaPagamento,
+        });
+        salvarCliente({ nome, sobrenome, cnpj: cpfCnpj, cep, endereco, numero, complemento, cidade, estado, telefone });
+      }
+
       clearQuoteItems();
       setItems([]);
       setPedidoConcluido(order);
@@ -347,6 +384,17 @@ export default function OrcamentoPage() {
           </div>
 
           <h3 style={{ marginTop: 32 }}>Seus dados</h3>
+          {conta === "visitante" && (
+            <p className="conta-aviso">
+              Tem conta na Compass? <Link href="/conta">Entre</Link> para preencher seus dados
+              automaticamente. Não tem? Pode continuar normalmente, sem cadastro.
+            </p>
+          )}
+          {conta === "logado" && (
+            <p className="conta-aviso">
+              Dados preenchidos a partir da <Link href="/conta">sua conta</Link>. Confira antes de enviar.
+            </p>
+          )}
 
           <div className="form-row">
             <div className="form-field">
