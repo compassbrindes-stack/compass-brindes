@@ -8,7 +8,8 @@
       "https://supliutech.nyc3.cdn.digitaloceanspaces.com/products2/b2cd95c1-0446-444f-9301-aef1c61957cd.jpeg",
       "https://supliutech.nyc3.cdn.digitaloceanspaces.com/products2/86e9597c-0c00-4315-bd80-bc895d79f011.jpeg",
       "https://supliutech.nyc3.cdn.digitaloceanspaces.com/products2/7fe565aa-da4e-42ce-8ad0-14e399a3d39b.jpeg"
-    ]
+    ],
+    "supplierCode": "C090B630"
   },
   {
     "sku": "1942483-bolsa-termica-oxford-11l-c189b650",
@@ -18,7 +19,8 @@
     "images": [
       "https://supliutech.nyc3.cdn.digitaloceanspaces.com/products2/b0835aca-eca4-4886-a5ba-035d6e1829c1.jpeg",
       "https://supliutech.nyc3.cdn.digitaloceanspaces.com/products2/fa3d8e54-79ca-48d8-b698-b8899ff1b470.jpeg"
-    ]
+    ],
+    "supplierCode": "C189B650"
   },
   {
     "sku": "xbz-02798-bolsa-termica-10l",
@@ -32,7 +34,7 @@
     "colors": [
       "Cinza"
     ],
-    "supplierCode": "02798"
+    "supplierCode": "C027B980"
   },
   {
     "sku": "1947187-caixa-de-som-c043b620",
@@ -41,7 +43,8 @@
     "description": "DESCRICAO: Caixa de som multimídia resistente a respingos dágua feito em plástico com acabamento em tecido. Possui conexão via Bluetooth 5.0 e compatibilidade com a tecnologia TWS, que permite sincronizar duas caixas de som ao mesmo tempo. Conta ainda com modo de reprodução de arquivos MP3 a partir das entradas para cartão TF (microSD) e USB para pen drives. Acompanha cabo Micro-USB e cabo auxiliar P2. MEDIDAS: Altura : 10,5 cm Largura : 9,8 cm Peso aproximado (g): 309",
     "images": [
       "https://supliutech.nyc3.cdn.digitaloceanspaces.com/products2/83078e64-1313-4aba-9ca4-21fa523d3a09.jpeg"
-    ]
+    ],
+    "supplierCode": "C043B620"
   },
   {
     "sku": "1947192-caixa-de-som-c060b310",
@@ -51,7 +54,8 @@
     "images": [
       "https://supliutech.nyc3.cdn.digitaloceanspaces.com/products2/a3647f99-84e3-4e74-bb25-2a3ad3966db5.jpeg",
       "https://supliutech.nyc3.cdn.digitaloceanspaces.com/products2/aa35495a-d57a-4ce2-9dbe-73a6da07e6f9.jpeg"
-    ]
+    ],
+    "supplierCode": "C060B310"
   },
   {
     "sku": "1947185-caixa-de-som-c080b020",
@@ -60,7 +64,8 @@
     "description": "DESCRICAO: Caixa de som sem fio em inox com base emborrachada. Possui entrada Micro-USB para carregamento, conexão Bluetooth 5.0 e compatibilidade com a tecnologia TWS, que permite sincronizar duas caixas de som ao mesmo tempo. Acompanha cordão de nylon e cabo Micro-USB. MEDIDAS: Altura : 3,5 cm Largura : 4,9 cm Circunferência : 15,5cm Peso aproximado (g): 75",
     "images": [
       "https://supliutech.nyc3.cdn.digitaloceanspaces.com/products2/a902294c-695f-47e4-8eff-5cc5cd7e681e.jpeg"
-    ]
+    ],
+    "supplierCode": "C080B020"
   },
   {
     "sku": "1938267-caneca-chopp-c040b700",
@@ -69,7 +74,8 @@
     "description": "Descrição: Caneca térmica de inox com pegador plástico, capacidade de 700ml. Medidas: Altura: 17cm Largura: 15cm Peso: 360g",
     "images": [
       "https://supliutech.nyc3.cdn.digitaloceanspaces.com/products2/c393767f-a451-458a-b603-26ce55faa30a.jpeg"
-    ]
+    ],
+    "supplierCode": "C040B700"
   },
   {
     "sku": "1941595-caneca-termica-12l-c188b960",
@@ -79,7 +85,8 @@
     "images": [
       "https://supliutech.nyc3.cdn.digitaloceanspaces.com/products2/e1102ee3-ee18-40c3-a4a5-9e8583186501.jpeg",
       "https://supliutech.nyc3.cdn.digitaloceanspaces.com/products2/c40db285-f924-4725-8940-a50dc57af205.jpeg"
-    ]
+    ],
+    "supplierCode": "C188B960"
   },
   {
     "sku": "1941780-caneca-termica-900ml-c091b950",
@@ -90,7 +97,8 @@
       "https://supliutech.nyc3.cdn.digitaloceanspaces.com/products2/05b17fe8-2d10-4f13-921f-a9b94d1e925b.jpeg",
       "https://supliutech.nyc3.cdn.digitaloceanspaces.com/products2/de2f0144-a950-4809-bd5a-5830b805d439.jpeg",
       "https://supliutech.nyc3.cdn.digitaloceanspaces.com/products2/af8963c5-5228-41dd-b458-61fb2878bb40.jpeg"
-    ]
+    ],
+    "supplierCode": "C091B950"
   },
   {
     "sku": "1938400-caneca-termica-c060b610",
@@ -99,7 +107,8 @@
     "description": "Descrição: Caneca térmica de inox 350ml com parede dupla. Contém tampa acrílica com bocal e trava de segurança. Medidas: Altura: 11cm Largura: 12cm Peso: 270",
     "images": [
       "https://supliutech.nyc3.cdn.digitaloceanspaces.com/products2/b1d69e70-c2ce-4c6e-8844-0735fce220fc.jpeg"
-    ]
+    ],
+    "supplierCode": "C060B610"
   },
   {
     "sku": "1947204-caneta-metal-aros-cb-er143b",
@@ -119,7 +128,8 @@
     "images": [
       "https://supliutech.nyc3.cdn.digitaloceanspaces.com/products2/366e65e6-e150-4ecb-a66f-d03db2e0f0a0.jpeg"
     ],
-    "minQuantity": 50
+    "minQuantity": 50,
+    "supplierCode": "C082B670"
   },
   {
     "sku": "1947206-caneta-metal-touch-c050b120",
@@ -129,7 +139,8 @@
     "images": [
       "https://supliutech.nyc3.cdn.digitaloceanspaces.com/products2/4572b76b-8086-466a-a265-00cf59ca81c5.jpeg"
     ],
-    "minQuantity": 50
+    "minQuantity": 50,
+    "supplierCode": "C050B120"
   },
   {
     "sku": "1947202-caneta-metal-touch-c050b190",
@@ -141,7 +152,8 @@
       "https://supliutech.nyc3.cdn.digitaloceanspaces.com/products2/b60e126b-bcd6-4e9b-8141-a7a796157b69.jpeg",
       "https://supliutech.nyc3.cdn.digitaloceanspaces.com/products2/8ab42900-5120-45e8-b08c-2c2e109a25ee.jpeg"
     ],
-    "minQuantity": 50
+    "minQuantity": 50,
+    "supplierCode": "C050B190"
   },
   {
     "sku": "1947208-chaveiro-abridor-c098b240",
@@ -152,7 +164,8 @@
       "https://supliutech.nyc3.cdn.digitaloceanspaces.com/products2/0669cb93-b495-4594-aff0-f048fa80e181.jpeg",
       "https://supliutech.nyc3.cdn.digitaloceanspaces.com/products2/67280b34-5c3e-4a60-8474-147373893d4f.jpeg"
     ],
-    "minQuantity": 100
+    "minQuantity": 100,
+    "supplierCode": "C098B240"
   },
   {
     "sku": "1942482-chaveiro-trena-plastico-1m-c082b040",
@@ -163,7 +176,8 @@
       "https://supliutech.nyc3.cdn.digitaloceanspaces.com/products2/dfbdb0ff-4d96-43ba-8d52-21635cb32514.jpeg",
       "https://supliutech.nyc3.cdn.digitaloceanspaces.com/products2/9cc43253-aacd-4827-a7cd-2a482c3289fd.jpeg"
     ],
-    "minQuantity": 50
+    "minQuantity": 50,
+    "supplierCode": "C082B040"
   },
   {
     "sku": "1942487-chaveiro-trena-plastico-2-metros-c082b320",
@@ -174,7 +188,8 @@
       "https://supliutech.nyc3.cdn.digitaloceanspaces.com/products2/b3d742b4-2591-4537-8513-88e44269498d.jpeg",
       "https://supliutech.nyc3.cdn.digitaloceanspaces.com/products2/58d61f51-01e0-4282-a4f1-21251346b271.jpeg"
     ],
-    "minQuantity": 50
+    "minQuantity": 50,
+    "supplierCode": "C082B320"
   },
   {
     "sku": "1938314-copo-c040b800",
@@ -183,7 +198,8 @@
     "description": "Descrição: Copo térmico de inox com capacidade para 473ml. Medidas: Altura: 14cm Largura: 8cm Peso 180g",
     "images": [
       "https://supliutech.nyc3.cdn.digitaloceanspaces.com/products2/2d532b4d-9747-4fa0-9ed6-f5e329984c36.jpeg"
-    ]
+    ],
+    "supplierCode": "C040B800"
   },
   {
     "sku": "1938403-copo-c187b630",
@@ -192,7 +208,8 @@
     "description": "Descrição: Copo térmico em aço inox com pintura eletrostática e capacidade máxima de 520ml. Sua parede dupla, aliada à tampa plástica com vedação a vácuo e ao bocal com trava de segurança, assegura a conservação da temperatura das bebidas por muito mais tempo. Medidas: Altura: 17,9cm Largura: 8,8cm Peso: 295g",
     "images": [
       "https://supliutech.nyc3.cdn.digitaloceanspaces.com/products2/c731ce2c-ca48-4e04-af67-fa299cac5f79.jpeg"
-    ]
+    ],
+    "supplierCode": "C187B630"
   },
   {
     "sku": "1938401-copo-cafe-c082b450",
@@ -201,7 +218,8 @@
     "description": "Descrição: Compacto, resistente e com parede dupla, nosso copo feito em inox com capacidade de 150ml, mantém a bebida numa temperatura agradável por mais tempo. Perfeito para aquele café que aquece a alma, um chá para relaxar ou até um gole refrescante de água. Medidas: Altura: 7,8cm Largura: 7,5cm Peso 110g",
     "images": [
       "https://supliutech.nyc3.cdn.digitaloceanspaces.com/products2/f4f3c6d1-02ed-46ee-a55e-9de08e6f35cd.jpeg"
-    ]
+    ],
+    "supplierCode": "C082B450"
   },
   {
     "sku": "1938402-copo-caixa-de-som-c187b490",
@@ -210,7 +228,8 @@
     "description": "Descrição: Copo térmico de inox com caixa de som e capacidade 400ml. Contém tampa com abridor. Caixa de som possui botão para ligar/desligar, botões para aumentar diminuir volume/ avançar e retroceder faixas. Operante no modo bluetooth. Acompanha cabo USB Tipo-C. Obs.: A caixa de som não é a prova dágua, para a higienização do copo é necessário desrosquear a caixa de som para remove-la. Medidas: Altura: 17,6cm Largura: 9,5 cm Peso: 360g",
     "images": [
       "https://supliutech.nyc3.cdn.digitaloceanspaces.com/products2/007543bd-29a7-435b-b23f-d54aaac850f7.jpeg"
-    ]
+    ],
+    "supplierCode": "C187B490"
   },
   {
     "sku": "1934039-copo-cuia",
@@ -243,7 +262,8 @@
       "https://supliutech.nyc3.cdn.digitaloceanspaces.com/products2/0e99fb23-f82f-4bc7-ab2c-f519fe32e54c.jpeg",
       "https://supliutech.nyc3.cdn.digitaloceanspaces.com/products2/7c4d22db-5d7f-4545-8196-2c9f35be0949.jpeg",
       "https://supliutech.nyc3.cdn.digitaloceanspaces.com/products2/c8dc1f49-cff5-49fa-851d-3bad8e983642.jpeg"
-    ]
+    ],
+    "supplierCode": "C092B370"
   },
   {
     "sku": "1938404-coqueteleira-inox-c190b390",
@@ -253,7 +273,8 @@
     "images": [
       "https://supliutech.nyc3.cdn.digitaloceanspaces.com/products2/1349151b-7002-45c2-9906-a1f95a995c5b.jpeg",
       "https://supliutech.nyc3.cdn.digitaloceanspaces.com/products2/e8b4bc79-6b94-46ad-86bd-42f836f8d95e.jpeg"
-    ]
+    ],
+    "supplierCode": "C190B390"
   },
   {
     "sku": "1947215-escova-c152b480",
@@ -262,7 +283,8 @@
     "description": "DESCRICAO: Escova plástica com design ergonômico e cerdas flexíveis posicionadas em dois níveis diferentes, oferecendo um pentear mais suave e desembaraçante sem puxar ou danificar os fios de diferentes comprimentos e curvaturas. MEDIDAS: Largura : 7,5 cm Comprimento : 17,5 cm Espessura : 3 cm",
     "images": [
       "https://supliutech.nyc3.cdn.digitaloceanspaces.com/products2/f1682eea-acac-4837-be84-21b6c794e1e3.jpeg"
-    ]
+    ],
+    "supplierCode": "C152B480"
   },
   {
     "sku": "1947211-escova-espelho-coracao-c189b190",
@@ -271,7 +293,8 @@
     "description": "DESCRICAO: Funcional, a escova com espelho é ideal para quem busca praticidade no dia a dia. Compacta, é feita em plástico e possui abertura vertical, liberando as cerdas ao pressionar o verso. MEDIDAS: Largura : 7,8 cm Comprimento : 7,7 cm Espessura : 2,6 cm Tamanho total aproximado (CxL): Aberta 14,9 cm Peso aproximado (g): 43",
     "images": [
       "https://supliutech.nyc3.cdn.digitaloceanspaces.com/products2/fad188fd-ccb3-4f6e-9bd4-1e8c434a4c46.jpeg"
-    ]
+    ],
+    "supplierCode": "C189B190"
   },
   {
     "sku": "1947214-escova-espelho-redonda-c103b420",
@@ -283,7 +306,8 @@
       "https://supliutech.nyc3.cdn.digitaloceanspaces.com/products2/83d08913-94e7-45de-ba7e-cd89af74535f.jpeg",
       "https://supliutech.nyc3.cdn.digitaloceanspaces.com/products2/1123e0e7-50d4-4823-a64e-31eacb846261.jpeg",
       "https://supliutech.nyc3.cdn.digitaloceanspaces.com/products2/638a5df7-88cf-4783-b6e6-59498d9fb4e1.jpeg"
-    ]
+    ],
+    "supplierCode": "C103B420"
   },
   {
     "sku": "1947217-fone-de-ouvido-bluetooth-touch-com-case-carregador-c050b210",
@@ -293,7 +317,8 @@
     "images": [
       "https://supliutech.nyc3.cdn.digitaloceanspaces.com/products2/3250415e-9184-466b-8010-d75b0230321c.jpeg",
       "https://supliutech.nyc3.cdn.digitaloceanspaces.com/products2/0a5a0674-dcad-4e5f-9040-e561a18ed6bd.jpeg"
-    ]
+    ],
+    "supplierCode": "C050B210"
   },
   {
     "sku": "1938408-garrafa-c042b05",
@@ -313,7 +338,8 @@
     "images": [
       "https://supliutech.nyc3.cdn.digitaloceanspaces.com/products2/e43d3831-74be-427a-959e-40a11a67250c.jpeg",
       "https://supliutech.nyc3.cdn.digitaloceanspaces.com/products2/88bdc83e-1866-4cd3-98ef-655e04fca017.jpeg"
-    ]
+    ],
+    "supplierCode": "C186B770"
   },
   {
     "sku": "1947238-garrafa-c186b780",
@@ -322,7 +348,8 @@
     "description": "DESCRICAO: Garrafa térmica de inox livre de BPA com capacidade de 1 litro. Contém alça para transporte. MEDIDAS: Altura : 30 cm Largura : 11,5 cm Circunferência : 29,2 cm Peso aproximado (g): 606",
     "images": [
       "https://supliutech.nyc3.cdn.digitaloceanspaces.com/products2/1c8f0b1e-ab9a-418d-82e9-fcd03942c127.jpeg"
-    ]
+    ],
+    "supplierCode": "C186B780"
   },
   {
     "sku": "1938407-garrafa-c189b100",
@@ -332,7 +359,8 @@
     "images": [
       "https://supliutech.nyc3.cdn.digitaloceanspaces.com/products2/4aa51003-7523-408d-9ee6-b32514471857.jpeg",
       "https://supliutech.nyc3.cdn.digitaloceanspaces.com/products2/8ae02c00-4ec8-439a-b9c3-f721eacb055b.jpeg"
-    ]
+    ],
+    "supplierCode": "C189B100"
   },
   {
     "sku": "1938411-garrafa-flip-650ml-c040b980",
@@ -341,7 +369,8 @@
     "description": "Descrição: Garrafa térmica em inox de parede dupla, capacidade de 650ml. Tampa com alça de transporte, bico flip e canudo interno. Medidas: Altura: 25cm Largura: 9cm Peso: 400g",
     "images": [
       "https://supliutech.nyc3.cdn.digitaloceanspaces.com/products2/48243dd4-f3ed-4a3b-ab61-1ba517ed4506.jpeg"
-    ]
+    ],
+    "supplierCode": "C040B980"
   },
   {
     "sku": "1938409-garrafa-flip-c040b970",
@@ -350,7 +379,8 @@
     "description": "Descrição: Garrafa térmica em inox de parede dupla, capacidade de 550ml. Tampa com alça de transporte, bico flip e canudo interno. Medidas: Altura: 21,5cm Largura: 8cm Peso: 400g",
     "images": [
       "https://supliutech.nyc3.cdn.digitaloceanspaces.com/products2/48243dd4-f3ed-4a3b-ab61-1ba517ed4506.jpeg"
-    ]
+    ],
+    "supplierCode": "C040B970"
   },
   {
     "sku": "1941594-garrafa-termica-15l-c190b330",
@@ -360,7 +390,8 @@
     "images": [
       "https://supliutech.nyc3.cdn.digitaloceanspaces.com/products2/23455815-0c2d-4435-84ef-b73607b4cf20.jpeg",
       "https://supliutech.nyc3.cdn.digitaloceanspaces.com/products2/e5c8128d-ee0a-4fcb-a994-91e60c2c3f89.jpeg"
-    ]
+    ],
+    "supplierCode": "C190B330"
   },
   {
     "sku": "1941224-garrafa-termica-780ml-c185b180",
@@ -369,7 +400,8 @@
     "description": "DESCRIÇÃO: Garrafa térmica 780ml em inox de alta qualidade. Possui tampa rosqueável com detalhe superior em relevo, pode ser utilizada com líquidos quentes ou frios. MEDIDAS: Altura: 30,3 cm Largura: 7,9 cm PESO 410G",
     "images": [
       "https://supliutech.nyc3.cdn.digitaloceanspaces.com/products2/ae64c521-dbce-4215-a854-dea5887d38b7.jpeg"
-    ]
+    ],
+    "supplierCode": "C185B180"
   },
   {
     "sku": "1941593-garrafa-termica-800ml-c190b140",
@@ -380,7 +412,8 @@
       "https://supliutech.nyc3.cdn.digitaloceanspaces.com/products2/ffda6325-32f4-4554-b1ec-e5cb348ba2e9.jpeg",
       "https://supliutech.nyc3.cdn.digitaloceanspaces.com/products2/22778270-13b0-4cc3-a4d1-c09a4774a779.jpeg",
       "https://supliutech.nyc3.cdn.digitaloceanspaces.com/products2/95364eb1-cfff-44a2-b129-a50c77c83cab.jpeg"
-    ]
+    ],
+    "supplierCode": "C190B140"
   },
   {
     "sku": "1947220-kit-churrasco-c074b470",
@@ -390,7 +423,8 @@
     "images": [
       "https://supliutech.nyc3.cdn.digitaloceanspaces.com/products2/4ce4d6e3-a79e-4039-84ac-8d66842ed01b.jpeg",
       "https://supliutech.nyc3.cdn.digitaloceanspaces.com/products2/0bbd9da8-1faf-41f9-819a-e1cab61235b7.jpeg"
-    ]
+    ],
+    "supplierCode": "C074B470"
   },
   {
     "sku": "1941773-kit-churrasco-c082b170",
@@ -401,7 +435,8 @@
       "https://supliutech.nyc3.cdn.digitaloceanspaces.com/products2/be47138a-fd6f-49c1-bedc-c4c85677a1a6.jpeg",
       "https://supliutech.nyc3.cdn.digitaloceanspaces.com/products2/7c9b85a4-d7fa-498b-b5ab-68680c2568f5.jpeg",
       "https://supliutech.nyc3.cdn.digitaloceanspaces.com/products2/4049309e-9692-43b6-84ce-f5105380e682.jpeg"
-    ]
+    ],
+    "supplierCode": "C082B170"
   },
   {
     "sku": "1947225-mochila-c013b200",
@@ -412,7 +447,8 @@
       "https://supliutech.nyc3.cdn.digitaloceanspaces.com/products2/244c48d1-8059-42a7-bda5-8447bf8a6705.jpeg",
       "https://supliutech.nyc3.cdn.digitaloceanspaces.com/products2/201bebe3-658c-469f-a7ac-127949cd51cb.jpeg",
       "https://supliutech.nyc3.cdn.digitaloceanspaces.com/products2/f3dd184b-65e5-447c-9db5-fe172e2571a0.jpeg"
-    ]
+    ],
+    "supplierCode": "C013B200"
   },
   {
     "sku": "1947227-necessaire-c190b190",
@@ -423,7 +459,8 @@
       "https://supliutech.nyc3.cdn.digitaloceanspaces.com/products2/fb3e394e-5efd-4f90-b2c6-1b6f3f0efa1c.jpeg",
       "https://supliutech.nyc3.cdn.digitaloceanspaces.com/products2/c6b90ce8-3d3b-4fc4-9065-41e8b9fd49bd.jpeg",
       "https://supliutech.nyc3.cdn.digitaloceanspaces.com/products2/7676eea4-45ce-473e-82d7-034e1601c418.jpeg"
-    ]
+    ],
+    "supplierCode": "C190B190"
   },
   {
     "sku": "1947231-porta-joias-c016b22b0",
@@ -442,7 +479,8 @@
     "images": [
       "https://supliutech.nyc3.cdn.digitaloceanspaces.com/products2/4afa5584-09e6-4c04-9c96-5fe036c1ec67.jpeg",
       "https://supliutech.nyc3.cdn.digitaloceanspaces.com/products2/ddf4a156-afb3-4941-bf2d-d5848304039e.jpeg"
-    ]
+    ],
+    "supplierCode": "C091B880"
   },
   {
     "sku": "1941589-squeeze-inox-500ml-c913b9i0",
@@ -462,7 +500,8 @@
     "images": [
       "https://supliutech.nyc3.cdn.digitaloceanspaces.com/products2/ad663caf-91fc-4ba4-b567-71df64928026.jpeg",
       "https://supliutech.nyc3.cdn.digitaloceanspaces.com/products2/92b1aefb-5447-4ff8-bea0-19c709cbfefb.jpeg"
-    ]
+    ],
+    "supplierCode": "C185B580"
   },
   {
     "sku": "1941592-squeeze-inox-750ml-c188b210",
@@ -471,7 +510,8 @@
     "description": "DESCRIÇÃO: Squeeze feito em inox com 750ml. Possui tampa plástica, bocal com tampa protetora e alça para transporte. Este brinde será o parceiro de atividades físicas perfeito. MEDIDAS: Altura: 25,5cm Largura: 8,7cm PESO 175G",
     "images": [
       "https://supliutech.nyc3.cdn.digitaloceanspaces.com/products2/f5db86b1-0ef7-4fd1-84e5-5ad3aa3cf9ce.jpeg"
-    ]
+    ],
+    "supplierCode": "C188B210"
   },
   {
     "sku": "1941770-squeeze-inox-880ml-c187b800",
@@ -481,7 +521,8 @@
     "images": [
       "https://supliutech.nyc3.cdn.digitaloceanspaces.com/products2/9cc92f53-5e96-4e5d-ba5b-5ff273abeb78.jpeg",
       "https://supliutech.nyc3.cdn.digitaloceanspaces.com/products2/f740b53e-2742-42ad-b9df-ac223c5a6b02.jpeg"
-    ]
+    ],
+    "supplierCode": "C187B800"
   },
   {
     "sku": "xbz-06033-caneca-termica-12l",
@@ -492,7 +533,8 @@
       "https://www.xbzbrindes.com.br/img/produtos/3/Caneca-Termica-1-2L-AMARELO-COM-AZUL-27317-1771595129.jpg",
       "https://www.xbzbrindes.com.br/img/produtos/3/Caneca-Termica-1-2L-16950d1-1716388358.jpg",
       "https://www.xbzbrindes.com.br/img/produtos/3/Caneca-Termica-1-2L-16950d5-1771595149.jpg"
-    ]
+    ],
+    "supplierCode": "C060B330"
   },
   {
     "sku": "xbz-14724-copo-termico-inox-500ml",
@@ -509,7 +551,7 @@
       "Branco",
       "Preto"
     ],
-    "supplierCode": "14724"
+    "supplierCode": "C147B240"
   },
   {
     "sku": "xbz-04014-copo-termico-inox-380ml-multiuso",
@@ -525,7 +567,7 @@
       "Bronze",
       "Preto"
     ],
-    "supplierCode": "04014"
+    "supplierCode": "C040B140"
   },
   {
     "sku": "xbz-18639-garrafa-termica-inox-450ml",
@@ -536,7 +578,8 @@
       "https://www.xbzbrindes.com.br/img/produtos/3/Garrafa-Termica-Inox-450ml-INOX-14063-1708535556.jpg",
       "https://www.xbzbrindes.com.br/img/produtos/3/Garrafa-Termica-Inox-450ml-13933d1-1716307808.jpg",
       "https://www.xbzbrindes.com.br/img/produtos/3/Garrafa-Termica-Inox-450ml-13933d2-1716307855.jpg"
-    ]
+    ],
+    "supplierCode": "C186B390"
   },
   {
     "sku": "xbz-18639kit-kit-garrafa-termica",
@@ -561,7 +604,7 @@
     "colors": [
       "Preto"
     ],
-    "supplierCode": "09059"
+    "supplierCode": "C090B590"
   },
   {
     "sku": "canivete-chave-de-boca-01",
