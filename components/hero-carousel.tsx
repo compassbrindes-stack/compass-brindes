@@ -78,7 +78,7 @@ const INTERVAL_MS = 6000;
 function RibbonArt() {
   // Laço rosa desenhado em SVG (sem foto), para o banner do Outubro Rosa.
   return (
-    <svg className="hc-ribbon" viewBox="0 0 200 260" aria-hidden="true">
+    <svg className="hc__ribbon" viewBox="0 0 200 260" aria-hidden="true">
       <path
         d="M100 30c-26 0-44 20-44 46 0 22 12 44 28 68L40 230l30 12 30-58 30 58 30-12-44-86c16-24 28-46 28-68 0-26-18-46-44-46zm0 24c12 0 20 10 20 22 0 14-8 30-20 48-12-18-20-34-20-48 0-12 8-22 20-22z"
         fill="currentColor"
