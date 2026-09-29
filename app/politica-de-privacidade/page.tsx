@@ -28,6 +28,13 @@ export default function PoliticaDePrivacidadePage() {
             complemento) e os itens selecionados. Esses dados são fornecidos diretamente por você
             ao preencher os formulários do site.
           </p>
+          <p>
+            <strong>Conta de cliente (opcional):</strong> se você criar uma conta, guardamos também
+            seu e-mail, nome, empresa, CPF ou CNPJ, telefone, endereço e o histórico dos
+            orçamentos enviados com a conta. A senha é armazenada de forma criptografada pelo
+            nosso provedor de autenticação e não temos acesso a ela. O cadastro não é obrigatório:
+            é possível navegar e pedir orçamentos sem conta.
+          </p>
         </section>
 
         <section>
@@ -39,6 +46,8 @@ export default function PoliticaDePrivacidadePage() {
             <li>Processar e identificar seu pedido ou orçamento;</li>
             <li>Entrar em contato para confirmar detalhes, prazos e valores;</li>
             <li>Consultar o histórico de pedidos vinculado ao seu CPF/CNPJ, quando solicitado.</li>
+            <li>Manter sua conta, preencher automaticamente seus próximos orçamentos e mostrar seu histórico;</li>
+            <li>Enviar novidades e campanhas, somente se você marcar essa opção (pode desmarcar a qualquer momento em “Minha conta”).</li>
           </ul>
         </section>
 
@@ -56,7 +65,9 @@ export default function PoliticaDePrivacidadePage() {
           <p>
             Seus dados são armazenados em ambiente seguro e utilizados apenas pelo tempo
             necessário para cumprir a finalidade para a qual foram coletados, respeitando a Lei
-            Geral de Proteção de Dados (LGPD — Lei nº 13.709/2018).
+            Geral de Proteção de Dados (LGPD — Lei nº 13.709/2018). Os dados da conta de cliente ficam
+            no Supabase, com servidores em São Paulo (Brasil), e cada cliente só tem acesso aos
+            próprios dados.
           </p>
         </section>
 
@@ -64,8 +75,9 @@ export default function PoliticaDePrivacidadePage() {
           <h3>6. Seus direitos</h3>
           <p>
             Você pode, a qualquer momento, solicitar a confirmação, correção ou exclusão dos seus
-            dados pessoais, entrando em contato conosco pelo WhatsApp informado no rodapé do
-            site.
+            dados pessoais, incluindo a exclusão da sua conta, entrando em contato conosco pelo
+            WhatsApp ou pelo e-mail compassbrindes@gmail.com. Os dados da conta também podem ser
+            corrigidos por você mesmo em “Minha conta”.
           </p>
         </section>
 
