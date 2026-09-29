@@ -1221,7 +1221,7 @@
   },
   {
     "sku": "asia-cj405-kit-escritorio-caderno-caneca-caneta",
-    "name": "Kit Escritório Caderno, Caneca e Caneta Metálica",
+    "name": "Kit Escritório Caderno, Caneca e Caneta Metálica Colorido",
     "category": "Kits",
     "description": "Descrição: Kit escritório em caixa de presente contendo caderno tamanho A5 com capa dura em PU cinza, detalhes em PU colorido e impressão de linhas prateadas, 80 folhas internas pautadas em papel 70g/m², com fechamento magnético em PU e placa metálica, além de caneta esferográfica metálica e caneca de cerâmica. Peso do kit: 1,339kg Dimensão da embalagem: 25cm x 32cm x 9,7cm",
     "images": [
@@ -1243,6 +1243,48 @@
       "Azul",
       "Preto"
     ],
-    "supplierCode": "CB-CJ405"
+    "supplierCode": "CBCJ405"
+  },
+  {
+    "sku": "asia-cj305-kit-escritorio-caderno-garrafa-caneta",
+    "name": "Kit Escritório Caderno, Garrafa e Caneta Metálica",
+    "category": "Kits",
+    "description": "Descrição: Kit escritório em caixa presenteável contendo caderno A5 com capa em RPET e detalhe em bambu, 80 folhas pautadas em papel 70g/m²; garrafa térmica de 600ml em inox (exterior 201/interior 304) com acabamento preto fosco, tampa em plástico PP com detalhe em bambu e alça em silicone preta; e caneta esferográfica de metal com detalhe em bambu. Peso do kit: 1,373kg Dimensão da embalagem: 27,2cm x 32cm x 8cm",
+    "images": [
+      "https://media.asiaimport.com.br/2026/03/ASIA7712.jpg",
+      "https://media.asiaimport.com.br/2026/03/ASIA7715.jpg",
+      "https://media.asiaimport.com.br/2026/03/ASIA7716.jpg",
+      "https://media.asiaimport.com.br/2026/03/ASIA7724.jpg",
+      "https://media.asiaimport.com.br/2026/03/ASIA7727.jpg",
+      "https://media.asiaimport.com.br/2026/03/ASIA7728.jpg",
+      "https://media.asiaimport.com.br/2026/03/ASIA7733.jpg",
+      "https://media.asiaimport.com.br/2026/03/ASIA7836.jpg",
+      "https://media.asiaimport.com.br/2026/03/ASIA7840.jpg",
+      "https://media.asiaimport.com.br/2026/03/ASIA7722.JPG.jpg"
+    ],
+    "colors": [
+      "Preto"
+    ],
+    "supplierCode": "CBCJ305"
+  },
+  {
+    "sku": "asia-cj410-kit-escritorio-caderno-caneca-caneta",
+    "name": "Kit Escritório Caderno, Caneca e Caneta Metálica Preto",
+    "category": "Kits",
+    "description": "Descrição: Kit escritório em caixa presenteável contendo caderno A5 com capa dura, 80 folhas internas pautadas em papel 70g/m², com marcador de página e elástico de fechamento, além de caneta esferográfica metálica e caneca de cerâmica. Acompanha luva de papel kraft para proteção no transporte. Peso do kit: 1,329kg Embalagem: 24,8cm x 32cm x 9,6cm Caneca: 9,2cm x ø8,2cm Caderno: 21,1cm x 14,2cm Caneta: 14cm x ø1cm",
+    "images": [
+      "https://media.asiaimport.com.br/2026/06/com-caixa-scaled.jpg",
+      "https://media.asiaimport.com.br/2026/06/ASIA7647.JPG.jpg",
+      "https://media.asiaimport.com.br/2026/03/ASIA7659.jpg",
+      "https://media.asiaimport.com.br/2026/03/ASIA7658.jpg",
+      "https://media.asiaimport.com.br/2026/03/ASIA7661-1.jpg",
+      "https://media.asiaimport.com.br/2026/03/ASIA7654-1.jpg",
+      "https://media.asiaimport.com.br/2026/03/ASIA7652.jpg",
+      "https://media.asiaimport.com.br/2026/03/ASIA7648.jpg"
+    ],
+    "colors": [
+      "Preto"
+    ],
+    "supplierCode": "CBCJ410"
   }
 ]
