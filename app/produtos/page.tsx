@@ -23,7 +23,7 @@ export default async function ProdutosPage({
     if (themeSkus && !themeSkus.has(p.supplierSku)) return false;
     if (searchParams.genero && p.apparel?.genero !== searchParams.genero) return false;
     if (query) {
-      const haystack = `${p.name} ${p.description ?? ""} ${p.category}`.toLowerCase();
+      const haystack = `${p.name} ${p.description ?? ""} ${p.category} ${p.supplierCode ?? ""}`.toLowerCase();
       if (!haystack.includes(query)) return false;
     }
     return true;
