@@ -40,6 +40,8 @@ export interface Product {
   name: string;
   slug: string;
   category: string;
+  /** Outras abas em que o produto também aparece (ex.: canivetes também em Agro). */
+  extraCategories?: string[];
   description?: string;
   images: string[];
   variants: ProductVariant[];

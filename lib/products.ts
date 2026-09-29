@@ -38,5 +38,5 @@ export async function getCategories(): Promise<string[]> {
 
 export async function getProductsByCategory(category: string): Promise<Product[]> {
   const products = await getAllProducts();
-  return products.filter((p) => p.category === category);
+  return products.filter((p) => p.category === category || Boolean(p.extraCategories?.includes(category)));
 }
