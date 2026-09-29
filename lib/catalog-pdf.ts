@@ -64,13 +64,23 @@ function base64ToBytes(dataUri: string): Uint8Array {
   return new Uint8Array(Buffer.from(base64, "base64"));
 }
 
+// Transforma caminhos relativos ("/produtos/x.jpg") em endereço completo.
+function resolveImageUrl(url: string, siteUrl?: string): string {
+  if (/^https?:\/\//i.test(url)) return url;
+  const base = siteUrl || process.env.NEXT_PUBLIC_SITE_URL || "https://www.compassbrindes.com.br";
+  return new URL(url, base).toString();
+}
+
 // Baixa os bytes de uma imagem com um limite de tempo, para não travar a
 // geração do PDF caso algum fornecedor esteja lento ou fora do ar.
-async function fetchImageBytes(url: string, timeoutMs = 6000): Promise<Uint8Array | null> {
+async function fetchImageBytes(url: string, timeoutMs = 10000): Promise<Uint8Array | null> {
   try {
     const controller = new AbortController();
     const timeout = setTimeout(() => controller.abort(), timeoutMs);
-    const res = await fetch(url, { signal: controller.signal });
+    const res = await fetch(url, {
+      signal: controller.signal,
+      headers: { "User-Agent": "Mozilla/5.0 (compatible; CompassCatalogo/1.0)" },
+    });
     clearTimeout(timeout);
     if (!res.ok) return null;
     const buf = await res.arrayBuffer();
@@ -165,7 +175,11 @@ function buildProductCell(
   return { product, image, codigo, nameLines, descriptionLines, extraLines, colorLines, photoDims, cellHeight };
 }
 
-export async function buildCatalogPdf(products: Product[]): Promise<Uint8Array> {
+// `siteUrl` é o endereço do próprio site (ex.: https://www.compassbrindes.com.br).
+// Ele é necessário para as fotos guardadas no site com caminho relativo
+// (ex.: "/produtos/canivete-1.jpg"): sem o endereço completo o servidor não
+// consegue baixá-las e o produto saía no PDF sem foto.
+export async function buildCatalogPdf(products: Product[], siteUrl?: string): Promise<Uint8Array> {
   const pdfDoc = await PDFDocument.create();
   pdfDoc.setTitle("Catálogo Compass Brindes Corporativos");
   pdfDoc.setAuthor("Compass Brindes Corporativos");
@@ -187,7 +201,7 @@ export async function buildCatalogPdf(products: Product[]): Promise<Uint8Array> 
   const imageUrls = products.map((p) => p.images?.[0]);
   const imageBytesList = await mapWithConcurrency(imageUrls, 8, async (url) => {
     if (!url) return null;
-    return fetchImageBytes(url);
+    return fetchImageBytes(resolveImageUrl(url, siteUrl));
   });
 
   const imageByProduct = new Map<Product, PDFImage>();
