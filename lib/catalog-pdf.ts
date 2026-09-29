@@ -162,7 +162,7 @@ function buildProductCell(
   const photoDims = image ? scaledImageDims(image, CARD_IMAGE_MAX) : { width: 0, height: 0 };
 
   const textHeight =
-    12 + // código
+    2 + // respiro entre a foto e o nome
     nameLines.length * 12.5 +
     3 +
     descriptionLines.length * 10.5 +
@@ -413,14 +413,9 @@ export async function buildCatalogPdf(products: Product[], siteUrl?: string): Pr
           cy -= cell.photoDims.height + 10;
         }
 
-        page.drawText(cell.codigo || "", {
-          x: cellX,
-          y: cy,
-          size: 8,
-          font: fontBold,
-          color: COLOR_PRIMARY,
-        });
-        cy -= 12;
+        // Código do produto não é mais exibido no catálogo; só um respiro
+        // entre a foto e o nome.
+        cy -= 2;
 
         for (const line of cell.nameLines) {
           page.drawText(line, { x: cellX, y: cy, size: 10.5, font: fontBold, color: COLOR_TEXT });
