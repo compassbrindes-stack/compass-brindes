@@ -449,25 +449,27 @@
   {
     "sku": "1947220-kit-churrasco-c074b470",
     "name": "KIT CHURRASCO C074B470",
-    "category": "Kit Churrasco",
+    "category": "Kits Corporativos",
     "description": "DESCRICAO: Kit churrasco 2 peças com estojo, contém faca e garfo. Estojo com alça para transporte e área interna com elástico de fixação para os utensílios. MEDIDAS: Estojo - comprimento: 36 cm Estojo - largura: 9,8 cm Faca - comprimento: 33 cm Faca- largura: 3,7 cm Garfo - comprimento: 33 cm Garfo - largura: 2,6 cm Estojo - medidas para gravação (C x ): 33,9 cm x 8,3 cm Faca - medidas para gravação (C x L): 3,6 cm x 2 cm Garfo - medidas para gravação (C x L): 12,9 cm x 2 cm Peso: 271 g CARACTERISTICA: Material: inox e madeira",
     "images": [
       "https://supliutech.nyc3.cdn.digitaloceanspaces.com/products2/4ce4d6e3-a79e-4039-84ac-8d66842ed01b.jpeg",
       "https://supliutech.nyc3.cdn.digitaloceanspaces.com/products2/0bbd9da8-1faf-41f9-819a-e1cab61235b7.jpeg"
     ],
-    "supplierCode": "C074B470"
+    "supplierCode": "C074B470",
+    "subcategory": "Kit Churrasco"
   },
   {
     "sku": "1941773-kit-churrasco-c082b170",
     "name": "Kit Churrasco C082B170",
-    "category": "Kit Churrasco",
+    "category": "Kits Corporativos",
     "description": "DESCRIÇÃO: Kit churrasco com cinco peças em inox. O conjunto inclui: uma faca de 6 polegadas, um garfo, uma espátula, um pincel com cerdas de silicone e um pegador. Acompanha estojo em nylon com um par de alças para transporte e placa metálica personalizável com verso autoadesivo para fixação. MEDIDAS: Altura: 4,5cm Largura: 11cm Comprimento: 38,5cm Medidas aproximadas para gravação (CxL): 7 cm x 12 cm (estojo) - 2cm x 8cm (plaquinha) Peso aproximado (g):662",
     "images": [
       "https://supliutech.nyc3.cdn.digitaloceanspaces.com/products2/be47138a-fd6f-49c1-bedc-c4c85677a1a6.jpeg",
       "https://supliutech.nyc3.cdn.digitaloceanspaces.com/products2/7c9b85a4-d7fa-498b-b5ab-68680c2568f5.jpeg",
       "https://supliutech.nyc3.cdn.digitaloceanspaces.com/products2/4049309e-9692-43b6-84ce-f5105380e682.jpeg"
     ],
-    "supplierCode": "C082B170"
+    "supplierCode": "C082B170",
+    "subcategory": "Kit Churrasco"
   },
   {
     "sku": "1947225-mochila-c013b200",
@@ -1272,7 +1274,7 @@
   {
     "sku": "asia-cj405-kit-escritorio-caderno-caneca-caneta",
     "name": "Kit Escritório Caderno, Caneca e Caneta Metálica Colorido",
-    "category": "Kits",
+    "category": "Kits Corporativos",
     "description": "Descrição: Kit escritório em caixa de presente contendo caderno tamanho A5 com capa dura em PU cinza, detalhes em PU colorido e impressão de linhas prateadas, 80 folhas internas pautadas em papel 70g/m², com fechamento magnético em PU e placa metálica, além de caneta esferográfica metálica e caneca de cerâmica. Peso do kit: 1,339kg Dimensão da embalagem: 25cm x 32cm x 9,7cm",
     "images": [
       "https://media.asiaimport.com.br/2026/06/Perfil-5.jpg",
@@ -1293,12 +1295,13 @@
       "Azul",
       "Preto"
     ],
-    "supplierCode": "CBCJ405"
+    "supplierCode": "CBCJ405",
+    "subcategory": "Kit Escritório"
   },
   {
     "sku": "asia-cj305-kit-escritorio-caderno-garrafa-caneta",
     "name": "Kit Escritório Caderno, Garrafa e Caneta Metálica",
-    "category": "Kits",
+    "category": "Kits Corporativos",
     "description": "Descrição: Kit escritório em caixa presenteável contendo caderno A5 com capa em RPET e detalhe em bambu, 80 folhas pautadas em papel 70g/m²; garrafa térmica de 600ml em inox (exterior 201/interior 304) com acabamento preto fosco, tampa em plástico PP com detalhe em bambu e alça em silicone preta; e caneta esferográfica de metal com detalhe em bambu. Peso do kit: 1,373kg Dimensão da embalagem: 27,2cm x 32cm x 8cm",
     "images": [
       "https://media.asiaimport.com.br/2026/03/ASIA7712.jpg",
@@ -1315,12 +1318,13 @@
     "colors": [
       "Preto"
     ],
-    "supplierCode": "CBCJ305"
+    "supplierCode": "CBCJ305",
+    "subcategory": "Kit Escritório"
   },
   {
     "sku": "asia-cj410-kit-escritorio-caderno-caneca-caneta",
     "name": "Kit Escritório Caderno, Caneca e Caneta Metálica Preto",
-    "category": "Kits",
+    "category": "Kits Corporativos",
     "description": "Descrição: Kit escritório em caixa presenteável contendo caderno A5 com capa dura, 80 folhas internas pautadas em papel 70g/m², com marcador de página e elástico de fechamento, além de caneta esferográfica metálica e caneca de cerâmica. Acompanha luva de papel kraft para proteção no transporte. Peso do kit: 1,329kg Embalagem: 24,8cm x 32cm x 9,6cm Caneca: 9,2cm x ø8,2cm Caderno: 21,1cm x 14,2cm Caneta: 14cm x ø1cm",
     "images": [
       "https://media.asiaimport.com.br/2026/06/com-caixa-scaled.jpg",
@@ -1335,12 +1339,13 @@
     "colors": [
       "Preto"
     ],
-    "supplierCode": "CBCJ410"
+    "supplierCode": "CBCJ410",
+    "subcategory": "Kit Escritório"
   },
   {
     "sku": "xbz-06046-kit-ferramentas-25-pecas",
     "name": "Kit Ferramentas 25 Peças",
-    "category": "Kits",
+    "category": "Kits Corporativos",
     "description": "Descrição: Kit ferramenta com 25 peças em estojo plástico com tampa de encaixe. Contém: 1 chave extensora rotatória para conexão das ponteiras, 1 ponteira Tri-Wing, 5 ponteiras Phillips, 4 ponteiras fenda, 10 ponteiras Torx, 2 ponteiras Allen, 1 ponteira spanner e 1 ponteira fenda triangular. Largura: 6,6cm Comprimento: 15,4cm Espessura: 1,6cm Área de gravação: 15,4cm x 5cm Peso aproximado: 136g",
     "images": [
       "https://www.xbzbrindes.com.br/img/produtos/3/Kit-Ferramentas-25-Pecas-PRETO-16932-1699474847.jpg",
@@ -1354,12 +1359,13 @@
     "colors": [
       "Preto"
     ],
-    "supplierCode": "C060B460"
+    "supplierCode": "C060B460",
+    "subcategory": "Kit Ferramenta"
   },
   {
     "sku": "xbz-14012-kit-ferramentas-21-pecas",
     "name": "Kit Ferramentas 21 Peças",
-    "category": "Kits",
+    "category": "Kits Corporativos",
     "description": "Descrição: Kit ferramenta 21 peças em estojo formato garrafa de óleo. Material plástico resistente com detalhes em relevo (a tampa faz apenas parte do design), possui duas travas para abertura e acompanha: estilete, chave canhão, 4 extensores bocais (7mm, 8mm, 9mm e 10mm), 2 mini chaves de fenda, 2 mini chaves phillips e conjunto de 10 pontas (4 chaves phillips, 2 chaves fenda, 3 chaves torx e um adaptador). Tamanho: 17,5cm x 12,5cm x 4,4cm Área de gravação: 12cm x 4,5cm Peso aproximado: 398g",
     "images": [
       "https://www.xbzbrindes.com.br/img/produtos/3/Kit-Ferramenta-21-Pecas-8428-1537448022.jpg",
@@ -1368,7 +1374,8 @@
     "colors": [
       "Preto"
     ],
-    "supplierCode": "C140B120"
+    "supplierCode": "C140B120",
+    "subcategory": "Kit Ferramenta"
   },
   {
     "sku": "mini-lanterna-recarregavel-cob",
