@@ -118,7 +118,8 @@
     "images": [
       "https://supliutech.nyc3.cdn.digitaloceanspaces.com/products2/90347eab-acca-44da-a4ef-807b935f816b.jpeg"
     ],
-    "minQuantity": 50
+    "minQuantity": 50,
+    "supplierCode": "CB-ER143B"
   },
   {
     "sku": "1947196-caneta-metal-lisa-c082b670",
@@ -328,7 +329,8 @@
     "images": [
       "https://supliutech.nyc3.cdn.digitaloceanspaces.com/products2/80f59ff1-5675-46c8-8b8f-0e0cf2ea1ebf.jpeg",
       "https://supliutech.nyc3.cdn.digitaloceanspaces.com/products2/e9ddb841-f3de-4262-a5e8-538b6afa7d8f.jpeg"
-    ]
+    ],
+    "supplierCode": "C042B05"
   },
   {
     "sku": "1938406-garrafa-c186b770",
@@ -469,7 +471,8 @@
     "description": "DESCRICAO: Porta-joias feito em couro sintético com revestimento interno em tecido aveludado. Possui bolso elástico e três ganchos pequenos na parte interna da tampa, além de divisória multiuso e repartição almofadada com ranhuras para anéis, ambos localizadas no compartimento principal. MEDIDAS: Altura : 4,9 cm Largura : 9,8 cm Profundidade : 9,9 cm Peso aproximado (g): 106",
     "images": [
       "https://supliutech.nyc3.cdn.digitaloceanspaces.com/products2/130b4959-0ce8-4a6f-884b-41023cf0c82b.jpeg"
-    ]
+    ],
+    "supplierCode": "C016B22B0"
   },
   {
     "sku": "1941590-squeeze-inox-500ml-c091b880",
@@ -490,7 +493,8 @@
     "images": [
       "https://supliutech.nyc3.cdn.digitaloceanspaces.com/products2/64640f77-3cb1-4b76-817e-1f415e7010c2.jpeg",
       "https://supliutech.nyc3.cdn.digitaloceanspaces.com/products2/2eb90f63-7216-4c96-ae99-2e9a6c636047.jpeg"
-    ]
+    ],
+    "supplierCode": "C913B9I0"
   },
   {
     "sku": "1941591-squeeze-inox-600ml-c185b580",
