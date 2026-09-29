@@ -49,7 +49,7 @@ export default async function ProdutosPage({
   const iconeGenero: Record<string, string> = { Masculino: "👕", Feminino: "👚" };
 
   // Sub-abas por tipo (ex.: Térmicos → Copos, Canecas, Garrafas).
-  const ORDEM_TIPOS = ["Copos", "Canecas", "Garrafas"];
+  const ORDEM_TIPOS = ["Copos", "Canecas", "Garrafas", "Kit Escritório", "Kit Churrasco", "Kit Ferramenta"];
   const tipos = categoriaAtual
     ? Array.from(
         new Set(
@@ -63,7 +63,14 @@ export default async function ProdutosPage({
         return (ia < 0 ? 99 : ia) - (ib < 0 ? 99 : ib) || a.localeCompare(b);
       })
     : [];
-  const iconeTipo: Record<string, string> = { Copos: "🥤", Canecas: "☕", Garrafas: "🧉" };
+  const iconeTipo: Record<string, string> = {
+    Copos: "🥤",
+    Canecas: "☕",
+    Garrafas: "🧉",
+    "Kit Escritório": "📒",
+    "Kit Churrasco": "🥩",
+    "Kit Ferramenta": "🔧",
+  };
 
   return (
     <div className="container section">
