@@ -2148,3 +2148,7 @@ a.site-header__phone:hover {
     padding: 18px;
   }
 }
+.conta__card .form-field input {
+  width: 100%;
+  max-width: none;
+}
