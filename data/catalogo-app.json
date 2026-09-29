@@ -1454,5 +1454,20 @@
     "colors": [
       "Preto"
     ]
+  },
+  {
+    "sku": "compressor-ar-4em1-auxiliar-partida",
+    "name": "Compressor de Ar Portátil 4 em 1 com Auxiliar de Partida",
+    "category": "Eletrônicos",
+    "description": "Descrição: Compressor de ar digital portátil 4 em 1: compressor de ar, auxiliar de partida para carro, power bank e lanterna LED em um só aparelho. Display digital com medição em BAR, KPA e PSI e parada automática ao atingir a pressão ideal. Bateria de 10000mAh, recarregável via USB Tipo-C. Acompanha bicos para pneus de carro, moto, bicicleta, bolas e infláveis. Medidas: 19,3 x 8,5 x 6,2 cm.",
+    "images": [
+      "/produtos/compressor-ar-4em1-partida-1.jpg",
+      "/produtos/compressor-ar-4em1-partida-2.jpg",
+      "/produtos/compressor-ar-4em1-partida-3.jpg",
+      "/produtos/compressor-ar-4em1-partida-4.jpg"
+    ],
+    "colors": [
+      "Preto"
+    ]
   }
 ]
