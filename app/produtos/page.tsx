@@ -29,7 +29,7 @@ export default async function ProdutosPage({
     if (searchParams.genero && p.apparel?.genero !== searchParams.genero) return false;
     if (searchParams.tipo && p.subcategory !== searchParams.tipo) return false;
     if (query) {
-      const haystack = `${p.name} ${p.description ?? ""} ${p.category} ${p.supplierCode ?? ""}`.toLowerCase();
+      const haystack = `${p.name} ${p.description ?? ""} ${p.category} ${p.supplierCode ?? ""} ${(p.sizes ?? []).map((s) => `${s.code} ${s.label}`).join(" ")}`.toLowerCase();
       if (!haystack.includes(query)) return false;
     }
     return true;

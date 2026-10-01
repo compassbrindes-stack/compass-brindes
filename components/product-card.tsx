@@ -14,7 +14,11 @@ export function ProductCard({ product }: { product: Product }) {
       <div className="product-card__body">
         <span className="product-card__supplier">
           {product.supplierName}
-          {product.supplierCode ? ` · Cód. ${product.supplierCode}` : ""}
+          {product.sizes?.length
+            ? ` · Cód. ${product.sizes.map((s) => s.code).join(" / ")}`
+            : product.supplierCode
+              ? ` · Cód. ${product.supplierCode}`
+              : ""}
         </span>
         <span className="product-card__name">{product.name}</span>
         <span className="product-card__price">{formatPrice(product.priceFrom)}</span>

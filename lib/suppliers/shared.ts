@@ -1,4 +1,4 @@
-import type { ApparelInfo, Product, ProductVariant, SupplierId } from "@/lib/types";
+import type { ApparelInfo, Product, ProductVariant, SizeOption, SupplierId } from "@/lib/types";
 
 export function slugify(input: string): string {
   return input
@@ -14,6 +14,8 @@ export function slugify(input: string): string {
 export interface MockSupplierItem {
   sku: string;
   name: string;
+  /** Nome exibido, quando deve ser diferente do usado no endereço (slug) da página. */
+  title?: string;
   category: string;
   extraCategories?: string[];
   subcategory?: string;
@@ -25,6 +27,7 @@ export interface MockSupplierItem {
   /** Código do produto no site do fornecedor (ex.: código XBZ), para referência/pedido. */
   supplierCode?: string;
   apparel?: ApparelInfo;
+  sizes?: SizeOption[];
 }
 
 // Tira o código (ex.: "C082B450") do nome exibido, já que ele aparece
@@ -55,7 +58,7 @@ export function mockItemToProduct(
     supplier,
     supplierName,
     supplierSku: item.sku,
-    name: nameWithoutCode(item.name, item.supplierCode),
+    name: item.title ?? nameWithoutCode(item.name, item.supplierCode),
     slug: `${slugify(item.name)}-${slugify(item.sku)}`,
     category: item.category,
     extraCategories: item.extraCategories,
@@ -68,6 +71,7 @@ export function mockItemToProduct(
     material: undefined,
     supplierCode: item.supplierCode,
     apparel: item.apparel,
+    sizes: item.sizes,
     updatedAt: new Date().toISOString(),
   };
 }

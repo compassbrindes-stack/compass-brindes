@@ -616,8 +616,9 @@
   {
     "sku": "xbz-14724-copo-termico-inox-500ml",
     "name": "Copo Térmico Inox 500ml",
+    "title": "Copo Térmico Inox 350ml e 500ml",
     "category": "Térmicos",
-    "description": "Descrição: Copo térmico de inox 500ml com parede dupla, parte inferior com borracha antideslizante e tampa rosqueável com abertura de bocal. Altura: 17,2cm Largura: 8,9cm Circunferência: 28,2cm Peso aproximado: 294g",
+    "description": "Descrição: Copo térmico de inox com parede dupla, parte inferior com borracha antideslizante e tampa rosqueável com abertura de bocal. Disponível em 350ml e 500ml.",
     "images": [
       "https://www.xbzbrindes.com.br/img/produtos/3/Copo-Termico-Inox-500ml-BRANCO-14518-1656613736.jpg",
       "https://www.xbzbrindes.com.br/img/produtos/3/Copo-Termico-Inox-500ml-PRETO-14413-1656613750.jpg",
@@ -642,6 +643,60 @@
       "Salmão",
       "Turquesa",
       "Vermelho"
+    ],
+    "sizes": [
+      {
+        "label": "350 ml",
+        "code": "C147B24P0",
+        "supplierRef": "14724P",
+        "description": "Descrição: Copo térmico de inox 350ml com parede dupla, parte inferior com borracha antideslizante e tampa rosqueável com abertura de bocal. Altura: 14,8cm Largura: 8,8cm Circunferência: 28,1cm Área de gravação aproximada: 10,5 x 4cm Peso aproximado: 251g",
+        "images": [
+          "https://www.xbzbrindes.com.br/img/produtos/3/Copo-Termico-Inox-350ml-BRANCO-15547-1717178448.jpg",
+          "https://www.xbzbrindes.com.br/img/produtos/3/Copo-Termica-Inox-350ml-PRETO-15548-1669208710.jpg",
+          "https://www.xbzbrindes.com.br/img/produtos/3/Copo-Termico-Inox-350ml-ROSA-29775-1787744655.jpg",
+          "https://www.xbzbrindes.com.br/img/produtos/3/Copo-Termico-Inox-350ml-BRANCO-COM-ROSA-21640-1732031221.jpg",
+          "https://www.xbzbrindes.com.br/img/produtos/3/Copo-Termica-Inox-350ml-15546d1-1669208736.jpg",
+          "https://www.xbzbrindes.com.br/img/produtos/3/Copo-Termico-Inox-350ml-15546d2-1717178447.jpg",
+          "https://www.xbzbrindes.com.br/img/produtos/3/Copo-Termico-Inox-350ml-15546d3-1717178447.jpg"
+        ],
+        "colors": [
+          "Branco",
+          "Branco com Creme",
+          "Preto",
+          "Rosa"
+        ]
+      },
+      {
+        "label": "500 ml",
+        "code": "C147B240",
+        "supplierRef": "14724",
+        "description": "Descrição: Copo térmico de inox 500ml com parede dupla, parte inferior com borracha antideslizante e tampa rosqueável com abertura de bocal. Altura: 17,2cm Largura: 8,9cm Circunferência: 28,2cm Peso aproximado: 294g",
+        "images": [
+          "https://www.xbzbrindes.com.br/img/produtos/3/Copo-Termico-Inox-500ml-BRANCO-14518-1656613736.jpg",
+          "https://www.xbzbrindes.com.br/img/produtos/3/Copo-Termico-Inox-500ml-PRETO-14413-1656613750.jpg",
+          "https://www.xbzbrindes.com.br/img/produtos/3/Copo-Termico-Inox-500ml-AZUL-ESCURO-14616-1656613721.jpg",
+          "https://www.xbzbrindes.com.br/img/produtos/3/Copo-Termico-Inox-500ml-CREME-14617-1656614019.jpg",
+          "https://www.xbzbrindes.com.br/img/produtos/3/Copo-Termico-Inox-500ml-MARROM-14618-1656614103.jpg",
+          "https://www.xbzbrindes.com.br/img/produtos/3/Copo-Termico-Inox-500ml-ROSA-14619-1656614139.jpg",
+          "https://www.xbzbrindes.com.br/img/produtos/3/Copo-Termico-Inox-500ml-SALMAO-14620-1656614157.jpg",
+          "https://www.xbzbrindes.com.br/img/produtos/3/Copo-Termico-Inox-500ml-TURQUESA-14621-1656614175.jpg",
+          "https://www.xbzbrindes.com.br/img/produtos/3/Copo-Termico-Inox-500ml-VERMELHO-14622-1721312608.jpg",
+          "https://www.xbzbrindes.com.br/img/produtos/3/Copo-Termico-Inox-500ml-14313d1-1656614228.jpg",
+          "https://www.xbzbrindes.com.br/img/produtos/3/Copo-Termico-Inox-500ml-14313d2-1721311042.jpg",
+          "https://www.xbzbrindes.com.br/img/produtos/3/Copo-Termico-Inox-500ml-14313d3-1721311042.jpg"
+        ],
+        "colors": [
+          "Branco",
+          "Preto",
+          "Azul Escuro",
+          "Creme",
+          "Marrom",
+          "Rosa",
+          "Salmão",
+          "Turquesa",
+          "Vermelho"
+        ]
+      }
     ],
     "supplierCode": "C147B240",
     "subcategory": "Copos"

@@ -3,12 +3,30 @@ import { getProductBySlug } from "@/lib/products";
 import { AddToQuote } from "@/components/add-to-quote";
 import { ProductGallery } from "@/components/product-gallery";
 import { ApparelOptions } from "@/components/apparel-options";
+import { SizedProduct } from "@/components/size-options";
 
 export const revalidate = 0;
 
 export default async function ProdutoPage({ params }: { params: { slug: string } }) {
   const product = await getProductBySlug(params.slug);
   if (!product) notFound();
+
+  if (product.sizes?.length) {
+    return (
+      <div className="container product-detail">
+        <SizedProduct
+          productId={product.id}
+          name={product.name}
+          supplierName={product.supplierName}
+          slug={product.slug}
+          description={product.description}
+          images={product.images}
+          sizes={product.sizes}
+          minQuantity={product.minQuantity}
+        />
+      </div>
+    );
+  }
 
   return (
     <div className="container product-detail">
