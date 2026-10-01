@@ -32,6 +32,18 @@ export interface ApparelInfo {
   sizeChart?: ApparelSizeChart;
 }
 
+/** Mesmo modelo em tamanhos diferentes (ex.: copo 350ml e 500ml), escolhidos na mesma página. */
+export interface SizeOption {
+  label: string;
+  /** Código Compass deste tamanho (ex.: C147B24P0). */
+  code: string;
+  /** Código no fornecedor (ex.: XBZ 14724P). */
+  supplierRef?: string;
+  description?: string;
+  images?: string[];
+  colors?: string[];
+}
+
 export interface Product {
   id: string;
   supplier: SupplierId;
@@ -54,6 +66,8 @@ export interface Product {
   supplierCode?: string;
   /** Presente apenas nos itens de vestuário (camisetas, babylooks...). */
   apparel?: ApparelInfo;
+  /** Tamanhos do mesmo modelo, com código, fotos e cores próprios. */
+  sizes?: SizeOption[];
   updatedAt: string;
 }
 

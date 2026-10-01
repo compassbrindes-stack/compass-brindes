@@ -157,6 +157,8 @@ function buildProductCell(
 
   const extraLines: string[] = [];
   if (product.material) extraLines.push(`Material: ${product.material}`);
+  if (product.sizes?.length)
+    extraLines.push(`Tamanhos: ${product.sizes.map((s) => `${s.label} (${s.code})`).join(" · ")}`);
   if (product.minQuantity) extraLines.push(`Qtd. mínima: ${product.minQuantity} un.`);
 
   const photoDims = image ? scaledImageDims(image, CARD_IMAGE_MAX) : { width: 0, height: 0 };
