@@ -2,6 +2,7 @@
   {
     "sku": "1942486-bolsa-couro-sintetico-12l-c090b630",
     "name": "Bolsa Couro Sintético 12L C090B630",
+    "title": "Bolsa em Couro Sintético 12L",
     "category": "Bolsas",
     "description": "DESCRIÇÃO: Bolsa confeccionada em couro sintético à base de PVC e botões magnéticos metálicos para fechamento. Possui revestimento interno em poliéster com bolso compacto de fechamento em zíper e duas alças de costura externa. MEDIDAS: Altura: 34cm Largura: 44cm Profundidade: 14,5cm Comprimento: alças 65cm PESO 270G",
     "images": [
@@ -14,6 +15,7 @@
   {
     "sku": "1942483-bolsa-termica-oxford-11l-c189b650",
     "name": "Bolsa Térmica Oxford 11L C189B650",
+    "title": "Bolsa Térmica Oxford 11L",
     "category": "Bolsas Térmicas",
     "description": "DESCRIÇÃO: Bolsa térmica em Oxford resistente à água e com capacidade de até 11 litros. Seu revestimento interno em alumínio permite a conservação de temperatura de alimentos e bebidas por mais tempo. Possui também um bolso frontal e mais um par de bolsos laterais em tela de nylon, além de uma alça fixa na tampa e outra transversal. MEDIDAS: Altura: 22cm Largura: 25cm Profundidade: 15,5cm PESO 230G",
     "images": [
@@ -25,6 +27,7 @@
   {
     "sku": "xbz-02798-bolsa-termica-10l",
     "name": "Bolsa Térmica 10L",
+    "title": "Bolsa Térmica 10L",
     "category": "Bolsas Térmicas",
     "description": "Descrição: Bolsa térmica 10 litros de poliéster. Contém bolso frontal com zíper e alça transversal regulável em nylon (não removível). Altura: 15cm Largura: 26cm Profundidade: 17cm Peso aproximado: 152g",
     "images": [
@@ -39,6 +42,7 @@
   {
     "sku": "1947187-caixa-de-som-c043b620",
     "name": "CAIXA DE SOM C043B620",
+    "title": "Caixa de Som Multimídia Bluetooth em Tecido",
     "category": "Eletrônicos",
     "description": "DESCRICAO: Caixa de som multimídia resistente a respingos dágua feito em plástico com acabamento em tecido. Possui conexão via Bluetooth 5.0 e compatibilidade com a tecnologia TWS, que permite sincronizar duas caixas de som ao mesmo tempo. Conta ainda com modo de reprodução de arquivos MP3 a partir das entradas para cartão TF (microSD) e USB para pen drives. Acompanha cabo Micro-USB e cabo auxiliar P2. MEDIDAS: Altura : 10,5 cm Largura : 9,8 cm Peso aproximado (g): 309",
     "images": [
@@ -49,6 +53,7 @@
   {
     "sku": "1947192-caixa-de-som-c060b310",
     "name": "CAIXA DE SOM C060B310",
+    "title": "Caixa de Som Multimídia com LED",
     "category": "Eletrônicos",
     "description": "DESCRICAO: Caixa de som multimídia sem fio em plástico com detalhes que remetem à textura de madeira e um anel antiderrapante colado à base. Conta com iluminação em LED e painel de botões para alternância entre os modos Bluetooth, rádio FM e reprodução de arquivos MP3 a partir das entradas para cartão TF (microSD) e USB para pen drives. Acompanha cabo USB-C para carregamento. MEDIDAS: Altura : 9,1 cm Largura : 7 cm Circunferência : 21,7 cm Peso aproximado (g): 190",
     "images": [
@@ -60,6 +65,7 @@
   {
     "sku": "1947185-caixa-de-som-c080b020",
     "name": "CAIXA DE SOM C080B020",
+    "title": "Caixa de Som Bluetooth TWS",
     "category": "Eletrônicos",
     "description": "DESCRICAO: Caixa de som sem fio em inox com base emborrachada. Possui entrada Micro-USB para carregamento, conexão Bluetooth 5.0 e compatibilidade com a tecnologia TWS, que permite sincronizar duas caixas de som ao mesmo tempo. Acompanha cordão de nylon e cabo Micro-USB. MEDIDAS: Altura : 3,5 cm Largura : 4,9 cm Circunferência : 15,5cm Peso aproximado (g): 75",
     "images": [
@@ -70,6 +76,7 @@
   {
     "sku": "1938267-caneca-chopp-c040b700",
     "name": "Caneca Chopp C040B700",
+    "title": "Caneca Chopp Térmica 700ml",
     "category": "Térmicos",
     "description": "Descrição: Caneca térmica de inox com pegador plástico, capacidade de 700ml. Medidas: Altura: 17cm Largura: 15cm Peso: 360g",
     "images": [
@@ -81,6 +88,7 @@
   {
     "sku": "1941780-caneca-termica-900ml-c091b950",
     "name": "Caneca Térmica 900ml C091B950",
+    "title": "Caneca Térmica 900ml",
     "category": "Térmicos",
     "description": "DESCRIÇÃO: Caneca térmica com capacidade para até 900ml. Possui estrutura de parede dupla com interior em inox 304 e exterior em inox 201 e pintura eletrostática. Conta com tampa rosqueável em acrílico com abertura superior giratória em plástico polipropileno (PP) e acesso para canudo. Acompanha canudo plástico. MEDIDA: Altura: 24,3cm Largura: 13,6cm Diametro: 8,5cm PESO 390G",
     "images": [
@@ -94,6 +102,7 @@
   {
     "sku": "1938400-caneca-termica-c060b610",
     "name": "Caneca Térmica C060B610",
+    "title": "Caneca Térmica Inox 350ml",
     "category": "Térmicos",
     "description": "Descrição: Caneca térmica de inox 350ml com parede dupla. Contém tampa acrílica com bocal e trava de segurança. Medidas: Altura: 11cm Largura: 12cm Peso: 270",
     "images": [
@@ -105,6 +114,7 @@
   {
     "sku": "1947204-caneta-metal-aros-cb-er143b",
     "name": "CANETA METAL AROS CB-ER143B",
+    "title": "Caneta Metálica com Aros",
     "category": "Canetas",
     "description": "DESCRICAO: Caneta metálica com carga esferográfica azul 1.0mm e acionamento por clique. MEDIDAS: Tamanho total aproximado (CxL): 13,7 cm x 1,2 cm APRESENTACAO: CAIXA COM 50UN",
     "images": [
@@ -116,6 +126,7 @@
   {
     "sku": "1947196-caneta-metal-lisa-c082b670",
     "name": "CANETA METAL LISA C082B670",
+    "title": "Caneta Metálica Lisa",
     "category": "Canetas",
     "description": "DESCRICAO: Essa caneta metálica é perfeita para tornar as anotações do dia a dia mais eficientes. Com acionamento por clique e carga esferográfica azul de 1.0mm, ela garante uma escrita suave e confortável em qualquer ocasião. MEDIDAS: Altura : 13,6 cm Largura : 1,4 cm APRESENTACAO: CAIXA COM 50UN",
     "images": [
@@ -127,6 +138,7 @@
   {
     "sku": "1947206-caneta-metal-touch-c050b120",
     "name": "CANETA METAL TOUCH C050B120",
+    "title": "Caneta Metálica Touch",
     "category": "Canetas",
     "description": "DESCRICAO: Caneta metálica touchscreen com acionamento por clique, carga esferográfica azul 1.0mm. MEDIDAS: Largura : 1,5 cm Comprimento : 14,1 cm APRESENTACAO: CAIXA COM 50UN",
     "images": [
@@ -138,6 +150,7 @@
   {
     "sku": "1947202-caneta-metal-touch-c050b190",
     "name": "CANETA METAL TOUCH C050B190",
+    "title": "Caneta Metálica Touch Texturizada",
     "category": "Canetas",
     "description": "DESCRICAO: Caneta metálica touchscreen com parte inferior texturizada, acionamento por clique e carga esferográfica azul 1.0mm. MEDIDAS: Largura : 1,6 cm Comprimento : 13,8 cm APRESENTACAO: CAIXA COM 50UN",
     "images": [
@@ -151,6 +164,7 @@
   {
     "sku": "1947208-chaveiro-abridor-c098b240",
     "name": "CHAVEIRO ABRIDOR C098B240",
+    "title": "Chaveiro Abridor",
     "category": "Chaveiros",
     "description": "DESCRICAO: Chaveiro abridor de garrafas em metal com argola em ferro niquelado. MEDIDAS: Altura : 8,6 cm Largura : 1,2 cm Profundidade : 1,4 cm Tamanho total aproximado (CxL): 8,5 cm -comprimento com argola Peso aproximado (g): 120 APRESENTACAO: PACOTE COM 100UN",
     "images": [
@@ -163,6 +177,7 @@
   {
     "sku": "1942482-chaveiro-trena-plastico-1m-c082b040",
     "name": "Chaveiro Trena Plástico 1M C082B040",
+    "title": "Chaveiro Trena 1 Metro",
     "category": "Chaveiros",
     "description": "DESCRIÇÃO: Chaveiro trena em plástico com argola metálica e fita de aço para medição, com alcance de até 1 metro e marcações em pés e polegadas. MEDIDAS: Altura: 3,5cm Largura: 3,5cm Comprimento: 7,5cm Espessura: 1,2cm PESO 15G",
     "images": [
@@ -175,6 +190,7 @@
   {
     "sku": "1942487-chaveiro-trena-plastico-2-metros-c082b320",
     "name": "Chaveiro Trena Plástico 2 Metros C082B320",
+    "title": "Chaveiro Trena 2 Metros",
     "category": "Chaveiros",
     "description": "DESCRIÇÃO: Chaveiro trena em plástico com argola metálica e fita de aço para medição com alcance de até 2 metros e marcações em pés e polegadas. MEDIDAS: Altura: 4,5cm Largura: 4,5cm Comprimento: 9,5cm Espessura: 1,5cm PESO 28G",
     "images": [
@@ -187,6 +203,7 @@
   {
     "sku": "1938314-copo-c040b800",
     "name": "Copo Térmico de Inox 473ml C040B800",
+    "title": "Copo Térmico Inox 473ml",
     "category": "Térmicos",
     "description": "Descrição: Copo térmico de inox com parede dupla e capacidade para 473ml. Conserva bebidas quentes por cerca de 1 hora, geladas por até 4 horas e com gelo por até 7 horas. Altura: 14,3cm Largura: 8,4cm Circunferência: 26,5cm Área de gravação: 12cm x 6cm Peso aproximado: 180g",
     "images": [
@@ -218,6 +235,7 @@
   {
     "sku": "1938403-copo-c187b630",
     "name": "Copo C187B630",
+    "title": "Copo Térmico 550ml com Tampa",
     "category": "Térmicos",
     "description": "Descrição: Copo térmico em aço inox com pintura eletrostática e capacidade máxima de 520ml. Sua parede dupla, aliada à tampa plástica com vedação a vácuo e ao bocal com trava de segurança, assegura a conservação da temperatura das bebidas por muito mais tempo. Medidas: Altura: 17,9cm Largura: 8,8cm Peso: 295g",
     "images": [
@@ -229,6 +247,7 @@
   {
     "sku": "1938401-copo-cafe-c082b450",
     "name": "Copo Café C082B450",
+    "title": "Copo Café Inox 150ml",
     "category": "Térmicos",
     "description": "Descrição: Compacto, resistente e com parede dupla, nosso copo feito em inox com capacidade de 150ml, mantém a bebida numa temperatura agradável por mais tempo. Perfeito para aquele café que aquece a alma, um chá para relaxar ou até um gole refrescante de água. Medidas: Altura: 7,8cm Largura: 7,5cm Peso 110g",
     "images": [
@@ -240,6 +259,7 @@
   {
     "sku": "1938402-copo-caixa-de-som-c187b490",
     "name": "Copo CAIXA DE SOM C187B490",
+    "title": "Copo Térmico 400ml com Caixa de Som",
     "category": "Térmicos",
     "description": "Descrição: Copo térmico de inox com caixa de som e capacidade 400ml. Contém tampa com abridor. Caixa de som possui botão para ligar/desligar, botões para aumentar diminuir volume/ avançar e retroceder faixas. Operante no modo bluetooth. Acompanha cabo USB Tipo-C. Obs.: A caixa de som não é a prova dágua, para a higienização do copo é necessário desrosquear a caixa de som para remove-la. Medidas: Altura: 17,6cm Largura: 9,5 cm Peso: 360g",
     "images": [
@@ -251,6 +271,7 @@
   {
     "sku": "1934039-copo-cuia",
     "name": "Copo Cuia",
+    "title": "Copo Cuia Térmico 350ml",
     "category": "Térmicos",
     "description": "Copo em inox com capacidade máxima de 350ml. Possui estrutura de parede dupla livre de BPA, em inox 304 com pintura eletrostática. Conta com tampa de pressão em plástico com protetor deslizante para o bocal e anel de vedação em silicone.: *** Medidas: Altura : 11cm Largura : 9 cm 180g",
     "images": [
@@ -258,11 +279,13 @@
       "https://supliutech.nyc3.cdn.digitaloceanspaces.com/products2/175bcb0a-91a0-415c-ab16-d4bd1bc3f2e6.jpeg",
       "https://supliutech.nyc3.cdn.digitaloceanspaces.com/products2/89f0b3fd-13bb-4eca-921a-e4bda2503807.jpeg"
     ],
-    "subcategory": "Copos"
+    "subcategory": "Copos",
+    "supplierCode": "C147B260"
   },
   {
     "sku": "1934024-copo-tradicional",
     "name": "Copo Tradicional",
+    "title": "Copo Tradicional",
     "category": "Térmicos",
     "description": "Descrição: Descrição: Copo térmico de inox com acabamento liso e capacidade 473ml, material livre de BPA. Contém tampa com abridor. Medidas: Altura: 17cm Largura: 9cm Peso: 270g",
     "images": [
@@ -270,11 +293,13 @@
       "https://supliutech.nyc3.cdn.digitaloceanspaces.com/products2/c5fc809a-3b48-4943-86ef-4f8bee3482a3.jpeg",
       "https://supliutech.nyc3.cdn.digitaloceanspaces.com/products2/bd2a7c02-47fd-45e8-8838-242589c9690c.jpeg"
     ],
-    "subcategory": "Copos"
+    "subcategory": "Copos",
+    "supplierCode": "C092B520"
   },
   {
     "sku": "1938405-coqueteleira-c092b370",
     "name": "Coqueteleira C092B370",
+    "title": "Coqueteleira Térmica 650ml",
     "category": "Térmicos",
     "description": "Descrição: Coqueteleira térmica de parede dupla, com pintura eletrostática e camada interna em inox 304, com marcação de volume. Com capacidade máxima de 650ml, possui tampa rosqueável em polipropileno (PP) e policarbonato (PC), com protetor para o bocal e alça para transporte. Apresenta fundo rosqueável em PET com tampa de pressão, ideal para guardar suplementos. Acompanha mola misturadora em inox e peneira plástica. Medidas: Altura: 26,2cm Largura: 10,8cm Peso: 512g",
     "images": [
@@ -288,6 +313,7 @@
   {
     "sku": "1938404-coqueteleira-inox-c190b390",
     "name": "Coqueteleira Inox C190B390",
+    "title": "Coqueteleira Inox 900ml",
     "category": "Garrafas Inox",
     "description": "Descrição: Coqueteleira em aço inox com capacidade para até 900ml. Possui tampa rosqueável em plástico com abertura para o bocal com trava de segurança e alça fixa para transporte. Acompanha mola misturadora. Náo é térmica. Medidas: Altura: 23,1cm Largura: 9,9cm Diametro: 8 cm Peso: 230g",
     "images": [
@@ -299,6 +325,7 @@
   {
     "sku": "1947215-escova-c152b480",
     "name": "ESCOVA C152B480",
+    "title": "Escova de Cabelo Ergonômica",
     "category": "Diversos",
     "description": "DESCRICAO: Escova plástica com design ergonômico e cerdas flexíveis posicionadas em dois níveis diferentes, oferecendo um pentear mais suave e desembaraçante sem puxar ou danificar os fios de diferentes comprimentos e curvaturas. MEDIDAS: Largura : 7,5 cm Comprimento : 17,5 cm Espessura : 3 cm",
     "images": [
@@ -309,6 +336,7 @@
   {
     "sku": "1947211-escova-espelho-coracao-c189b190",
     "name": "ESCOVA ESPELHO CORACAO C189B190",
+    "title": "Escova com Espelho Coração",
     "category": "Diversos",
     "description": "DESCRICAO: Funcional, a escova com espelho é ideal para quem busca praticidade no dia a dia. Compacta, é feita em plástico e possui abertura vertical, liberando as cerdas ao pressionar o verso. MEDIDAS: Largura : 7,8 cm Comprimento : 7,7 cm Espessura : 2,6 cm Tamanho total aproximado (CxL): Aberta 14,9 cm Peso aproximado (g): 43",
     "images": [
@@ -319,6 +347,7 @@
   {
     "sku": "1947214-escova-espelho-redonda-c103b420",
     "name": "ESCOVA ESPELHO REDONDA C103B420",
+    "title": "Escova com Espelho Redonda",
     "category": "Diversos",
     "description": "DESCRICAO: scova com espelho redonda em plástico resistente. Parte superior plana e parte inferior emborracha com relevo, estando aberta a peça basta empurrar a parte emborrachada(lado de fora) para poder utilizar a escova. MEDIDAS: Tamanho total aproximado (CxL): 7,5 cm x 6,6 cm",
     "images": [
@@ -332,6 +361,7 @@
   {
     "sku": "1947217-fone-de-ouvido-bluetooth-touch-com-case-carregador-c050b210",
     "name": "Fone de Ouvido Bluetooth Touch com Case Carregador C050B210",
+    "title": "Fone de Ouvido Bluetooth Touch com Case Carregador",
     "category": "Eletrônicos",
     "description": "DESCRICAO: Fone de ouvido bluetooth com comandos touch e case carregador de fechamento magnético. Acompanha cabo USB Lightning. Obs.: O CARREGAMENTO MÍNIMO DO PRODUTO DEVE SER DE 2 HORAS, PRESERVANDO DESTE MODO A SAÚDE DO PRODUTO E PROLONGANDO O SEU TEMPO DE VIDA ÚTIL. MEDIDAS: Altura : 4,5 cm Largura : 6 cm Comprimento : Fones 3,1 cm Espessura : 2,2 cm",
     "images": [
@@ -343,6 +373,7 @@
   {
     "sku": "1938408-garrafa-c042b05",
     "name": "Garrafa C042B05",
+    "title": "Garrafa Térmica Inox 400ml",
     "category": "Térmicos",
     "description": "Descrição: Garrafa térmica em inox com parede dupla, capacidade de 400ml. Tampa com botão central para abertura e borracha interna para vedação. Medidas: Altura: 20,3cm Largura: 7,6cm Peso: 215g",
     "images": [
@@ -355,6 +386,7 @@
   {
     "sku": "1938406-garrafa-c186b770",
     "name": "Garrafa C186B770",
+    "title": "Garrafa Térmica 1,4L",
     "category": "Térmicos",
     "description": "Descrição: Garrafa térmica de inox livre de BPA com capacidade de 1,4 litro. Contém alça para transporte e pintura texturizada. Medidas: Altura: 36,2cm Largura: 12cm Peso: 825g",
     "images": [
@@ -367,6 +399,7 @@
   {
     "sku": "1947238-garrafa-c186b780",
     "name": "GARRAFA C186B780",
+    "title": "Garrafa Térmica Inox 1L",
     "category": "Térmicos",
     "description": "DESCRICAO: Garrafa térmica de inox livre de BPA com capacidade de 1 litro. Contém alça para transporte. MEDIDAS: Altura : 30 cm Largura : 11,5 cm Circunferência : 29,2 cm Peso aproximado (g): 606",
     "images": [
@@ -378,6 +411,7 @@
   {
     "sku": "1938407-garrafa-c189b100",
     "name": "Garrafa C189B100",
+    "title": "Garrafa Térmica Inox 1L Tampa Dupla",
     "category": "Térmicos",
     "description": "Descrição: Garrafa térmica de inox com parede dupla e tampa dupla, capacidade de 1 litro. Com alça plástica para transporte, a garrafa contém duas tampas utilizáveis como copos. Medidas: Altura: 35,7cm Largura: 10,6cm Peso: 660g",
     "images": [
@@ -390,6 +424,7 @@
   {
     "sku": "1938411-garrafa-flip-650ml-c040b980",
     "name": "Garrafa Flip 650ml C040B980",
+    "title": "Garrafa Térmica Flip 650ml",
     "category": "Térmicos",
     "description": "Descrição: Garrafa térmica em inox de parede dupla, capacidade de 650ml. Tampa com alça de transporte, bico flip e canudo interno. Medidas: Altura: 25cm Largura: 9cm Peso: 400g",
     "images": [
@@ -401,6 +436,7 @@
   {
     "sku": "1938409-garrafa-flip-c040b970",
     "name": "Garrafa Flip C040B970",
+    "title": "Garrafa Térmica Flip 550ml",
     "category": "Térmicos",
     "description": "Descrição: Garrafa térmica em inox de parede dupla, capacidade de 550ml. Tampa com alça de transporte, bico flip e canudo interno. Medidas: Altura: 21,5cm Largura: 8cm Peso: 400g",
     "images": [
@@ -412,6 +448,7 @@
   {
     "sku": "1941594-garrafa-termica-15l-c190b330",
     "name": "Garrafa Térmica 1,5L C190B330",
+    "title": "Garrafa Térmica 1,5L",
     "category": "Térmicos",
     "description": "DESCRIÇÃO: Garrafa térmica com capacidade máxima de 1,5 litro. Possui estrutura de parede dupla com interior em inox 304 com pintura eletrostática. Possui revestimento superior e cabo em plástico, além de base antiderrapante. Conta ainda com tampa rosqueável com acionamento por pressão para servir o conteúdo. MEDIDAS: Altura: 22,5cm Largura: 16,7cm PESO 675G",
     "images": [
@@ -424,6 +461,7 @@
   {
     "sku": "1941224-garrafa-termica-780ml-c185b180",
     "name": "Garrafa térmica 780ml C185B180",
+    "title": "Garrafa Térmica 780ml",
     "category": "Térmicos",
     "description": "DESCRIÇÃO: Garrafa térmica 780ml em inox de alta qualidade. Possui tampa rosqueável com detalhe superior em relevo, pode ser utilizada com líquidos quentes ou frios. MEDIDAS: Altura: 30,3 cm Largura: 7,9 cm PESO 410G",
     "images": [
@@ -435,6 +473,7 @@
   {
     "sku": "1941593-garrafa-termica-800ml-c190b140",
     "name": "Garrafa Térmica 800ml C190B140",
+    "title": "Garrafa Térmica 800ml",
     "category": "Térmicos",
     "description": "DESCRIÇÃO: Garrafa térmica em inox com pintura eletrostática e capacidade de até 800ml. Apresenta estrutura interna de parede dupla e vedação a vácuo, o que ajuda a conservar a temperatura de líquidos por mais tempo. Conta ainda com fundo removível. Possui tampa plástica rosqueável com protetor para o bocal, bico flip, canudo interno removível e alça fixa para transporte. MEDIDA: Altura: 28,6cm Largura: 9cm PESO 515G",
     "images": [
@@ -448,6 +487,7 @@
   {
     "sku": "1947220-kit-churrasco-c074b470",
     "name": "KIT CHURRASCO C074B470",
+    "title": "Kit Churrasco 2 Peças (Faca e Garfo) com Estojo",
     "category": "Kits Corporativos",
     "description": "DESCRICAO: Kit churrasco 2 peças com estojo, contém faca e garfo. Estojo com alça para transporte e área interna com elástico de fixação para os utensílios. MEDIDAS: Estojo - comprimento: 36 cm Estojo - largura: 9,8 cm Faca - comprimento: 33 cm Faca- largura: 3,7 cm Garfo - comprimento: 33 cm Garfo - largura: 2,6 cm Estojo - medidas para gravação (C x ): 33,9 cm x 8,3 cm Faca - medidas para gravação (C x L): 3,6 cm x 2 cm Garfo - medidas para gravação (C x L): 12,9 cm x 2 cm Peso: 271 g CARACTERISTICA: Material: inox e madeira",
     "images": [
@@ -460,6 +500,7 @@
   {
     "sku": "1941773-kit-churrasco-c082b170",
     "name": "Kit Churrasco C082B170",
+    "title": "Kit Churrasco 5 Peças Inox com Estojo",
     "category": "Kits Corporativos",
     "description": "DESCRIÇÃO: Kit churrasco com cinco peças em inox. O conjunto inclui: uma faca de 6 polegadas, um garfo, uma espátula, um pincel com cerdas de silicone e um pegador. Acompanha estojo em nylon com um par de alças para transporte e placa metálica personalizável com verso autoadesivo para fixação. MEDIDAS: Altura: 4,5cm Largura: 11cm Comprimento: 38,5cm Medidas aproximadas para gravação (CxL): 7 cm x 12 cm (estojo) - 2cm x 8cm (plaquinha) Peso aproximado (g):662",
     "images": [
@@ -473,6 +514,7 @@
   {
     "sku": "1947225-mochila-c013b200",
     "name": "Mochila de Nylon USB 20L C013B200",
+    "title": "Mochila de Nylon USB 20L",
     "category": "Mochilas",
     "description": "Descrição: Mochila de nylon 20 litros com três compartimentos, sendo o principal com bolso para notebook 15,6\". Com divisórias internas para acessórios, a mochila possui bolso lateral e suporte externo USB. Altura: 42cm Largura: 30cm Profundidade: 11,5cm Área de gravação: 23cm x 10cm Peso aproximado: 522g",
     "images": [
@@ -502,6 +544,7 @@
   {
     "sku": "xbz-01325-mochila-de-nylon-usb-18l",
     "name": "Mochila de Nylon USB 18L",
+    "title": "Mochila de Nylon USB 18L",
     "category": "Mochilas",
     "description": "Descrição: Mochila confeccionada em nylon resistente à água e capacidade de até 18 litros. Possui três compartimentos em tamanhos diferentes, sendo o principal com divisória para notebooks de até 15,6 polegadas. Conta ainda com bolso lateral, suporte USB externo e alças para as costas com revestimento em espuma de tecido respirável. Altura: 40cm Largura: 30cm Profundidade: 11cm Área de gravação: 18cm x 21cm Peso aproximado: 487g",
     "images": [
@@ -527,6 +570,7 @@
   {
     "sku": "1947227-necessaire-c190b190",
     "name": "NECESSAIRE C190B190",
+    "title": "Nécessaire em Couro Sintético",
     "category": "Necessaires",
     "description": "DESCRICAO: Nécessaire confeccionado em couro sintético impermeável. Possui compartimento principal com fechamento em zíper, além de um bolso frontal externo, alça de mão e duas alças menores para fixação de chaveiro ou gancho. MEDIDAS: Altura : 15 cm Largura : 25 cm Profundidade : 11,5 cm Comprimento : Alça 20 cm Peso aproximado (g): 179",
     "images": [
@@ -539,6 +583,7 @@
   {
     "sku": "1947231-porta-joias-c016b22b0",
     "name": "PORTA JOIAS C016B22B0",
+    "title": "Porta-Joias",
     "category": "Necessaires",
     "description": "DESCRICAO: Porta-joias feito em couro sintético com revestimento interno em tecido aveludado. Possui bolso elástico e três ganchos pequenos na parte interna da tampa, além de divisória multiuso e repartição almofadada com ranhuras para anéis, ambos localizadas no compartimento principal. MEDIDAS: Altura : 4,9 cm Largura : 9,8 cm Profundidade : 9,9 cm Peso aproximado (g): 106",
     "images": [
@@ -549,6 +594,7 @@
   {
     "sku": "1941590-squeeze-inox-500ml-c091b880",
     "name": "Squeeze Inox 500ml C091B880",
+    "title": "Squeeze Inox 500ml com Bico Flip",
     "category": "Garrafas Inox",
     "description": "DESCRIÇÃO: Squeeze em inox com capacidade para até 500ml. Possui tampa rosqueável em plástico com alça fixa e bico flip. Acompanha canudo interno removível e mosquetão metálico com argola. MEDIDAS: Altura: 20,6 cm Largura: 7,3 cm PESO: 145G",
     "images": [
@@ -560,6 +606,7 @@
   {
     "sku": "1941589-squeeze-inox-500ml-c913b9i0",
     "name": "Squeeze Inox 500ml C913B9I0",
+    "title": "Squeeze Inox 500ml Metalizado",
     "category": "Garrafas Inox",
     "description": "DESCRIÇÃO: Squeeze 500ml de inox com pintura metalizada, tampa rosqueável e acompanha um segundo bico com mosquetão (não é térmico). MEDIDAS: Tamanho total aproximado: 21,3 cm x 6,5 cm Peso: 142G",
     "images": [
@@ -571,6 +618,7 @@
   {
     "sku": "1941591-squeeze-inox-600ml-c185b580",
     "name": "Squeeze Inox 600ml C185B580",
+    "title": "Squeeze Inox 600ml",
     "category": "Garrafas Inox",
     "description": "DESCRIÇÃO: Squeeze em aço inox 600ml com tampa rosqueável plástica e bico transparente de acionamento manual. Acompanha alça de nylon para transporte. MEDIDA: Altura: 22cm Largura: 7,2cm PESO 160G",
     "images": [
@@ -582,6 +630,7 @@
   {
     "sku": "1941592-squeeze-inox-750ml-c188b210",
     "name": "Squeeze Inox 750ml C188B210",
+    "title": "Squeeze Inox 750ml",
     "category": "Garrafas Inox",
     "description": "DESCRIÇÃO: Squeeze feito em inox com 750ml. Possui tampa plástica, bocal com tampa protetora e alça para transporte. Este brinde será o parceiro de atividades físicas perfeito. MEDIDAS: Altura: 25,5cm Largura: 8,7cm PESO 175G",
     "images": [
@@ -592,6 +641,7 @@
   {
     "sku": "1941770-squeeze-inox-880ml-c187b800",
     "name": "Squeeze Inox 880ml C187B800",
+    "title": "Squeeze Inox 880ml",
     "category": "Garrafas Inox",
     "description": "DESCRIÇÃO: Squeeze inox de 880ml com pintura fosca. Possui tampa plástica rosqueável, alça e tampa protetora para o bocal. MEDIDAS: Altura: 24,3cm Largura: 7,6cm PESO 175G",
     "images": [
@@ -603,6 +653,7 @@
   {
     "sku": "xbz-06033-caneca-termica-12l",
     "name": "Caneca Térmica 1,2L",
+    "title": "Caneca Térmica 1,2L",
     "category": "Térmicos",
     "description": "Descrição: Caneca térmica com capacidade de 1,2 litros feita em inox 304 com parede dupla, contém tampa acrílica rosqueável com acesso para canudo e pegador plástico. Acompanha canudo plástico. Altura: 26,9cm Largura: 14,9cm Circunferência: 31,3cm Peso aproximado: 539g",
     "images": [
@@ -704,6 +755,7 @@
   {
     "sku": "xbz-04014-copo-termico-inox-380ml-multiuso",
     "name": "Copo Térmico Inox 380ml Multiuso",
+    "title": "Copo Térmico Inox 380ml Multiuso",
     "category": "Térmicos",
     "description": "Descrição: Copo térmico multiuso com parede dupla em inox, capacidade de 380ml. Pode ser utilizado como copo, porta long neck ou porta lata. Contém abridor de garrafa na parte inferior do copo. Altura: 15,8cm Largura: 7,9cm Circunferência: 25,3cm Peso aproximado: 244g",
     "images": [
@@ -729,6 +781,7 @@
   {
     "sku": "xbz-18639-garrafa-termica-inox-450ml",
     "name": "Garrafa Térmica Inox 450ml",
+    "title": "Garrafa Térmica Inox 450ml",
     "category": "Térmicos",
     "description": "Descrição: Garrafa térmica 450ml em inox com tampa que pode ser utilizada como caneca, tampa interna em plástico resistente (basta um clique para abrir ou fechar), base com borracha antiderrapante. Conservação líquidos quentes: ±7 horas. Conservação líquidos gelados: ±8 horas. Altura: 23,9cm Largura: 9,9cm Circunferência: 21cm Peso aproximado: 290g",
     "images": [
@@ -742,6 +795,7 @@
   {
     "sku": "xbz-18639kit-kit-garrafa-termica",
     "name": "Kit Garrafa Térmica",
+    "title": "Kit Garrafa Térmica Inox 450ml",
     "category": "Térmicos",
     "description": "Descrição: Kit garrafa térmica 450ml com duas tampas extras que podem ser utilizadas como xícaras. Garrafa produzida em inox com base antiderrapante e tampas de inox com revestimento plástico. Acompanha sacola de papel com berço de papelão para acomodação das peças. Altura: 25,5cm Largura: 16cm Profundidade: 7,2cm Peso aproximado: 354g",
     "images": [
@@ -755,6 +809,7 @@
   {
     "sku": "xbz-09059-kit-jardinagem-3-pecas",
     "name": "Kit Jardinagem 3 Peças",
+    "title": "Kit Jardinagem 3 Peças",
     "category": "Agro",
     "description": "Descrição: Kit de jardinagem com três peças em aço inox 410 e cabos de madeira. O conjunto é composto por um ancinho de três pontas, uma pazinha estreita e uma pazinha larga. Acompanha estojo em Oxford com fechamento em velcro. Largura: 12cm Comprimento: 32cm Espessura: 8,3cm Peso aproximado: 503g",
     "images": [
@@ -769,6 +824,7 @@
   {
     "sku": "canivete-chave-de-boca-01",
     "name": "Canivete Chave de Boca",
+    "title": "Canivete Chave de Boca",
     "category": "Canivetes",
     "description": "DESCRIÇÃO: Canivete multifuncional em formato de chave combinada, com lâmina de canivete embutida e retrátil na dobradiça central. Uma das pontas funciona como chave de boca fixa e a outra como chave estrela/catraca, além de abridor de garrafas integrado. Corpo em aço inoxidável, acabamento escurecido (black oxide) com detalhes em preto fosco. Trava de segurança para abertura e fechamento da lâmina. Formato compacto, ideal para levar na bolsa, mochila ou caixa de ferramentas.",
     "images": [
@@ -777,11 +833,13 @@
     ],
     "extraCategories": [
       "Agro"
-    ]
+    ],
+    "supplierCode": "CBI001"
   },
   {
     "sku": "canivete-inox-presilha-pesca-01",
     "name": "Canivete Inox de Bolso Presilha Pesca Gancho Abridor Trava",
+    "title": "Canivete Inox Presilha Pesca com Abridor",
     "category": "Canivetes",
     "description": "DESCRIÇÃO: Canivete multifuncional em aço inoxidável, resistente e durável. Dobrável e compacto, com presilha (clip) para prender no bolso ou cinto com segurança. Possui trava de segurança que impede o fechamento acidental da lâmina, além de gancho auxiliar para manusear linhas de pesca e cordas finas. Cabo ergonômico para melhor empunhadura e controle. Ideal para pescadores, campistas, trilheiros e uso diário (EDC). Prático, leve, fácil de usar e de alta durabilidade.",
     "images": [
@@ -790,11 +848,13 @@
     ],
     "extraCategories": [
       "Agro"
-    ]
+    ],
+    "supplierCode": "CBI004"
   },
   {
     "sku": "canivete-premium-hunter-clip-01",
     "name": "Canivete Premium Clip De Bolso Inox com abridor",
+    "title": "Canivete Premium Clip Inox com Abridor",
     "category": "Canivetes",
     "description": "DESCRIÇÃO: Canivete Premium linha Furo, modelo Clip de Bolso, na cor prateada. Cabo fabricado em aço inoxidável e lâmina em aço inox 440C, com fio liso e abertura tipo thumb stud. Lâmina dobrável, com furo de abertura rápida e abridor integrado na base do cabo. Possui clipe de bolso para carregar preso à calça ou jaqueta. Peso de 62 g, comprimento total de 15,8 cm (lâmina de 5,2 cm e cabo de 8,9 cm). Indicado para camping, caça, pesca e uso tático ao ar livre.",
     "images": [
@@ -803,11 +863,13 @@
     ],
     "extraCategories": [
       "Agro"
-    ]
+    ],
+    "supplierCode": "CBI002"
   },
   {
     "sku": "canivete-inox-cabo-anatomico-01",
     "name": "Canivete Inox Cabo Anatômico",
+    "title": "Canivete Inox Cabo Anatômico",
     "category": "Canivetes",
     "description": "DESCRIÇÃO: Canivete com cabo e lâmina em aço inoxidável, acabamento escovado na cor prata e cabo anatômico com apoio para os dedos. Ficha técnica completa em breve — consulte-nos pelo WhatsApp para medidas, personalização e pedido mínimo.",
     "images": [
@@ -815,11 +877,13 @@
     ],
     "extraCategories": [
       "Agro"
-    ]
+    ],
+    "supplierCode": "CBI003"
   },
   {
     "sku": "vestuario-camiseta-poliamida-masculina",
     "name": "Camiseta Masculina Poliamida Premium",
+    "title": "Camiseta Masculina Poliamida Premium",
     "category": "Vestuário",
     "description": "Camiseta masculina em poliamida premium, com tecido leve, macio e respirável, que mantém o frescor no dia a dia e durante atividades físicas. A modelagem confortável acompanha os movimentos e tem acabamento moderno. É ideal para uniformes, eventos esportivos e kits corporativos personalizados com a sua marca. Tamanhos: P, M, G e GG. Cores: preto, branco e azul-marinho. Pedido mínimo de 20 peças por modelo (pode combinar cores e tamanhos). Prazo sob consulta.",
     "images": [
@@ -854,11 +918,13 @@
       ],
       "genero": "Masculino"
     },
-    "minQuantity": 20
+    "minQuantity": 20,
+    "supplierCode": "CBI011"
   },
   {
     "sku": "vestuario-babylook-poliamida-feminina",
     "name": "Babylook Feminina Poliamida Premium",
+    "title": "Babylook Feminina Poliamida Premium",
     "category": "Vestuário",
     "description": "Babylook feminina em poliamida premium com textura furadinha: leve, macia ao toque e com ótima respirabilidade. A modelagem acinturada valoriza a silhueta sem limitar os movimentos, perfeita para treinos, corridas, eventos e uniformes com a sua marca. Tamanhos: P, M, G e GG. Cores: preto, branco e rosa. Confira a tabela de medidas abaixo. Pedido mínimo de 20 peças por modelo (pode combinar cores e tamanhos). Prazo sob consulta.",
     "images": [
@@ -945,11 +1011,13 @@
       },
       "genero": "Feminino"
     },
-    "minQuantity": 20
+    "minQuantity": 20,
+    "supplierCode": "CBI012"
   },
   {
     "sku": "vestuario-camiseta-algodao-confort-masculina",
     "name": "Camiseta Masculina Algodão Confort",
+    "title": "Camiseta Masculina Algodão Confort",
     "category": "Vestuário",
     "description": "Camiseta masculina 100% algodão, fio 30.1 e gramatura 160 g/m², com toque macio e caimento confortável para o dia inteiro. Tem reforço de ombro a ombro e gola em ribana de 1,5 cm, acabamento que mantém a forma depois de muitas lavagens. Ótima base para personalizar com silk, transfer ou bordado: uniformes de empresa, eventos, escolas, igrejas e equipes. Disponível em 22 cores. Tamanhos: P, M, G e GG. Pedido mínimo de 20 peças por modelo (pode combinar cores e tamanhos). Prazo sob consulta.",
     "images": [
@@ -1079,11 +1147,13 @@
         "GG"
       ]
     },
-    "minQuantity": 20
+    "minQuantity": 20,
+    "supplierCode": "CBI009"
   },
   {
     "sku": "vestuario-babylook-algodao-feminina",
     "name": "Babylook Feminina Algodão Confort",
+    "title": "Babylook Feminina Algodão Confort",
     "category": "Vestuário",
     "description": "Babylook feminina 100% algodão, fio 30.1 e gramatura 160 g/m², leve e confortável para o dia a dia, com modelagem feminina que valoriza o corpo. Tem reforço de ombro a ombro e gola em ribana de 1,5 cm, acabamento que mantém a forma depois de muitas lavagens. Ótima base para personalizar com silk, transfer ou bordado: uniformes, eventos, equipes, grupos e brindes. Disponível em 13 cores. Tamanhos: P, M, G e GG. Pedido mínimo de 20 peças por modelo (pode combinar cores e tamanhos). Prazo sob consulta.",
     "images": [
@@ -1168,11 +1238,13 @@
         "GG"
       ]
     },
-    "minQuantity": 20
+    "minQuantity": 20,
+    "supplierCode": "CBI010"
   },
   {
     "sku": "xbz-06104-caderneta-em-linho",
     "name": "Caderneta em Linho",
+    "title": "Caderneta em Linho com Porta-Caneta",
     "category": "Escritório",
     "description": "Descrição: Caderneta feita de linho com porta caneta elástico, marcador de página em cetim e fita elástica para fechar. Contém aproximadamente 80 folhas brancas pautadas. Altura: 17,5cm Largura: 12,4cm Espessura: 1,3cm Área de gravação: 13cm x 8cm Peso aproximado: 174g",
     "images": [
@@ -1202,6 +1274,7 @@
   {
     "sku": "xbz-08288-caderneta-palha-de-trigo-com-caneta",
     "name": "Caderneta Palha de Trigo com Caneta",
+    "title": "Caderneta Palha de Trigo com Caneta",
     "category": "Escritório",
     "description": "Descrição: Caderneta ecológica de capa dura revestida em fibra de palha de trigo. Contém aproximadamente 80 folhas brancas com pauta, além de duas folhas de guarda, uma fita para fechamento e porta-canetas elástico. Acompanha uma caneta esferográfica de carga azul de 1,0mm com corpo em papelão e clip, acionamento por clique e ponteira em plástico. Largura: 9,3cm Comprimento: 14cm Espessura: 1,3cm Área de gravação: 14cm x 9cm (caderneta) e 0,8cm x 10cm (caneta) Peso aproximado: 107g",
     "images": [
@@ -1231,6 +1304,7 @@
   {
     "sku": "xbz-08290-caderneta-fibra-de-arroz-com-caneta",
     "name": "Caderneta Fibra de Arroz com Caneta",
+    "title": "Caderneta Fibra de Arroz com Caneta",
     "category": "Escritório",
     "description": "Descrição: Caderneta ecológica com capa em fibra da palha de arroz. Contém aproximadamente 80 folhas amareladas com pauta, além de duas folhas de guarda, uma fita elástica para fechamento e porta-canetas em elástico. Acompanha uma caneta esferográfica de carga azul de 1,0mm com corpo em papelão e clip, acionamento por clique e ponteira em plástico. Largura: 15,5cm Comprimento: 21cm Espessura: 1,3cm Área de gravação: 21cm x 14cm (caderno) e 0,8cm x 10cm (caneta) Peso aproximado: 246g",
     "images": [
@@ -1261,6 +1335,7 @@
   {
     "sku": "xbz-08119-aspirador-de-po-3-em-1",
     "name": "Aspirador de Pó 3 em 1",
+    "title": "Aspirador de Pó Portátil 3 em 1",
     "category": "Eletrônicos",
     "description": "Descrição: Aspirador multiuso sem fio. Possui funções de aspiração e soprador acionadas por botão localizado no cabo de formato ergonômico. Apresenta estrutura em plástico que inclui um filtro removível e entrada Micro-USB para carregamento. Acompanha três ponteiras para encaixe: uma fina para sopro, uma estreita para aspiração e outra em formato de escova. Altura: 14,7cm Largura: 5,7cm Profundidade: 16,3cm Área de gravação: 1,5cm x 3cm (lateral do aspirador) Peso aproximado: 205g",
     "images": [
@@ -1281,6 +1356,7 @@
   {
     "sku": "mini-compressor-de-ar-digital-usb-c",
     "name": "Mini Compressor de Ar Digital Portátil Recarregável USB-C",
+    "title": "Mini Compressor de Ar Digital Recarregável USB-C",
     "category": "Eletrônicos",
     "description": "Descrição: Mini compressor de ar digital portátil e sem fio, recarregável via USB-C. Compacto e fácil de transportar, é ideal para calibrar pneus de carros, motos e bicicletas e para encher bolas, colchões, boias e outros infláveis. Possui display digital de fácil leitura, regulador de pressão, lanterna integrada e acompanha bicos adaptadores. Corpo em ABS de alta resistência. Pressão máxima: 150 psi Fluxo de ar: 35 L/min Comprimento: 13,7cm Largura: 4,7cm Altura: 8,9cm Peso aproximado: 370g",
     "images": [
@@ -1295,11 +1371,13 @@
     "colors": [
       "Preto"
     ],
-    "minQuantity": 50
+    "minQuantity": 50,
+    "supplierCode": "CBI006"
   },
   {
     "sku": "xbz-08003-caixa-de-som-multimidia-tws-rgb",
     "name": "Caixa de Som Multimídia TWS com Luzes RGB",
+    "title": "Caixa de Som Bluetooth TWS com Luzes RGB",
     "category": "Eletrônicos",
     "description": "Descrição: Caixa de som multimídia com iluminação RGB em 7 modos dinâmicos. Oferece conexão Bluetooth com tecnologia TWS para sincronizar duas caixas simultaneamente. Conta ainda com rádio FM e reprodução de arquivos MP3 via cartão MicroSD ou pen drive. Acompanha cordão de nylon, cabo micro USB (V8) e plaquinha de alumínio para personalização. Alcance: até 10 metros Potência: 3W Bateria: 800mAh Altura: 8,9cm Comprimento: 8,6cm Circunferência: 27cm Área de gravação: 1cm x 3cm (plaquinha) Peso aproximado: 253g",
     "images": [
@@ -1324,6 +1402,7 @@
   {
     "sku": "asia-cj405-kit-escritorio-caderno-caneca-caneta",
     "name": "Kit Escritório Caderno, Caneca e Caneta Metálica Colorido",
+    "title": "Kit Escritório Caderno, Caneca e Caneta Colorido",
     "category": "Kits Corporativos",
     "description": "Descrição: Kit escritório em caixa de presente contendo caderno tamanho A5 com capa dura em PU cinza, detalhes em PU colorido e impressão de linhas prateadas, 80 folhas internas pautadas em papel 70g/m², com fechamento magnético em PU e placa metálica, além de caneta esferográfica metálica e caneca de cerâmica. Peso do kit: 1,339kg Dimensão da embalagem: 25cm x 32cm x 9,7cm",
     "images": [
@@ -1351,6 +1430,7 @@
   {
     "sku": "asia-cj305-kit-escritorio-caderno-garrafa-caneta",
     "name": "Kit Escritório Caderno, Garrafa e Caneta Metálica",
+    "title": "Kit Escritório Caderno, Garrafa e Caneta",
     "category": "Kits Corporativos",
     "description": "Descrição: Kit escritório em caixa presenteável contendo caderno A5 com capa em RPET e detalhe em bambu, 80 folhas pautadas em papel 70g/m²; garrafa térmica de 600ml em inox (exterior 201/interior 304) com acabamento preto fosco, tampa em plástico PP com detalhe em bambu e alça em silicone preta; e caneta esferográfica de metal com detalhe em bambu. Peso do kit: 1,373kg Dimensão da embalagem: 27,2cm x 32cm x 8cm",
     "images": [
@@ -1374,6 +1454,7 @@
   {
     "sku": "asia-cj410-kit-escritorio-caderno-caneca-caneta",
     "name": "Kit Escritório Caderno, Caneca e Caneta Metálica Preto",
+    "title": "Kit Escritório Caderno, Caneca e Caneta Preto",
     "category": "Kits Corporativos",
     "description": "Descrição: Kit escritório em caixa presenteável contendo caderno A5 com capa dura, 80 folhas internas pautadas em papel 70g/m², com marcador de página e elástico de fechamento, além de caneta esferográfica metálica e caneca de cerâmica. Acompanha luva de papel kraft para proteção no transporte. Peso do kit: 1,329kg Embalagem: 24,8cm x 32cm x 9,6cm Caneca: 9,2cm x ø8,2cm Caderno: 21,1cm x 14,2cm Caneta: 14cm x ø1cm",
     "images": [
@@ -1395,6 +1476,7 @@
   {
     "sku": "xbz-06046-kit-ferramentas-25-pecas",
     "name": "Kit Ferramentas 25 Peças",
+    "title": "Kit Ferramentas 25 Peças",
     "category": "Kits Corporativos",
     "description": "Descrição: Kit ferramenta com 25 peças em estojo plástico com tampa de encaixe. Contém: 1 chave extensora rotatória para conexão das ponteiras, 1 ponteira Tri-Wing, 5 ponteiras Phillips, 4 ponteiras fenda, 10 ponteiras Torx, 2 ponteiras Allen, 1 ponteira spanner e 1 ponteira fenda triangular. Largura: 6,6cm Comprimento: 15,4cm Espessura: 1,6cm Área de gravação: 15,4cm x 5cm Peso aproximado: 136g",
     "images": [
@@ -1415,6 +1497,7 @@
   {
     "sku": "xbz-14012-kit-ferramentas-21-pecas",
     "name": "Kit Ferramentas 21 Peças",
+    "title": "Kit Ferramentas 21 Peças com Estojo",
     "category": "Kits Corporativos",
     "description": "Descrição: Kit ferramenta 21 peças em estojo formato garrafa de óleo. Material plástico resistente com detalhes em relevo (a tampa faz apenas parte do design), possui duas travas para abertura e acompanha: estilete, chave canhão, 4 extensores bocais (7mm, 8mm, 9mm e 10mm), 2 mini chaves de fenda, 2 mini chaves phillips e conjunto de 10 pontas (4 chaves phillips, 2 chaves fenda, 3 chaves torx e um adaptador). Tamanho: 17,5cm x 12,5cm x 4,4cm Área de gravação: 12cm x 4,5cm Peso aproximado: 398g",
     "images": [
@@ -1430,6 +1513,7 @@
   {
     "sku": "mini-lanterna-recarregavel-cob",
     "name": "Mini Lanterna Tática Recarregável com Luz LED",
+    "title": "Mini Lanterna Tática Recarregável LED",
     "category": "Eletrônicos",
     "description": "Descrição: Mini lanterna tática de LED, compacta e recarregável via USB (acompanha cabo). Possui zoom, luz lateral de LED e 3 modos de iluminação: normal, piscante e luz lateral. Acompanha estojo protetor. Ideal para carro, casa, camping e emergências. Comprimento: 9cm Diâmetro: 3cm",
     "images": [
@@ -1439,11 +1523,13 @@
     ],
     "colors": [
       "Preto"
-    ]
+    ],
+    "supplierCode": "C013B97A0"
   },
   {
     "sku": "xbz-08138-copo-termico-200ml",
     "name": "Copo Térmico 200ml",
+    "title": "Copo Térmico 200ml",
     "category": "Térmicos",
     "subcategory": "Copos",
     "description": "Descrição: Copo térmico de inox com parede dupla e capacidade de 200ml. Tampa com bocal, trava de segurança e vedação em silicone, que evita vazamentos. Ideal para o uso diário, mantém a bebida na temperatura ideal por mais tempo. Altura: 9,3cm Largura: 8cm Circunferência: 25,4cm Área de gravação: 4cm x 8cm Peso aproximado: 123g",
@@ -1477,6 +1563,7 @@
   {
     "sku": "xbz-18621-saca-rolhas-metal-2-estagios",
     "name": "Saca-rolhas Metal com 2 Estágios",
+    "title": "Saca-Rolhas Metal 2 Estágios",
     "category": "Diversos",
     "description": "Descrição: Saca-rolhas metálico de 2 estágios com acabamento fosco. Contém abridor de garrafa, lâmina de corte e saca-rolhas. Fechado: 12,3cm x 2,2cm Aberto: 17,7cm x 9,7cm Área de gravação: 1cm x 1,9cm Peso aproximado: 54g",
     "images": [
@@ -1500,6 +1587,7 @@
   {
     "sku": "copo-termico-inox-250ml-tampa-acrilico",
     "name": "Copo Térmico Inox 250ml com Tampa Acrílica",
+    "title": "Copo Térmico Inox 250ml com Tampa Acrílica",
     "category": "Térmicos",
     "subcategory": "Copos",
     "description": "Descrição: Copo térmico em aço inox 18/8 com parede dupla e isolamento a vácuo, que mantém a temperatura da bebida e não sua por fora. Tampa acrílica removível. Ideal para café, chá, água ou cerveja. Altura: 9 cm. Diâmetro: 8 cm.",
@@ -1509,11 +1597,13 @@
     ],
     "colors": [
       "Preto"
-    ]
+    ],
+    "supplierCode": "CBI007"
   },
   {
     "sku": "compressor-ar-4em1-auxiliar-partida",
     "name": "Compressor de Ar Portátil 4 em 1 com Auxiliar de Partida",
+    "title": "Compressor de Ar Portátil 4 em 1 com Auxiliar de Partida",
     "category": "Eletrônicos",
     "description": "Descrição: Compressor de ar digital portátil 4 em 1: compressor de ar, auxiliar de partida para carro, power bank e lanterna LED em um só aparelho. Display digital com medição em BAR, KPA e PSI e parada automática ao atingir a pressão ideal. Bateria de 10000mAh, recarregável via USB Tipo-C. Acompanha bicos para pneus de carro, moto, bicicleta, bolas e infláveis. Medidas: 19,3 x 8,5 x 6,2 cm.",
     "images": [
@@ -1525,11 +1615,13 @@
     "colors": [
       "Preto"
     ],
-    "minQuantity": 50
+    "minQuantity": 50,
+    "supplierCode": "CBI005"
   },
   {
     "sku": "copo-termico-inox-360ml-tampa-acrilica",
     "name": "Copo Térmico Inox 360ml com Tampa Acrílica",
+    "title": "Copo Térmico Inox 360ml com Tampa Acrílica",
     "category": "Térmicos",
     "subcategory": "Copos",
     "description": "Descrição: Copo térmico de 360ml em aço inox com parede dupla, que mantém a temperatura da bebida por mais tempo. Acabamento pintado com borda em inox escovado e tampa acrílica removível com abertura deslizante. Ideal para café, chá, água ou cerveja.",
@@ -1540,6 +1632,7 @@
     "colors": [
       "Preto",
       "Branco"
-    ]
+    ],
+    "supplierCode": "CBI008"
   }
 ]
