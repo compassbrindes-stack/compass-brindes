@@ -49,7 +49,7 @@ export default async function ProdutosPage({
   const iconeGenero: Record<string, string> = { Masculino: "👕", Feminino: "👚" };
 
   // Sub-abas por tipo (ex.: Térmicos → Copos, Canecas, Garrafas).
-  const ORDEM_TIPOS = ["Copos", "Canecas", "Garrafas", "Kit Escritório", "Kit Churrasco", "Kit Ferramenta"];
+  const ORDEM_TIPOS = ["Copos", "Canecas", "Garrafas", "Inox", "Alumínio", "Kit Escritório", "Kit Churrasco", "Kit Ferramenta"];
   const tipos = categoriaAtual
     ? Array.from(
         new Set(
