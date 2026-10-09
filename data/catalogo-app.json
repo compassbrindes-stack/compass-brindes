@@ -518,30 +518,15 @@
     "title": "Kit Churrasco 12 Peças (6 Facas e 6 Garfos) Cabo de Madeira",
     "category": "Kits Corporativos",
     "subcategory": "Kit Churrasco",
-    "description": "Descrição: Conjunto com 6 facas de serra 4,5\" e 6 garfos em aço inox com cabo de madeira. A faca tem lâmina mais larga e cabo mais robusto que o modelo tradicional, para corte firme e preciso até nos pedaços maiores de carne. Ideal para presentear clientes e equipes, com personalização a laser no cabo ou na embalagem. Não recomendado lavar na lava-louças. Faca: 25cm x 2,7cm x 1,7cm Garfo: 20cm x 2,3cm x 2cm",
+    "description": "Descrição: Conjunto com 6 facas de serra 4,5\" e 6 garfos em aço inox com cabo de madeira. A faca tem lâmina mais larga e cabo mais robusto que o modelo tradicional, para corte firme e preciso até nos pedaços maiores de carne. Disponível em duas versões: kit avulso ou kit em caixa de MDF cru com tampa articulada, fecho metálico e suporte interno que mantém as peças em pé. Personalização a laser com a marca da empresa na tampa da caixa e nas peças (lâmina das facas e cabo dos garfos). Ideal para presentear clientes, cooperados e equipes. Não recomendado lavar na lava-louças. Faca: 25cm x 2,7cm x 1,7cm Garfo: 20cm x 2,3cm x 2cm Caixa (medidas internas): 44cm x 9,5cm x 4cm",
     "images": [
-      "/produtos/kit-churrasco-12-pecas-1.jpg"
+      "/produtos/kit-churrasco-12-pecas-1.jpg",
+      "/produtos/kit-churrasco-12-pecas-caixa-mdf-1.jpg"
     ],
     "colors": [
       "Madeira"
     ],
     "supplierCode": "CBI013"
-  },
-  {
-    "sku": "kit-churrasco-12-pecas-caixa-mdf-cbi014",
-    "name": "Kit Churrasco 12 Peças em Caixa de MDF Personalizada CBI014",
-    "title": "Kit Churrasco 12 Peças em Caixa de MDF Personalizada",
-    "category": "Kits Corporativos",
-    "subcategory": "Kit Churrasco",
-    "description": "Descrição: 6 facas de serra 4,5\" e 6 garfos em aço inox com cabo de madeira, acomodados em pé numa caixa de MDF cru com tampa articulada, fecho metálico e suporte interno que mantém cada peça no lugar. Personalização a laser com a marca da empresa na tampa da caixa e nas peças (lâmina das facas e cabo dos garfos). Presente marcante para clientes, cooperados e equipes. Medidas internas da caixa: 44cm x 9,5cm x 4cm Faca: 25cm x 2,7cm x 1,7cm Garfo: 20cm x 2,3cm x 2cm",
-    "images": [
-      "/produtos/kit-churrasco-12-pecas-caixa-mdf-1.jpg",
-      "/produtos/kit-churrasco-12-pecas-1.jpg"
-    ],
-    "colors": [
-      "Madeira"
-    ],
-    "supplierCode": "CBI014"
   },
   {
     "sku": "1947225-mochila-c013b200",
