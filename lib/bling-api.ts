@@ -164,3 +164,139 @@ export async function baixarConta(conta: ContaReceber, valor: number, data: stri
     }),
   });
 }
+
+// ---------------------------------------------------------------- contas a pagar
+
+export interface ContaPagar {
+  id: number;
+  situacao: number; // 1 aberto, 2 pago
+  vencimento: string;
+  valor: number;
+  contato?: { id: number; nome?: string };
+  historico?: string;
+  numeroDocumento?: string;
+}
+
+/** Conta financeira padrão para baixas de contas a pagar ("Caixa" da Compass, ou BLING_PORTADOR_ID). */
+const PORTADOR_PADRAO = () => Number(process.env.BLING_PORTADOR_ID) || 14891685159;
+
+/** Contas a pagar em aberto com vencimento entre 120 dias atrás e 120 dias à frente. */
+export async function contasPagarAbertas(): Promise<ContaPagar[]> {
+  const hoje = Date.now();
+  const ini = new Date(hoje - 120 * 86400000).toISOString().slice(0, 10);
+  const fim = new Date(hoje + 120 * 86400000).toISOString().slice(0, 10);
+  const todas: ContaPagar[] = [];
+  for (let pagina = 1; pagina <= 5; pagina++) {
+    const r = await bling<{ data: ContaPagar[] }>(`/contas/pagar?pagina=${pagina}&limite=100&situacao=1&dataVencimentoInicial=${ini}&dataVencimentoFinal=${fim}`);
+    todas.push(...(r.data || []));
+    if (!r.data || r.data.length < 100) break;
+  }
+  return todas.filter((c) => c.situacao === 1 || c.situacao === 3);
+}
+
+export async function detalheContaPagar(id: number): Promise<any> {
+  return (await bling<{ data: any }>(`/contas/pagar/${id}`)).data || {};
+}
+
+export async function nomeContato(id: number): Promise<string> {
+  try {
+    const d = (await bling<{ data: any }>(`/contatos/${id}`)).data || {};
+    return [d.nome, d.fantasia].filter(Boolean).join(" / ");
+  } catch {
+    return "";
+  }
+}
+
+/** Categoria de despesa do Bling que combina com o texto (frete, internet, telefone, sistema…). Cache de 1 dia. */
+export async function categoriaDespesa(texto: string): Promise<number> {
+  const CHAVE = "compass:bling:categorias-despesa";
+  let lista: { id: number; descricao: string }[] | null = null;
+  const salvo = await redis<string | null>(["GET", CHAVE]);
+  if (salvo) {
+    try {
+      lista = JSON.parse(salvo);
+    } catch {
+      lista = null;
+    }
+  }
+  if (!lista) {
+    const r = await bling<{ data: { id: number; descricao: string }[] }>(`/categorias/receitas-despesas?tipo=1&situacao=1&limite=100`);
+    lista = (r.data || []).map((c) => ({ id: c.id, descricao: c.descricao }));
+    await redis(["SET", CHAVE, JSON.stringify(lista), "EX", 86400]);
+  }
+  const t = (texto || "").toLowerCase();
+  const grupos: [RegExp, RegExp][] = [
+    [/frete|transport|ct-?e|s[aã]o miguel|ouro e prata|viopex|braspress|correio/, /frete|transport/],
+    [/internet|provedor|tch[eê]turbo/, /internet|telecom|comunica/],
+    [/telefone|celular|m[oó]vel|linha/, /telefone|telecom|comunica/],
+    [/bling|uazapi|sistema|software|assinatura|whatsapp/, /sistema|software|tecnologia|assinatura/],
+    [/t[aá]xi|uber|combust|gasolina|ped[aá]gio/, /transporte|combust|viagem|deslocamento/],
+    [/fornecedor|mercadoria|produto|brinde|compra/, /compra|mercadoria|fornecedor|custo/],
+    [/aluguel/, /aluguel/],
+    [/energia|luz|[aá]gua/, /energia|[aá]gua|utilidade/],
+  ];
+  for (const [quando, cat] of grupos) {
+    if (quando.test(t)) {
+      const c = lista.find((x) => cat.test(x.descricao.toLowerCase()));
+      if (c) return c.id;
+    }
+  }
+  const geral = lista.find((x) => /despesa|geral|outras/i.test(x.descricao)) || lista[0];
+  return geral ? geral.id : 0;
+}
+
+export async function baixarContaPagar(conta: ContaPagar, valor: number, data: string, historico: string, textoCategoria: string, categoriaId?: number) {
+  const d = await detalheContaPagar(conta.id);
+  const portador = d.portador?.id || PORTADOR_PADRAO();
+  const categoria = d.categoria?.id || categoriaId || (await categoriaDespesa(`${textoCategoria} ${String(d.historico || "").replace(/whatsapp|compass recibos/gi, "")}`));
+  if (!categoria) throw new Error("não encontrei categoria de despesa no Bling");
+  await bling(`/contas/pagar/${conta.id}/baixar`, {
+    method: "POST",
+    body: JSON.stringify({ data, usarDataVencimento: false, portador: { id: portador }, categoria: { id: categoria }, historico, valorRecebido: valor }),
+  });
+}
+
+/** Procura o contato pelo CNPJ/CPF ou nome; se não existir, cria como fornecedor. */
+export async function contatoFornecedor(nome: string, doc?: string): Promise<number> {
+  const digitos = (doc || "").replace(/\D/g, "");
+  if (digitos.length === 11 || digitos.length === 14) {
+    const r = await bling<{ data: { id: number }[] }>(`/contatos?numeroDocumento=${digitos}&limite=1`);
+    if (r.data && r.data[0]) return r.data[0].id;
+  }
+  if (nome) {
+    const r = await bling<{ data: { id: number; nome: string }[] }>(`/contatos?pesquisa=${encodeURIComponent(nome.slice(0, 40))}&limite=5`);
+    if (r.data && r.data[0]) return r.data[0].id;
+  }
+  const novo = await bling<{ data: { id: number } }>(`/contatos`, {
+    method: "POST",
+    body: JSON.stringify({
+      nome: (nome || "Fornecedor sem nome").toUpperCase().slice(0, 120),
+      situacao: "A",
+      tipo: digitos.length === 11 ? "F" : "J",
+      ...(digitos.length === 11 || digitos.length === 14 ? { numeroDocumento: digitos } : {}),
+    }),
+  });
+  return novo.data.id;
+}
+
+/** Lança uma despesa já paga (cria a conta a pagar e dá baixa). */
+export async function lancarDespesaPaga(o: { contatoId: number; valor: number; data: string; historico: string; textoCategoria: string; documento?: string }) {
+  const categoria = await categoriaDespesa(o.textoCategoria);
+  const criada = await bling<{ data: { id: number } }>(`/contas/pagar`, {
+    method: "POST",
+    body: JSON.stringify({
+      vencimento: o.data,
+      competencia: o.data,
+      dataEmissao: o.data,
+      valor: o.valor,
+      contato: { id: o.contatoId },
+      historico: o.historico,
+      numeroDocumento: o.documento || "Comprovante WhatsApp",
+      ocorrencia: { tipo: "1" },
+      ...(categoria ? { categoria: { id: categoria } } : {}),
+    }),
+  });
+  const conta: ContaPagar = { id: criada.data.id, situacao: 1, vencimento: o.data, valor: o.valor };
+  await baixarContaPagar(conta, o.valor, o.data, o.historico, o.textoCategoria, categoria || undefined);
+  return criada.data.id;
+}
