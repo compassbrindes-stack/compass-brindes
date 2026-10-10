@@ -69,8 +69,28 @@ async function tokenValido(): Promise<string> {
   const t = await redisGetJSON<Tokens>(CHAVE_TOKENS);
   if (!t) throw new Error("Bling não conectado no servidor. Abra /api/bling/conectar.");
   if (t.expira - Date.now() > 5 * 60_000) return t.access_token;
-  const novo = await pedirToken({ grant_type: "refresh_token", refresh_token: t.refresh_token });
-  return novo.access_token;
+  // renova uma vez só: o Bling troca o refresh token a cada renovação,
+  // então mensagens que chegam juntas esperam a primeira terminar
+  const trava = await redis<string | null>(["SET", "compass:bling:renovando", "1", "NX", "EX", 30]);
+  if (trava === "OK") {
+    try {
+      const novo = await pedirToken({ grant_type: "refresh_token", refresh_token: t.refresh_token });
+      return novo.access_token;
+    } catch (e) {
+      // outra execução pode ter renovado antes
+      const depois = await redisGetJSON<Tokens>(CHAVE_TOKENS);
+      if (depois && depois.refresh_token !== t.refresh_token) return depois.access_token;
+      throw e;
+    } finally {
+      await redis(["DEL", "compass:bling:renovando"]).catch(() => {});
+    }
+  }
+  for (let i = 0; i < 20; i++) {
+    await new Promise((r) => setTimeout(r, 750));
+    const d = await redisGetJSON<Tokens>(CHAVE_TOKENS);
+    if (d && d.expira - Date.now() > 5 * 60_000) return d.access_token;
+  }
+  throw new Error("a renovação da autorização do Bling demorou; tente de novo em instantes");
 }
 
 export async function blingConectado(): Promise<{ conectado: boolean; expira?: string }> {
