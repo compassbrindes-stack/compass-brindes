@@ -112,6 +112,21 @@ export interface ContaReceber {
 }
 
 /** Contas a receber em aberto (ou parciais) de um pedido de venda, pelo número do pedido. */
+/** Todas as contas a receber em aberto (ou parciais) dos últimos 360 dias. */
+export async function contasReceberAbertas(): Promise<ContaReceber[]> {
+  const hoje = new Date();
+  const ini = new Date(hoje.getTime() - 360 * 86400000).toISOString().slice(0, 10);
+  const fim = new Date(hoje.getTime() + 2 * 86400000).toISOString().slice(0, 10);
+  const todas: ContaReceber[] = [];
+  for (let pagina = 1; pagina <= 5; pagina++) {
+    const q = `?pagina=${pagina}&limite=100&situacoes[]=1&situacoes[]=3&tipoFiltroData=E&dataInicial=${ini}&dataFinal=${fim}`;
+    const r = await bling<{ data: ContaReceber[] }>(`/contas/receber${q}`);
+    todas.push(...(r.data || []));
+    if (!r.data || r.data.length < 100) break;
+  }
+  return todas;
+}
+
 export async function contasDoPedido(numeroPedido: string): Promise<ContaReceber[]> {
   const hoje = new Date();
   const ini = new Date(hoje.getTime() - 360 * 86400000).toISOString().slice(0, 10);

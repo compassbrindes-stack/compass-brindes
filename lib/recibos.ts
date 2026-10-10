@@ -20,6 +20,7 @@ import {
   baixarConta,
   baixarContaPagar,
   contasDoPedido,
+  contasReceberAbertas,
   contasPagarAbertas,
   contatoFornecedor,
   detalheContaPagar,
@@ -176,7 +177,8 @@ export async function processarRecibo(m: MsgRecibo) {
   const leg = lerLegenda(m.texto);
   // pagamento feito pela Compass: legenda começa com "pago", "paguei", "despesa"… (ex.: "pago internet 49,90")
   const palavraPagar = /^\s*(pago|paga|paguei|pagamento|despesa|conta paga)\b/i.test(m.texto || "");
-  if (!leg.pedido && !palavraPagar) return { status: "sem-pedido" }; // conversa normal do grupo: ignora
+  // texto sem número nem "pago" e sem arquivo: conversa normal do grupo, ignora
+  if (!leg.pedido && !palavraPagar && !m.temMidia) return { status: "sem-pedido" };
 
   let arquivo: { fileURL?: string; mimetype?: string } = {};
   let lido: LidoComprovante | null = null;
@@ -197,7 +199,19 @@ export async function processarRecibo(m: MsgRecibo) {
     const legPag: Legenda = { pedido: null, valor: leg.valor ?? (leg.pedido ? Number(leg.pedido) : null), entrada: false };
     return processarPagamento(m, legPag, lido, arquivo.fileURL || null);
   }
-  if (!leg.pedido) return { status: "sem-pedido" };
+  if (!leg.pedido) {
+    // comprovante sem legenda útil
+    if (lido && lido.valor && compassRecebeu) return processarRecebimentoSemPedido(m, lido, arquivo.fileURL || null);
+    if (lido && lido.valor) {
+      return responderEGravar(m, { tipo: "duvida", comprovante: lido, arquivo: arquivo.fileURL || null, status: "pergunta" },
+        `⚠️ Li um comprovante de ${brl(lido.valor)}${lido.pagador ? ` (pagador: ${lido.pagador}` : ""}${lido.favorecido ? `${lido.pagador ? ", " : " ("}favorecido: ${lido.favorecido}` : ""}${lido.pagador || lido.favorecido ? ")" : ""}, mas não sei se foi a Compass que pagou ou recebeu. Responda com "pago …" (conta da Compass) ou com o número do pedido (recebimento de cliente).`);
+    }
+    if (m.temMidia) {
+      return responderEGravar(m, { tipo: "ilegivel", arquivo: arquivo.fileURL || null, status: "pergunta" },
+        `⚠️ Não consegui ler esse arquivo. Mande de novo com a legenda: o número do pedido (recebimento) ou "pago" + o que foi pago e o valor.`);
+    }
+    return { status: "sem-pedido" };
+  }
 
   const registro: Record<string, unknown> = {
     em: new Date().toISOString(),
@@ -326,4 +340,43 @@ async function processarPagamento(m: MsgRecibo, leg: Legenda, lido: LidoComprova
     /* cortesia */
   }
   return registro;
+}
+
+
+async function responderEGravar(m: MsgRecibo, registro: Record<string, unknown>, resposta: string) {
+  const reg = { em: new Date().toISOString(), messageid: m.messageid, remetente: m.remetente, legenda: m.texto, ...registro };
+  await redis(["LPUSH", "compass:recibos:log", JSON.stringify(reg)]);
+  await redis(["LTRIM", "compass:recibos:log", 0, 499]);
+  try {
+    await enviarTexto(m.chat, resposta, m.messageid);
+  } catch {
+    /* cortesia */
+  }
+  return reg;
+}
+
+/** Recebimento sem número de pedido: procura a conta a receber em aberto com o mesmo valor (e nome do pagador). */
+async function processarRecebimentoSemPedido(m: MsgRecibo, lido: LidoComprovante, arquivo: string | null) {
+  const valor = lido.valor as number;
+  const data = lido.data || hojeSP();
+  try {
+    const abertas = (await contasReceberAbertas()).filter((c) => Math.abs(c.valor - valor) < 0.01);
+    const pontuadas = abertas
+      .map((c) => ({ c, pontos: pontuar(c.contato?.nome || "", lido.pagador || "") }))
+      .sort((a, b) => b.pontos - a.pontos || a.c.vencimento.localeCompare(b.c.vencimento));
+    const melhor = pontuadas[0];
+    const unico = pontuadas.length === 1 || (melhor && melhor.pontos > 0 && melhor.pontos > pontuadas[1].pontos);
+    if (melhor && unico) {
+      const hist = ["Recibo WhatsApp (grupo Compass Recibos)", lido.pagador && `pagador: ${lido.pagador}`, lido.banco && `banco: ${lido.banco}`].filter(Boolean).join(" · ");
+      await baixarConta(melhor.c, valor, data, hist);
+      return responderEGravar(m, { tipo: "receber", status: "baixado", contaId: melhor.c.id, valor, comprovante: lido, arquivo },
+        `✅ Baixa feita no Bling\nPedido ${melhor.c.origem?.numero || "?"} · ${melhor.c.contato?.nome || ""}\n${brl(valor)} em ${dataBR(data)} (parcela de ${dataBR(melhor.c.vencimento)})${lido.pagador ? `\nPagador: ${lido.pagador}` : ""}`);
+    }
+    const motivo = pontuadas.length
+      ? `há ${pontuadas.length} contas a receber de ${brl(valor)} em aberto (${pontuadas.map((x) => `pedido ${x.c.origem?.numero || "?"} ${x.c.contato?.nome || ""}`).join("; ")}). Responda com o número do pedido`
+      : `recebido ${brl(valor)}${lido.pagador ? ` de ${lido.pagador}` : ""}, mas não achei conta a receber em aberto com esse valor. Se for de um pedido, mande o número do pedido`;
+    return responderEGravar(m, { tipo: "receber", status: "pergunta", valor, comprovante: lido, arquivo }, `⚠️ Não dei baixa: ${motivo}.`);
+  } catch (e: any) {
+    return responderEGravar(m, { tipo: "receber", status: "erro", motivo: String(e?.message || e), comprovante: lido, arquivo }, `⚠️ Não consegui dar baixa: ${String(e?.message || e)}`);
+  }
 }
