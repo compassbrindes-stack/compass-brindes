@@ -55,7 +55,11 @@ export async function registrarCompras(novas: Partial<Compra>[]) {
       valor: typeof x.valor === "number" && isFinite(x.valor) ? x.valor : ant?.valor ?? null,
       itens: x.itens ?? ant?.itens,
       feitoEm: x.feitoEm ?? ant?.feitoEm,
-      ...(ant?.pago ? { pago: true, pagoEm: ant.pagoEm, contaBling: ant.contaBling, pagoPor: ant.pagoPor } : {}),
+      ...(ant?.pago
+        ? { pago: true, pagoEm: ant.pagoEm, contaBling: ant.contaBling, pagoPor: ant.pagoPor }
+        : x.pago
+          ? { pago: true, pagoEm: x.pagoEm, pagoPor: "marcado no painel" }
+          : {}),
     };
     await redis(["HSET", K, pedido, JSON.stringify(c)]);
     n++;
@@ -79,8 +83,25 @@ const igual = (a: number, b: number) => Math.abs(a - b) < 0.01;
  * - sem número: uma compra em aberto com o mesmo valor, ou um grupo de compras do mesmo
  *   fornecedor feitas no mesmo dia cuja soma dá o valor (a XBZ cobra vários pedidos num pagamento só).
  */
-export function acharCompras(abertas: Compra[], pedidos: string[], valor: number | null): { compras: Compra[]; motivo?: string } {
+export function acharCompras(
+  abertas: Compra[],
+  pedidos: string[],
+  valor: number | null,
+  op: { valores?: number[]; usaSaldo?: boolean } = {}
+): { compras: Compra[]; motivo?: string; credito?: number } {
   const emAberto = abertas.filter((c) => !c.pago);
+  // vários valores na legenda ("pago xbz 1440,00 / pago xbz 600,00"): uma compra para cada valor
+  if (!pedidos.length && op.valores && op.valores.length > 1) {
+    const usadas: Compra[] = [];
+    for (const v of op.valores) {
+      const c = emAberto.filter((x) => x.valor != null && igual(x.valor, v) && !usadas.includes(x));
+      if (c.length !== 1) return { compras: [], motivo: c.length ? `há mais de uma compra de ${brl(v)} em aberto (${c.map((x) => x.pedido).join(", ")}). Mande os números dos pedidos` : `não achei compra em aberto de ${brl(v)}` };
+      usadas.push(c[0]);
+    }
+    pedidos = usadas.map((c) => c.pedido);
+    const soma = usadas.reduce((s, c) => s + (c.valor || 0), 0);
+    if (valor == null || igual(valor, op.valores[0])) valor = soma;
+  }
   if (pedidos.length) {
     const achadas = pedidos.map((p) => abertas.find((c) => c.pedido === p)).filter(Boolean) as Compra[];
     const faltam = pedidos.filter((p) => !achadas.some((c) => c.pedido === p));
@@ -88,8 +109,11 @@ export function acharCompras(abertas: Compra[], pedidos: string[], valor: number
     const jaPagas = achadas.filter((c) => c.pago);
     if (jaPagas.length === achadas.length) return { compras: [], motivo: `${achadas.map((c) => c.pedido).join(", ")} já ${achadas.length > 1 ? "estão pagos" : "está pago"}` };
     const soma = achadas.reduce((s, c) => s + (c.valor || 0), 0);
-    if (valor != null && achadas.every((c) => c.valor != null) && !igual(soma, valor))
-      return { compras: [], motivo: `o comprovante é de ${brl(valor)}, mas ${achadas.map((c) => `${c.pedido} ${brl(c.valor || 0)}`).join(" + ")} somam ${brl(soma)}` };
+    if (valor != null && achadas.every((c) => c.valor != null) && !igual(soma, valor)) {
+      // pago menos que o total usando saldo/crédito que a Compass tinha no fornecedor
+      if (op.usaSaldo && valor < soma) return { compras: achadas.filter((c) => !c.pago), credito: Math.round((soma - valor) * 100) / 100 };
+      return { compras: [], motivo: `o comprovante é de ${brl(valor)}, mas ${achadas.map((c) => `${c.pedido} ${brl(c.valor || 0)}`).join(" + ")} somam ${brl(soma)}. Se a diferença foi saldo/crédito no fornecedor, escreva "saldo" na legenda` };
+    }
     return { compras: achadas.filter((c) => !c.pago) };
   }
   if (valor == null) return { compras: [] };

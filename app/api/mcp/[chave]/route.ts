@@ -62,6 +62,8 @@ const FERRAMENTAS = [
               valor: { type: "number", description: "Valor pago/a pagar ao fornecedor, em reais" },
               itens: { type: "string" },
               feitoEm: { type: "string", description: "AAAA-MM-DD" },
+              pago: { type: "boolean", description: "true se o pagamento já foi registrado de outra forma (no painel)" },
+              pagoEm: { type: "string", description: "AAAA-MM-DD" },
             },
             required: ["pedido"],
           },

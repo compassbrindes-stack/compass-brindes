@@ -204,8 +204,13 @@ export async function processarRecibo(m: MsgRecibo) {
   if (!compassRecebeu && (pedidosForn.length || compassPagou || palavraPagar)) {
     try {
       const valorC = leg.valor ?? (palavraPagar && leg.pedido ? Number(leg.pedido) : null) ?? lido?.valor ?? null;
-      const r = acharCompras(await todasCompras(), pedidosForn, valorC);
-      if (r.compras.length) return processarCompra(m, r.compras, valorC, lido, arquivo.fileURL || null);
+      const valoresLegenda = [...String(m.texto || "").matchAll(/(\d{1,3}(?:\.\d{3})*,\d{2}|\d+,\d{2})/g)].map((x) => Number(x[1].replace(/\./g, "").replace(",", ".")))
+        .filter((v) => lido?.valor == null || Math.abs(v - lido.valor) >= 0.01);
+      const usaSaldo = /\b(saldo|cr[eé]dito|desconto|abatimento|abati)\b/i.test(m.texto || "");
+      // com comprovante, o valor que saiu do banco é o do comprovante; sem ele, o da legenda
+      const valorPago = lido?.valor ?? (valoresLegenda.length > 1 ? null : valorC);
+      const r = acharCompras(await todasCompras(), pedidosForn, valorPago, { valores: valoresLegenda, usaSaldo });
+      if (r.compras.length) return processarCompra(m, r.compras, valorPago, lido, arquivo.fileURL || null, r.credito);
       if (pedidosForn.length)
         return responderEGravar(m, { tipo: "compra", status: "pergunta", pedidos: pedidosForn, comprovante: lido, arquivo: arquivo.fileURL || null }, `⚠️ Não dei baixa: ${r.motivo || "não achei a compra"}.`);
       if (r.motivo)
@@ -405,7 +410,7 @@ async function processarRecebimentoSemPedido(m: MsgRecibo, lido: LidoComprovante
 // ---------------------------------------------------------------- compras em fornecedor
 
 /** Pagamento de pedido(s) de fornecedor: baixa a conta a pagar do mesmo valor, ou lança a despesa paga, e marca as compras como pagas. */
-async function processarCompra(m: MsgRecibo, compras: Compra[], valorComprovante: number | null, lido: LidoComprovante | null, arquivo: string | null) {
+async function processarCompra(m: MsgRecibo, compras: Compra[], valorComprovante: number | null, lido: LidoComprovante | null, arquivo: string | null, credito?: number) {
   const soma = compras.reduce((s, c) => s + (c.valor || 0), 0);
   const valor = valorComprovante ?? (soma > 0 ? Math.round(soma * 100) / 100 : null);
   const data = lido?.data || hojeSP();
@@ -418,7 +423,7 @@ async function processarCompra(m: MsgRecibo, compras: Compra[], valorComprovante
       registro.status = "pergunta";
       resposta = `⚠️ Não identifiquei o valor do pagamento de ${pedidos.join(", ")}. Mande de novo com o valor, ex.: "${pedidos[0]} 661,50".`;
     } else {
-      const hist = [`Compra ${fornecedor} — pedido${pedidos.length > 1 ? "s" : ""} ${pedidos.join(", ")}`, "comprovante WhatsApp (grupo Compass Recibos)", lido?.banco && `banco: ${lido.banco}`].filter(Boolean).join(" · ");
+      const hist = [`Compra ${fornecedor} — pedido${pedidos.length > 1 ? "s" : ""} ${pedidos.join(", ")}`, credito ? `pedidos somam ${brl(soma)}; usado saldo/crédito no fornecedor de ${brl(credito)}` : "", "comprovante WhatsApp (grupo Compass Recibos)", lido?.banco && `banco: ${lido.banco}`].filter(Boolean).join(" · ");
       const pistas = [fornecedor, lido?.favorecido, "compra mercadoria fornecedor"].filter(Boolean).join(" ");
       // conta a pagar já cadastrada com esse valor e desse fornecedor?
       const abertas = (await contasPagarAbertas()).filter((c) => Math.abs(c.valor - valor) < 0.01);
@@ -445,7 +450,7 @@ async function processarCompra(m: MsgRecibo, compras: Compra[], valorComprovante
       }
       registro.contaId = contaId;
       await marcarPagas(pedidos, { pagoEm: data, contaBling: contaId, pagoPor: m.texto || "comprovante" });
-      const dif = soma > 0 && Math.abs(soma - valor) >= 0.01 ? `\n⚠️ Os pedidos somam ${brl(soma)} no painel.` : "";
+      const dif = credito ? `\nPedidos somam ${brl(soma)}; ${brl(credito)} foram pagos com saldo no fornecedor.` : soma > 0 && Math.abs(soma - valor) >= 0.01 ? `\n⚠️ Os pedidos somam ${brl(soma)} no painel.` : "";
       resposta =
         `✅ Compra paga registrada\n${fornecedor} · ${brl(valor)} em ${dataBR(data)}\n` +
         compras.map((c) => `• ${c.pedido}${c.itens ? " — " + c.itens.slice(0, 50) : ""}${c.valor != null ? ` (${brl(c.valor)})` : ""}`).join("\n") +
