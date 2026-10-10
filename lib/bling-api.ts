@@ -121,12 +121,28 @@ export async function contasDoPedido(numeroPedido: string): Promise<ContaReceber
     .sort((a, b) => a.vencimento.localeCompare(b.vencimento));
 }
 
+/** Categoria de receita ativa do Bling para baixas sem categoria: prefere a de vendas. Guardada no Redis por 1 dia. */
+async function categoriaReceitaPadrao(): Promise<number> {
+  const CHAVE = "compass:bling:categoria-receita";
+  const salva = Number(await redis<string | null>(["GET", CHAVE]));
+  if (salva) return salva;
+  const r = await bling<{ data: { id: number; descricao: string; tipo?: number }[] }>(`/categorias/receitas-despesas?tipo=2&situacao=1&limite=100`);
+  const lista = r.data || [];
+  const escolhida =
+    lista.find((c) => /venda/i.test(c.descricao) && !/devolu/i.test(c.descricao)) ||
+    lista.find((c) => /receita|recebimento|servi/i.test(c.descricao)) ||
+    lista[0];
+  if (!escolhida) return 0;
+  await redis(["SET", CHAVE, String(escolhida.id), "EX", 86400]);
+  return escolhida.id;
+}
+
 /** Dá baixa numa conta a receber usando a conta financeira e a categoria já cadastradas nela. */
 export async function baixarConta(conta: ContaReceber, valor: number, data: string, historico: string) {
   const det = await bling<{ data: any }>(`/contas/receber/${conta.id}`);
   const d = det.data || {};
   const portador = d.portador?.id || conta.contaContabil?.id || Number(process.env.BLING_PORTADOR_ID) || 0;
-  const categoria = d.categoria?.id || Number(process.env.BLING_CATEGORIA_RECEITA_ID) || 0;
+  const categoria = d.categoria?.id || Number(process.env.BLING_CATEGORIA_RECEITA_ID) || (await categoriaReceitaPadrao());
   if (!portador) throw new Error("A conta não tem conta financeira (portador) e BLING_PORTADOR_ID não está configurado.");
   if (!categoria) throw new Error("A conta não tem categoria e BLING_CATEGORIA_RECEITA_ID não está configurado.");
   await bling(`/contas/receber/${conta.id}/baixar`, {
