@@ -107,7 +107,7 @@ export interface ContaReceber {
 /** Contas a receber em aberto (ou parciais) de um pedido de venda, pelo número do pedido. */
 export async function contasDoPedido(numeroPedido: string): Promise<ContaReceber[]> {
   const hoje = new Date();
-  const ini = new Date(hoje.getTime() - 365 * 86400000).toISOString().slice(0, 10);
+  const ini = new Date(hoje.getTime() - 360 * 86400000).toISOString().slice(0, 10);
   const fim = new Date(hoje.getTime() + 2 * 86400000).toISOString().slice(0, 10);
   const todas: ContaReceber[] = [];
   for (let pagina = 1; pagina <= 5; pagina++) {
