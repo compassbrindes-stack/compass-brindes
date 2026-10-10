@@ -80,11 +80,18 @@ export async function blingConectado(): Promise<{ conectado: boolean; expira?: s
 
 export async function bling<T = any>(path: string, init: RequestInit = {}): Promise<T> {
   const token = await tokenValido();
-  const res = await fetch(`${API}${path}`, {
-    ...init,
-    headers: { Authorization: `Bearer ${token}`, "Content-Type": "application/json", Accept: "application/json", ...(init.headers || {}) },
-    cache: "no-store",
-  });
+  const espera = (ms: number) => new Promise((r) => setTimeout(r, ms));
+  // o Bling aceita 3 requisições por segundo: espaça as chamadas e repete quando vier 429
+  let res: Response = new Response(null, { status: 429 });
+  for (let tentativa = 0; tentativa < 5; tentativa++) {
+    await espera(tentativa ? 1200 * tentativa : 350);
+    res = await fetch(`${API}${path}`, {
+      ...init,
+      headers: { Authorization: `Bearer ${token}`, "Content-Type": "application/json", Accept: "application/json", ...(init.headers || {}) },
+      cache: "no-store",
+    });
+    if (res.status !== 429) break;
+  }
   const txt = await res.text();
   const data = txt ? JSON.parse(txt) : {};
   if (!res.ok) {
