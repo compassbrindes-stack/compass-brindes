@@ -116,7 +116,7 @@ export async function bling<T = any>(path: string, init: RequestInit = {}): Prom
   const data = txt ? JSON.parse(txt) : {};
   if (!res.ok) {
     const msg = data?.error?.description || data?.error?.message || res.statusText;
-    throw new Error(`Bling ${res.status}: ${msg}`);
+    throw new Error(`Bling ${res.status} em ${(init.method || "GET")} ${path.split("?")[0].replace(/\/\d{5,}/g, "/{id}")}: ${msg}`);
   }
   return data as T;
 }
