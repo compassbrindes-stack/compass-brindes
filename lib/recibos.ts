@@ -29,6 +29,7 @@ import {
   type ContaPagar,
   type ContaReceber,
 } from "@/lib/bling-api";
+import { acharCompras, marcarPagas, pedidosNoTexto, todasCompras, type Compra } from "@/lib/compras";
 import { redis } from "@/lib/redis";
 import { baixarMidia, enviarTexto } from "@/lib/uazapi";
 
@@ -75,6 +76,7 @@ interface LidoComprovante {
   favorecidoDoc?: string;
   banco?: string;
   descricao?: string;
+  mensagem?: string;
 }
 
 const CNPJ_COMPASS = "26123176000124";
@@ -95,7 +97,7 @@ export async function lerComprovante(fileURL: string, mimetype: string): Promise
     headers: { "x-api-key": key, "anthropic-version": "2023-06-01", "content-type": "application/json" },
     body: JSON.stringify({
       model: process.env.ANTHROPIC_MODEL || "claude-haiku-4-5-20251001",
-      max_tokens: 300,
+      max_tokens: 400,
       messages: [
         {
           role: "user",
@@ -104,7 +106,7 @@ export async function lerComprovante(fileURL: string, mimetype: string): Promise
             {
               type: "text",
               text:
-                'Este é um comprovante de pagamento brasileiro (PIX, TED, boleto pago ou cartão). Responda só com JSON: {"valor": número em reais, "data": "AAAA-MM-DD do pagamento", "pagador": "nome de quem pagou", "pagadorDoc": "CPF/CNPJ de quem pagou", "favorecido": "nome de quem recebeu / beneficiário / cedente", "favorecidoDoc": "CPF/CNPJ de quem recebeu", "banco": "banco", "descricao": "o que foi pago, se aparecer (ex.: internet, frete, fatura)"}. Use null no que não aparecer.',
+                'Este é um comprovante de pagamento brasileiro (PIX, TED, boleto pago ou cartão). Responda só com JSON: {"valor": número em reais, "data": "AAAA-MM-DD do pagamento", "pagador": "nome de quem pagou", "pagadorDoc": "CPF/CNPJ de quem pagou", "favorecido": "nome de quem recebeu / beneficiário / cedente", "favorecidoDoc": "CPF/CNPJ de quem recebeu", "banco": "banco", "descricao": "o que foi pago, se aparecer (ex.: internet, frete, fatura)", "mensagem": "mensagem/identificação/informações ao recebedor do PIX ou TED, se houver (copie números de pedido como P7302075)"}. Use null no que não aparecer.',
             },
           ],
         },
@@ -127,6 +129,7 @@ export async function lerComprovante(fileURL: string, mimetype: string): Promise
       favorecidoDoc: j.favorecidoDoc || undefined,
       banco: j.banco || undefined,
       descricao: j.descricao || undefined,
+      mensagem: j.mensagem || undefined,
     };
   } catch {
     return null;
@@ -178,7 +181,8 @@ export async function processarRecibo(m: MsgRecibo) {
   // pagamento feito pela Compass: legenda começa com "pago", "paguei", "despesa"… (ex.: "pago internet 49,90")
   const palavraPagar = /^\s*(pago|paga|paguei|pagamento|despesa|conta paga)\b/i.test(m.texto || "");
   // texto sem número nem "pago" e sem arquivo: conversa normal do grupo, ignora
-  if (!leg.pedido && !palavraPagar && !m.temMidia) return { status: "sem-pedido" };
+  const pedidosLegenda = pedidosNoTexto(m.texto);
+  if (!leg.pedido && !palavraPagar && !m.temMidia && !pedidosLegenda.length) return { status: "sem-pedido" };
 
   let arquivo: { fileURL?: string; mimetype?: string } = {};
   let lido: LidoComprovante | null = null;
@@ -194,6 +198,22 @@ export async function processarRecibo(m: MsgRecibo) {
   // comprovante de pagamento feito pela Compass → contas a pagar
   const compassPagou = (lido?.pagadorDoc || "").replace(/\D/g, "") === CNPJ_COMPASS || /compass/i.test(lido?.pagador || "");
   const compassRecebeu = (lido?.favorecidoDoc || "").replace(/\D/g, "") === CNPJ_COMPASS || /compass/i.test(lido?.favorecido || "");
+
+  // compra em fornecedor (ex.: pedidos XBZ "P7302075"): pelo número do pedido ou pelo valor
+  const pedidosForn = pedidosNoTexto([m.texto, lido?.descricao, lido?.mensagem].filter(Boolean).join(" "));
+  if (!compassRecebeu && (pedidosForn.length || compassPagou || palavraPagar)) {
+    try {
+      const valorC = leg.valor ?? (palavraPagar && leg.pedido ? Number(leg.pedido) : null) ?? lido?.valor ?? null;
+      const r = acharCompras(await todasCompras(), pedidosForn, valorC);
+      if (r.compras.length) return processarCompra(m, r.compras, valorC, lido, arquivo.fileURL || null);
+      if (pedidosForn.length)
+        return responderEGravar(m, { tipo: "compra", status: "pergunta", pedidos: pedidosForn, comprovante: lido, arquivo: arquivo.fileURL || null }, `⚠️ Não dei baixa: ${r.motivo || "não achei a compra"}.`);
+      if (r.motivo)
+        return responderEGravar(m, { tipo: "compra", status: "pergunta", comprovante: lido, arquivo: arquivo.fileURL || null }, `⚠️ Não dei baixa: ${r.motivo}.`);
+    } catch {
+      /* sem a lista de compras, segue o fluxo normal de contas a pagar */
+    }
+  }
   if ((palavraPagar && !compassRecebeu) || (compassPagou && !leg.pedido)) {
     // em "pago bling 60" o número é valor, não pedido
     const legPag: Legenda = { pedido: null, valor: leg.valor ?? (leg.pedido ? Number(leg.pedido) : null), entrada: false };
@@ -379,4 +399,62 @@ async function processarRecebimentoSemPedido(m: MsgRecibo, lido: LidoComprovante
   } catch (e: any) {
     return responderEGravar(m, { tipo: "receber", status: "erro", motivo: String(e?.message || e), comprovante: lido, arquivo }, `⚠️ Não consegui dar baixa: ${String(e?.message || e)}`);
   }
+}
+
+
+// ---------------------------------------------------------------- compras em fornecedor
+
+/** Pagamento de pedido(s) de fornecedor: baixa a conta a pagar do mesmo valor, ou lança a despesa paga, e marca as compras como pagas. */
+async function processarCompra(m: MsgRecibo, compras: Compra[], valorComprovante: number | null, lido: LidoComprovante | null, arquivo: string | null) {
+  const soma = compras.reduce((s, c) => s + (c.valor || 0), 0);
+  const valor = valorComprovante ?? (soma > 0 ? Math.round(soma * 100) / 100 : null);
+  const data = lido?.data || hojeSP();
+  const fornecedor = compras[0].fornecedor || lido?.favorecido || "Fornecedor";
+  const pedidos = compras.map((c) => c.pedido);
+  const registro: Record<string, unknown> = { em: new Date().toISOString(), tipo: "compra", messageid: m.messageid, remetente: m.remetente, legenda: m.texto, pedidos, comprovante: lido, arquivo, valor };
+  let resposta: string;
+  try {
+    if (valor == null) {
+      registro.status = "pergunta";
+      resposta = `⚠️ Não identifiquei o valor do pagamento de ${pedidos.join(", ")}. Mande de novo com o valor, ex.: "${pedidos[0]} 661,50".`;
+    } else {
+      const hist = [`Compra ${fornecedor} — pedido${pedidos.length > 1 ? "s" : ""} ${pedidos.join(", ")}`, "comprovante WhatsApp (grupo Compass Recibos)", lido?.banco && `banco: ${lido.banco}`].filter(Boolean).join(" · ");
+      const pistas = [fornecedor, lido?.favorecido, "compra mercadoria fornecedor"].filter(Boolean).join(" ");
+      // conta a pagar já cadastrada com esse valor e desse fornecedor?
+      const abertas = (await contasPagarAbertas()).filter((c) => Math.abs(c.valor - valor) < 0.01);
+      let alvo: ContaPagar | null = null;
+      for (const c of abertas.slice(0, 8)) {
+        const d = await detalheContaPagar(c.id);
+        const nome = c.contato?.id ? await nomeContato(c.contato.id) : "";
+        const texto = [nome, d.historico, d.numeroDocumento].filter(Boolean).join(" ");
+        if (pontuar(texto, [fornecedor, lido?.favorecido, ...pedidos].filter(Boolean).join(" ")) > 0 || pedidos.some((p) => texto.toUpperCase().includes(p))) {
+          alvo = { ...c, historico: d.historico };
+          break;
+        }
+      }
+      let contaId: number;
+      if (alvo) {
+        await baixarContaPagar(alvo, valor, data, hist, pistas);
+        contaId = alvo.id;
+        registro.status = "pago";
+      } else {
+        const contatoId = await contatoFornecedor(lido?.favorecido || fornecedor, lido?.favorecidoDoc);
+        const itens = compras.map((c) => `${c.pedido}${c.itens ? " " + c.itens : ""}`).join("; ");
+        contaId = await lancarDespesaPaga({ contatoId, valor, data, historico: `${hist} · ${itens}`.slice(0, 990), textoCategoria: pistas, documento: pedidos.join(" ").slice(0, 60) });
+        registro.status = "lancado";
+      }
+      registro.contaId = contaId;
+      await marcarPagas(pedidos, { pagoEm: data, contaBling: contaId, pagoPor: m.texto || "comprovante" });
+      const dif = soma > 0 && Math.abs(soma - valor) >= 0.01 ? `\n⚠️ Os pedidos somam ${brl(soma)} no painel.` : "";
+      resposta =
+        `✅ Compra paga registrada\n${fornecedor} · ${brl(valor)} em ${dataBR(data)}\n` +
+        compras.map((c) => `• ${c.pedido}${c.itens ? " — " + c.itens.slice(0, 50) : ""}${c.valor != null ? ` (${brl(c.valor)})` : ""}`).join("\n") +
+        `\n${alvo ? "Baixada a conta a pagar que já estava no Bling." : "Lançada no Bling como conta paga."} No painel, as compras ficam como pagas.` + dif;
+    }
+  } catch (e: any) {
+    registro.status = "erro";
+    registro.motivo = String(e?.message || e);
+    resposta = `⚠️ Não consegui registrar o pagamento de ${pedidos.join(", ")}: ${registro.motivo}`;
+  }
+  return responderEGravar(m, registro, resposta);
 }

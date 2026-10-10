@@ -1,5 +1,6 @@
 import { NextResponse } from "next/server";
 import { conversasDesde, historico } from "@/lib/conversas";
+import { registrarCompras, todasCompras } from "@/lib/compras";
 
 export const dynamic = "force-dynamic";
 
@@ -12,6 +13,8 @@ export const dynamic = "force-dynamic";
  * Ferramentas (só leitura):
  *   conversas_whatsapp  — contatos com conversa no WhatsApp da Compass desde uma data
  *   historico_whatsapp  — últimas mensagens de um número
+ *   registrar_compras   — o painel informa as compras feitas nos fornecedores (nº do pedido e valor)
+ *   compras_pagas       — quais dessas compras já foram pagas pelo grupo Compass Recibos
  */
 
 const FERRAMENTAS = [
@@ -41,6 +44,38 @@ const FERRAMENTAS = [
     },
     annotations: { readOnlyHint: true },
   },
+  {
+    name: "registrar_compras",
+    description:
+      "Informa ao site as compras que a Compass fez nos fornecedores (número do pedido no fornecedor, fornecedor, valor, itens, data), para o grupo Compass Recibos reconhecer o pagamento pelo número ou pelo valor. Não apaga pagamentos já registrados.",
+    inputSchema: {
+      type: "object",
+      properties: {
+        compras: {
+          type: "array",
+          maxItems: 500,
+          items: {
+            type: "object",
+            properties: {
+              pedido: { type: "string", description: "Número do pedido no fornecedor, ex.: P7302075" },
+              fornecedor: { type: "string" },
+              valor: { type: "number", description: "Valor pago/a pagar ao fornecedor, em reais" },
+              itens: { type: "string" },
+              feitoEm: { type: "string", description: "AAAA-MM-DD" },
+            },
+            required: ["pedido"],
+          },
+        },
+      },
+      required: ["compras"],
+    },
+  },
+  {
+    name: "compras_pagas",
+    description: "Lista as compras em fornecedor que já tiveram o pagamento registrado pelo grupo Compass Recibos: pedido, data do pagamento e conta no Bling.",
+    inputSchema: { type: "object", properties: {} },
+    annotations: { readOnlyHint: true },
+  },
 ];
 
 const ok = (id: unknown, result: unknown) => NextResponse.json({ jsonrpc: "2.0", id, result });
@@ -62,7 +97,7 @@ export async function POST(request: Request, { params }: { params: { chave: stri
       protocolVersion: req.params?.protocolVersion || "2025-03-26",
       capabilities: { tools: { listChanged: false } },
       serverInfo: { name: "compass-site", version: "1.0.0" },
-      instructions: "Dados do WhatsApp da Compass Brindes para o painel Compass Gestão. Somente leitura.",
+      instructions: "Dados do WhatsApp da Compass Brindes e das compras em fornecedor para o painel Compass Gestão.",
     });
   }
   if (method === "ping") return ok(id, {});
@@ -74,6 +109,9 @@ export async function POST(request: Request, { params }: { params: { chave: stri
       let dados: unknown;
       if (nome === "conversas_whatsapp") dados = { contatos: await conversasDesde(a.desde, Number(a.limite) || 300) };
       else if (nome === "historico_whatsapp") dados = { mensagens: await historico(String(a.numero || ""), Number(a.limite) || 30) };
+      else if (nome === "registrar_compras") dados = { registradas: await registrarCompras(Array.isArray(a.compras) ? a.compras.slice(0, 500) : []) };
+      else if (nome === "compras_pagas")
+        dados = { pagas: (await todasCompras()).filter((c) => c.pago).map((c) => ({ pedido: c.pedido, pagoEm: c.pagoEm, contaBling: c.contaBling, pagoPor: c.pagoPor })) };
       else return erro(id, -32602, `Ferramenta desconhecida: ${nome}`);
       return ok(id, { content: [{ type: "text", text: JSON.stringify(dados) }], structuredContent: dados });
     } catch (e: any) {
