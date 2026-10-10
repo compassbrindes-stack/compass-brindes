@@ -16,7 +16,7 @@ export async function GET(request: Request) {
   if (!code) return pagina("Bling não autorizado", "A autorização foi cancelada ou não veio o código. Tente de novo.");
   try {
     await concluirAutorizacao(code, state);
-    return pagina("Bling conectado ✅", "O servidor do site já consegue dar baixa nas contas a receber pelo grupo Compass Recibos. Pode fechar esta página.");
+    return pagina("Bling conectado ✅", "O servidor do site já consegue dar baixa nas contas a receber e a pagar pelo grupo Compass Recibos. Pode fechar esta página.");
   } catch (e: any) {
     const msg = String(e?.message || e).replace(/[<>&]/g, "");
     return pagina("Não foi possível conectar", msg);
