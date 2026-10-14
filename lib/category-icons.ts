@@ -2,6 +2,7 @@ const CATEGORY_ICONS: Record<string, string> = {
   Agro: "🌾",
   Bolsas: "👜",
   "Bolsas Térmicas": "🧊",
+  Canecas: "☕",
   Canetas: "🖊️",
   Canivetes: "🔪",
   Chaveiros: "🔑",
