@@ -77,9 +77,17 @@ interface LidoComprovante {
   banco?: string;
   descricao?: string;
   mensagem?: string;
+  valorDocumento?: number; // valor original do boleto/documento (sem juros/multa)
+  acrescimos?: number; // juros + multa + encargos pagos
 }
 
 const CNPJ_COMPASS = "26123176000124";
+
+const numJ = (v: unknown): number | undefined => {
+  if (v == null || v === "") return undefined;
+  const n = typeof v === "number" ? v : Number(String(v).replace(/[^\d,.-]/g, "").replace(/\.(?=\d{3}(\D|$))/g, "").replace(",", "."));
+  return isFinite(n) && n > 0 ? n : undefined;
+};
 
 /** Lê valor, data, pagador e banco do comprovante com o Claude (opcional: só se ANTHROPIC_API_KEY existir). */
 export async function lerComprovante(fileURL: string, mimetype: string): Promise<LidoComprovante | null> {
@@ -106,7 +114,7 @@ export async function lerComprovante(fileURL: string, mimetype: string): Promise
             {
               type: "text",
               text:
-                'Este é um comprovante de pagamento brasileiro (PIX, TED, boleto pago ou cartão). Responda só com JSON: {"valor": número em reais, "data": "AAAA-MM-DD do pagamento", "pagador": "nome de quem pagou", "pagadorDoc": "CPF/CNPJ de quem pagou", "favorecido": "nome de quem recebeu / beneficiário / cedente", "favorecidoDoc": "CPF/CNPJ de quem recebeu", "banco": "banco", "descricao": "o que foi pago, se aparecer (ex.: internet, frete, fatura)", "mensagem": "mensagem/identificação/informações ao recebedor do PIX ou TED, se houver (copie números de pedido como P7302075)"}. Use null no que não aparecer.',
+                'Este é um comprovante de pagamento brasileiro (PIX, TED, boleto pago ou cartão). Responda só com JSON: {"valor": número em reais, "data": "AAAA-MM-DD do pagamento", "pagador": "nome de quem pagou", "pagadorDoc": "CPF/CNPJ de quem pagou", "favorecido": "nome de quem recebeu / beneficiário / cedente", "favorecidoDoc": "CPF/CNPJ de quem recebeu", "banco": "banco", "descricao": "o que foi pago, se aparecer (ex.: internet, frete, fatura)", "mensagem": "mensagem/identificação/informações ao recebedor do PIX ou TED, se houver (copie números de pedido como P7302075)", "valorDocumento": "valor original do documento/boleto antes de juros e multa (número; igual ao valor se não houver acréscimo)", "acrescimos": "juros + multa + mora + encargos somados (número; 0 se não houver)", "vencimento": "AAAA-MM-DD do vencimento do boleto, se aparecer"}. O campo valor é sempre o total efetivamente pago. Use null no que não aparecer.',
             },
           ],
         },
@@ -130,6 +138,8 @@ export async function lerComprovante(fileURL: string, mimetype: string): Promise
       banco: j.banco || undefined,
       descricao: j.descricao || undefined,
       mensagem: j.mensagem || undefined,
+      valorDocumento: numJ(j.valorDocumento),
+      acrescimos: numJ(j.acrescimos),
     };
   } catch {
     return null;
@@ -298,6 +308,42 @@ const normaliza = (t: string) =>
 const IGNORAR = new Set(["ltda", "sa", "s", "a", "me", "eireli", "de", "da", "do", "das", "dos", "e", "pago", "paga", "paguei", "pagamento", "despesa", "conta", "pagar", "r"]);
 const palavras = (t: string) => normaliza(t).split(" ").filter((w) => w.length >= 3 && !IGNORAR.has(w) && !/^\d+$/.test(w));
 
+/**
+ * Contas pagas com atraso: o comprovante traz o valor da conta + juros/multa.
+ * Candidatas: vencidas até a data do pagamento, com valor menor que o pago e diferença de até 10% (mín. R$ 2).
+ */
+export function contasComJuros(abertas: ContaPagar[], pago: number, dataPagamento: string): ContaPagar[] {
+  return abertas.filter((c) => {
+    const dif = pago - c.valor;
+    return c.vencimento < dataPagamento && dif >= 0.01 && dif <= Math.max(2, c.valor * 0.1);
+  });
+}
+
+/** O mesmo comprovante (valor + data + favorecido) já foi registrado nos últimos recibos? Evita lançar duas vezes. */
+async function recibosRepetido(valor: number, data: string, lido: LidoComprovante | null): Promise<boolean> {
+  if (!lido) return false;
+  const log = (await redis<string[]>(["LRANGE", "compass:recibos:log", 0, 99]).catch(() => [])) || [];
+  for (const x of log) {
+    let r: any;
+    try {
+      r = JSON.parse(x);
+    } catch {
+      continue;
+    }
+    const mesmo = (r.status === "pago" || r.status === "lancado") && r.tipo === "pagar" && Math.abs((r.valor || 0) - valor) < 0.01 &&
+      (r.data || r.comprovante?.data) === data && (r.comprovante?.favorecido || "") === (lido.favorecido || "");
+    if (!mesmo || !r.contaId) continue;
+    // só é repetido se a conta registrada antes ainda está paga no Bling (se foi excluída/estornada, registra de novo)
+    try {
+      const d = await detalheContaPagar(r.contaId);
+      if (d && d.situacao === 2) return true;
+    } catch {
+      /* conta não existe mais */
+    }
+  }
+  return false;
+}
+
 /** Pontua o quanto a conta combina com o comprovante/legenda (nome do fornecedor, histórico, documento). */
 export function pontuar(textoConta: string, pistas: string): number {
   const a = new Set(palavras(textoConta));
@@ -315,8 +361,13 @@ async function processarPagamento(m: MsgRecibo, leg: Legenda, lido: LidoComprova
       registro.status = "pergunta";
       resposta = `⚠️ Não identifiquei o valor do pagamento. Mande de novo com o valor na legenda, ex.: "pago internet 49,90".`;
     } else {
-      const abertas = (await contasPagarAbertas()).filter((c) => Math.abs(c.valor - valor) < 0.01);
-      // detalhe (fornecedor e histórico) só das contas com o mesmo valor
+      const todasAbertas = await contasPagarAbertas();
+      // 1) mesmo valor; 2) valor original do boleto (pago com juros/multa); 3) conta vencida um pouco menor que o pago
+      let abertas = todasAbertas.filter((c) => Math.abs(c.valor - valor) < 0.01);
+      if (!abertas.length && lido?.valorDocumento && Math.abs(lido.valorDocumento - valor) >= 0.01)
+        abertas = todasAbertas.filter((c) => Math.abs(c.valor - (lido.valorDocumento as number)) < 0.01);
+      if (!abertas.length) abertas = contasComJuros(todasAbertas, valor, data);
+      // detalhe (fornecedor e histórico) só das contas candidatas
       const cands: { c: ContaPagar; texto: string; nome: string; pontos: number }[] = [];
       for (const c of abertas.slice(0, 8)) {
         const d = await detalheContaPagar(c.id);
@@ -328,11 +379,19 @@ async function processarPagamento(m: MsgRecibo, leg: Legenda, lido: LidoComprova
       const melhor = cands[0];
       const unico = cands.length === 1 || (melhor && melhor.pontos > 0 && melhor.pontos > cands[1].pontos);
       const hist = ["Pago — comprovante WhatsApp (grupo Compass Recibos)", lido?.favorecido && `favorecido: ${lido.favorecido}`, lido?.banco && `banco: ${lido.banco}`].filter(Boolean).join(" · ");
-      if (melhor && unico) {
-        await baixarContaPagar(melhor.c, valor, data, hist, pistas);
+      const jaFeito = await recibosRepetido(valor, data, lido);
+      if (jaFeito) {
+        registro.status = "repetido";
+        resposta = `ℹ️ Esse comprovante (${brl(valor)} em ${dataBR(data)}) já foi registrado antes no Bling. Não lancei de novo.`;
+      } else if (melhor && unico) {
+        const juros = Math.round((valor - melhor.c.valor) * 100) / 100;
+        const histJ = juros >= 0.01 ? `${hist} · valor original ${brl(melhor.c.valor)} + juros/multa ${brl(juros)}` : hist;
+        await baixarContaPagar(melhor.c, valor, data, histJ, pistas);
         registro.status = "pago";
+        registro.data = data;
         registro.contaId = melhor.c.id;
-        resposta = `✅ Conta paga baixada no Bling\n${melhor.nome || "Fornecedor"} · ${brl(valor)} em ${dataBR(data)} (vencimento ${dataBR(melhor.c.vencimento)})${melhor.c.historico ? `\n${String(melhor.c.historico).replace(/\s*Linha digit.*$/i, "").slice(0, 90)}` : ""}`;
+        if (juros >= 0.01) registro.juros = juros;
+        resposta = `✅ Conta paga baixada no Bling\n${melhor.nome || "Fornecedor"} · ${brl(valor)} em ${dataBR(data)} (vencimento ${dataBR(melhor.c.vencimento)})${juros >= 0.01 ? `\nValor da conta ${brl(melhor.c.valor)} + juros/multa ${brl(juros)}` : ""}${melhor.c.historico ? `\n${String(melhor.c.historico).replace(/\s*Linha digit.*$/i, "").slice(0, 90)}` : ""}`;
       } else if (cands.length > 1) {
         registro.status = "pergunta";
         resposta = `⚠️ Há ${cands.length} contas a pagar de ${brl(valor)} em aberto: ${cands.map((x) => `${x.nome || "?"} (venc. ${dataBR(x.c.vencimento)})`).join("; ")}. Mande de novo dizendo qual, ex.: "pago ${palavras(cands[0].nome)[0] || "fornecedor"} ${valor.toFixed(2).replace(".", ",")}".`;
@@ -348,6 +407,7 @@ async function processarPagamento(m: MsgRecibo, leg: Legenda, lido: LidoComprova
           const id = await lancarDespesaPaga({ contatoId, valor, data, historico: [desc || "Despesa", hist].join(" · "), textoCategoria: pistas });
           registro.status = "lancado";
           registro.contaId = id;
+          registro.data = data;
           resposta = `✅ Despesa lançada e paga no Bling\n${nomeForn} · ${brl(valor)} em ${dataBR(data)}${desc ? `\n${desc.slice(0, 90)}` : ""}\n(não havia conta a pagar cadastrada com esse valor)`;
         }
       }
