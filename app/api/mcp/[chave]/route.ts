@@ -1,6 +1,7 @@
 import { NextResponse } from "next/server";
 import { conversasDesde, historico } from "@/lib/conversas";
 import { registrarCompras, todasCompras } from "@/lib/compras";
+import catalogo from "@/data/catalogo-app.json";
 
 export const dynamic = "force-dynamic";
 
@@ -15,7 +16,41 @@ export const dynamic = "force-dynamic";
  *   historico_whatsapp  — últimas mensagens de um número
  *   registrar_compras   — o painel informa as compras feitas nos fornecedores (nº do pedido e valor)
  *   compras_pagas       — quais dessas compras já foram pagas pelo grupo Compass Recibos
+ *   foto_produto        — foto do produto (catálogo do site pelo código, ou link do Bling/fornecedor) em base64,
+ *                         para o painel montar o orçamento em PDF (o painel não consegue baixar imagens de fora)
  */
+
+const SITE = "https://www.compassbrindes.com.br";
+const HOSTS_FOTO = /(^|\.)(compassbrindes\.com\.br|orgbling\.s3\.amazonaws\.com|s3\.amazonaws\.com|xbzbrindes\.com\.br|asiaimport\.com\.br|spotgifts\.com\.br)$/i;
+
+async function baixarFoto(u: string) {
+  const url = new URL(u.startsWith("/") ? SITE + u : u);
+  if (url.protocol !== "https:" || !HOSTS_FOTO.test(url.hostname)) throw new Error("endereço de foto não permitido");
+  const r = await fetch(url.toString(), { cache: "no-store" });
+  if (!r.ok) throw new Error(`foto indisponível (${r.status})`);
+  const mime = (r.headers.get("content-type") || "image/jpeg").split(";")[0];
+  if (!/^image\//.test(mime)) throw new Error("o link não é uma imagem");
+  const buf = Buffer.from(await r.arrayBuffer());
+  if (buf.length > 3_000_000) throw new Error("foto grande demais");
+  return { mime, base64: buf.toString("base64"), origem: url.toString() };
+}
+
+async function fotoProduto(codigo: string, url: string) {
+  const cod = codigo.trim().toUpperCase();
+  if (cod) {
+    const p: any = (catalogo as any[]).find((x: any) => String(x.supplierCode || "").toUpperCase() === cod);
+    const img = p?.images?.[0];
+    if (img) {
+      try {
+        return await baixarFoto(String(img));
+      } catch {
+        /* tenta o link */
+      }
+    }
+  }
+  if (url) return baixarFoto(url);
+  return { mime: null, base64: null, origem: null };
+}
 
 const FERRAMENTAS = [
   {
@@ -78,6 +113,18 @@ const FERRAMENTAS = [
     inputSchema: { type: "object", properties: {} },
     annotations: { readOnlyHint: true },
   },
+  {
+    name: "foto_produto",
+    description: "Foto de um produto em base64 (mime + base64). Procura primeiro no catálogo do site pelo código (ex.: CBI005, C040B800); se não houver, baixa o link informado (Bling, XBZ, Asia Import, site).",
+    inputSchema: {
+      type: "object",
+      properties: {
+        codigo: { type: "string", description: "Código do produto (supplierCode do catálogo)." },
+        url: { type: "string", description: "Link da imagem (ex.: imagem interna do produto no Bling)." },
+      },
+    },
+    annotations: { readOnlyHint: true },
+  },
 ];
 
 const ok = (id: unknown, result: unknown) => NextResponse.json({ jsonrpc: "2.0", id, result });
@@ -114,6 +161,10 @@ export async function POST(request: Request, { params }: { params: { chave: stri
       else if (nome === "registrar_compras") dados = { registradas: await registrarCompras(Array.isArray(a.compras) ? a.compras.slice(0, 500) : []) };
       else if (nome === "compras_pagas")
         dados = { pagas: (await todasCompras()).filter((c) => c.pago).map((c) => ({ pedido: c.pedido, pagoEm: c.pagoEm, contaBling: c.contaBling, pagoPor: c.pagoPor })) };
+      else if (nome === "foto_produto") {
+        const foto = await fotoProduto(String(a.codigo || ""), String(a.url || ""));
+        return ok(id, { content: [{ type: "text", text: JSON.stringify(foto) }], structuredContent: foto });
+      }
       else return erro(id, -32602, `Ferramenta desconhecida: ${nome}`);
       return ok(id, { content: [{ type: "text", text: JSON.stringify(dados) }], structuredContent: dados });
     } catch (e: any) {
