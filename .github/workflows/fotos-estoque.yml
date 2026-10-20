@@ -1,0 +1,26 @@
+name: fotos-estoque
+on:
+  push:
+    branches: [fotos-estoque]
+    paths: ['urls.txt']
+permissions:
+  contents: write
+jobs:
+  baixar:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - name: Miniaturas
+        run: |
+          command -v convert >/dev/null || (sudo apt-get update -qq && sudo apt-get install -y -qq imagemagick)
+          mkdir -p fotos; : > fotos/falhas.txt
+          while IFS=$'\t' read -r k u; do
+            [ -z "$k" ] && continue
+            if curl -sSfL --max-time 25 -A "Mozilla/5.0" -o raw "$u" && convert "raw[0]" -auto-orient -thumbnail 150x150 -background white -flatten -gravity center -extent 150x150 -quality 82 "fotos/$k.jpg"; then :; else echo "$k" >> fotos/falhas.txt; fi
+            rm -f raw
+          done < urls.txt
+          ls fotos | wc -l
+      - name: Salvar
+        run: |
+          git config user.name "fotos-bot"; git config user.email "fotos-bot@users.noreply.github.com"
+          git add fotos; git commit -qm "miniaturas do estoque" || true; git push
