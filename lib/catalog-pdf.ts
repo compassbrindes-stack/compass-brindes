@@ -1,5 +1,5 @@
 // Geração do catálogo em PDF com os produtos atuais do site.
-// Layout inspirado em catálogos profissionais do setor de brindes: capa com
+// Layout enxuto, como catálogos profissionais do setor de brindes:
 // cabeçalho compacto na 1ª página (logo + lista breve de categorias) e produtos
 // em 3 colunas; categorias pequenas dividem a mesma linha.
 
