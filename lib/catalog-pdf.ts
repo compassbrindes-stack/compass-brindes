@@ -1,7 +1,7 @@
 // Geração do catálogo em PDF com os produtos atuais do site.
 // Layout inspirado em catálogos profissionais do setor de brindes: capa com
-// logo, página de índice por categoria e páginas de produto com fotos
-// grandes ao lado de um bloco de texto enxuto (código, nome, descrição).
+// cabeçalho compacto na 1ª página (logo + lista breve de categorias) e produtos
+// em 3 colunas; categorias pequenas dividem a mesma linha.
 
 import { PDFDocument, PDFFont, PDFImage, PDFPage, StandardFonts, rgb } from "pdf-lib";
 import type { Product } from "@/lib/types";
@@ -25,15 +25,6 @@ const COLOR_PRIMARY = rgb(0x16 / 255, 0xa3 / 255, 0x4a / 255); // verde da marca
 const COLOR_TEXT = rgb(0.13, 0.15, 0.15);
 const COLOR_MUTED = rgb(0.44, 0.46, 0.44);
 const COLOR_LINE = rgb(0.85, 0.86, 0.82);
-const COLOR_PAGE_BG_SOFT = rgb(0xf4 / 255, 0xf4 / 255, 0xed / 255);
-
-// Paleta usada nos cartões da página de índice, alternada por categoria.
-const INDEX_PALETTE = [
-  rgb(0x0b / 255, 0x44 / 255, 0x36 / 255),
-  rgb(0x16 / 255, 0xa3 / 255, 0x4a / 255),
-  rgb(0x5c / 255, 0x6f / 255, 0x6a / 255),
-  rgb(0xb9 / 255, 0x8a / 255, 0x3a / 255),
-];
 
 function cleanDescription(description?: string): string {
   if (!description) return "";
@@ -253,124 +244,163 @@ export async function buildCatalogPdf(products: Product[], siteUrl?: string): Pr
   }
 
   // ---------------------------------------------------------------------
-  // Capa
+  // Cabeçalho da 1ª página (faixa verde, logo, apresentação e lista breve
+  // das categorias). Os produtos começam logo abaixo, na mesma página.
   // ---------------------------------------------------------------------
-  page.drawRectangle({ x: 0, y: PAGE_HEIGHT - 220, width: PAGE_WIDTH, height: 220, color: COLOR_PRIMARY_DARK });
-  page.drawText("COMPASS BRINDES CORPORATIVOS", {
+  const FAIXA = 92;
+  page.drawRectangle({ x: 0, y: PAGE_HEIGHT - FAIXA, width: PAGE_WIDTH, height: FAIXA, color: COLOR_PRIMARY_DARK });
+  page.drawText("COMPASS BRINDES CORPORATIVOS", { x: MARGIN_X, y: PAGE_HEIGHT - 32, size: 10, font: fontBold, color: rgb(1, 1, 1) });
+  page.drawText("Catálogo de Produtos", { x: MARGIN_X, y: PAGE_HEIGHT - 60, size: 22, font: fontBold, color: rgb(1, 1, 1) });
+  const dataGeracao = new Date().toLocaleDateString("pt-BR", { day: "2-digit", month: "long", year: "numeric" });
+  page.drawText(`Gerado em ${dataGeracao} · ${products.length} produtos · (49) 93618-0446 · www.compassbrindes.com.br`, {
     x: MARGIN_X,
-    y: PAGE_HEIGHT - 110,
-    size: 14,
-    font: fontBold,
-    color: rgb(1, 1, 1),
-  });
-  page.drawText("Catálogo de Produtos", {
-    x: MARGIN_X,
-    y: PAGE_HEIGHT - 150,
-    size: 30,
-    font: fontBold,
-    color: rgb(1, 1, 1),
-  });
-  const dataGeracao = new Date().toLocaleDateString("pt-BR", {
-    day: "2-digit",
-    month: "long",
-    year: "numeric",
-  });
-  page.drawText(`Gerado em ${dataGeracao} · ${products.length} produtos`, {
-    x: MARGIN_X,
-    y: PAGE_HEIGHT - 180,
-    size: 11,
+    y: PAGE_HEIGHT - 78,
+    size: 8.5,
     font: fontRegular,
     color: rgb(0.85, 0.9, 0.88),
   });
-
-  y = PAGE_HEIGHT - 260;
-
   if (logoImage) {
-    const logoHeight = 36;
+    // logo num quadro branco à direita da faixa
+    const logoHeight = 40;
     const logoWidth = (logoImage.width / logoImage.height) * logoHeight;
-    page.drawImage(logoImage, {
-      x: MARGIN_X,
-      y: y - logoHeight,
-      width: logoWidth,
-      height: logoHeight,
-    });
-    y -= logoHeight + 20;
+    const bx = PAGE_WIDTH - MARGIN_X - logoWidth - 16;
+    page.drawRectangle({ x: bx, y: PAGE_HEIGHT - FAIXA / 2 - logoHeight / 2 - 8, width: logoWidth + 16, height: logoHeight + 16, color: rgb(1, 1, 1) });
+    page.drawImage(logoImage, { x: bx + 8, y: PAGE_HEIGHT - FAIXA / 2 - logoHeight / 2, width: logoWidth, height: logoHeight });
   }
 
+  y = PAGE_HEIGHT - FAIXA - 20;
   const introLines = wrapText(
-    "Curadoria de brindes corporativos para empresas que querem presentear com intenção. " +
-      "Todos os produtos deste catálogo estão sujeitos a disponibilidade e os preços variam " +
-      "conforme quantidade e personalização — fale com a gente para um orçamento sob medida.",
+    "Brindes corporativos para empresas que querem presentear com intenção. Produtos sujeitos a disponibilidade; " +
+      "preços conforme quantidade e personalização — fale com a gente para um orçamento sob medida.",
     fontRegular,
-    11,
+    9,
     CONTENT_WIDTH
   );
   for (const line of introLines) {
-    page.drawText(line, { x: MARGIN_X, y, size: 11, font: fontRegular, color: COLOR_TEXT });
-    y -= 16;
+    page.drawText(line, { x: MARGIN_X, y, size: 9, font: fontRegular, color: COLOR_TEXT });
+    y -= 12;
   }
 
-  // ---------------------------------------------------------------------
-  // Índice por categoria
-  // ---------------------------------------------------------------------
-  newPage();
-  page.drawText("ÍNDICE", { x: MARGIN_X, y, size: 20, font: fontBold, color: COLOR_PRIMARY_DARK });
-  y -= 30;
-
-  const INDEX_COLS = 3;
-  const INDEX_GAP = 12;
-  const indexCardWidth = (CONTENT_WIDTH - INDEX_GAP * (INDEX_COLS - 1)) / INDEX_COLS;
-  const indexCardHeight = 50;
-
+  // Categorias: lista breve em 4 colunas (o índice não é clicável)
+  y -= 6;
+  page.drawText("CATEGORIAS", { x: MARGIN_X, y, size: 9, font: fontBold, color: COLOR_PRIMARY_DARK });
+  y -= 13;
+  const IDX_COLS = 4;
+  const idxW = CONTENT_WIDTH / IDX_COLS;
+  const idxRows = Math.ceil(categories.length / IDX_COLS);
   for (let i = 0; i < categories.length; i++) {
-    const col = i % INDEX_COLS;
-    if (col === 0) ensureSpace(indexCardHeight + 10);
-
-    const cardX = MARGIN_X + col * (indexCardWidth + INDEX_GAP);
-    const cardTopY = y;
-    const accent = INDEX_PALETTE[i % INDEX_PALETTE.length];
+    const col = Math.floor(i / idxRows);
+    const row = i % idxRows;
     const count = (byCategory.get(categories[i]) ?? []).length;
-
-    page.drawRectangle({
-      x: cardX,
-      y: cardTopY - indexCardHeight,
-      width: indexCardWidth,
-      height: indexCardHeight,
-      color: COLOR_PAGE_BG_SOFT,
-    });
-    page.drawRectangle({
-      x: cardX,
-      y: cardTopY - indexCardHeight,
-      width: 4,
-      height: indexCardHeight,
-      color: accent,
-    });
-
-    const nameLines = wrapText(categories[i].toUpperCase(), fontBold, 10.5, indexCardWidth - 24).slice(0, 2);
-    let ny = cardTopY - 16;
-    for (const line of nameLines) {
-      page.drawText(line, { x: cardX + 14, y: ny, size: 10.5, font: fontBold, color: accent });
-      ny -= 13;
-    }
-    page.drawText(`${count} ${count === 1 ? "produto" : "produtos"}`, {
-      x: cardX + 14,
-      y: cardTopY - indexCardHeight + 12,
-      size: 8.5,
+    let nome = categories[i].replace("Kits Corporativos - ", "").replace(" - ", " · ");
+    const cabe = (t: string) => fontRegular.widthOfTextAtSize(`${t} (${count})`, 7.8) <= idxW - 8;
+    if (!cabe(nome)) { while (nome.length > 4 && !cabe(nome + "…")) nome = nome.slice(0, -1); nome += "…"; }
+    page.drawText(`${nome} (${count})`, {
+      x: MARGIN_X + col * idxW,
+      y: y - row * 10.5,
+      size: 7.8,
       font: fontRegular,
-      color: COLOR_MUTED,
+      color: COLOR_TEXT,
     });
-
-    if (col === INDEX_COLS - 1 || i === categories.length - 1) {
-      y -= indexCardHeight + 10;
-    }
   }
-
-  newPage();
+  y -= idxRows * 10.5 + 4;
+  page.drawLine({ start: { x: MARGIN_X, y }, end: { x: PAGE_WIDTH - MARGIN_X, y }, thickness: 0.6, color: COLOR_LINE });
+  y -= 22;
 
   // ---------------------------------------------------------------------
   // Páginas de produtos, por categoria
   // ---------------------------------------------------------------------
-  for (const category of categories) {
+  // Desenha um card de produto (foto, nome, descrição, código, cores) com o topo em rowTopY.
+  function drawCell(cell: ProductCell, cellX: number, rowTopY: number) {
+    let cy = rowTopY;
+    if (cell.image) {
+      const photoX = cellX + Math.max(0, (PRODUCT_COL_WIDTH - cell.photoDims.width) / 2);
+      const photoY = cy - CARD_IMAGE_MAX + (CARD_IMAGE_MAX - cell.photoDims.height) / 2;
+      page.drawImage(cell.image, {
+        x: photoX,
+        y: photoY,
+        width: cell.photoDims.width,
+        height: cell.photoDims.height,
+      });
+      cy -= CARD_IMAGE_MAX + 8;
+    }
+
+    cy -= 2; // respiro entre a foto e o nome
+
+    for (const line of cell.nameLines) {
+      page.drawText(line, { x: cellX, y: cy, size: 9.5, font: fontBold, color: COLOR_TEXT });
+      cy -= 11;
+    }
+    cy -= 2;
+
+    for (const line of cell.descriptionLines) {
+      page.drawText(line, { x: cellX, y: cy, size: 7.5, font: fontRegular, color: COLOR_MUTED });
+      cy -= 9.2;
+    }
+
+    // Código Compass (ex.: C043B620) logo depois da descrição, só quando
+    // o produto tem um.
+    if (cell.codigo) {
+      cy -= 2;
+      page.drawText(`Código: ${cell.codigo}`, {
+        x: cellX,
+        y: cy,
+        size: 7.5,
+        font: fontBold,
+        color: COLOR_PRIMARY,
+      });
+      cy -= 10;
+    }
+
+    for (const line of cell.extraLines) {
+      page.drawText(line, { x: cellX, y: cy, size: 7.5, font: fontRegular, color: COLOR_TEXT });
+      cy -= 9.2;
+    }
+
+    for (const line of cell.colorLines) {
+      page.drawText(line, { x: cellX, y: cy, size: 7, font: fontItalic, color: COLOR_MUTED });
+      cy -= 8.6;
+    }
+  }
+
+  // Categorias pequenas (1 ou 2 produtos) dividem a mesma linha, cada uma com
+  // seu título em cima das suas colunas, para não sobrar espaço em branco.
+  const pequenas = (c: string) => (byCategory.get(c) ?? []).length < PRODUCT_COLS;
+  const secoes: string[][] = [];
+  for (const c of categories) {
+    const ult = secoes[secoes.length - 1];
+    const total = ult ? ult.reduce((n, x) => n + (byCategory.get(x) ?? []).length, 0) : 0;
+    if (ult && pequenas(c) && ult.every(pequenas) && total + (byCategory.get(c) ?? []).length <= PRODUCT_COLS) ult.push(c);
+    else secoes.push([c]);
+  }
+
+  function desenharCompartilhada(secao: string[]) {
+    // linha compartilhada
+    currentCategoryLabel = secao.join(" · ");
+    const segs = secao.map((c) => (byCategory.get(c) ?? []).map((pr) => buildProductCell(pr, imageByProduct.get(pr), fontRegular, fontBold, fontItalic)));
+    const rowHeight = Math.max(...segs.flat().map((c) => c.cellHeight));
+    ensureSpace(30 + rowHeight + ROW_GAP);
+    if (!pageCategoryLabel.has(page)) pageCategoryLabel.set(page, currentCategoryLabel);
+    let col = 0;
+    const yTitulo = y;
+    segs.forEach((cells, k) => {
+      const x0 = MARGIN_X + col * (PRODUCT_COL_WIDTH + PRODUCT_COL_GAP);
+      const w = cells.length * PRODUCT_COL_WIDTH + (cells.length - 1) * PRODUCT_COL_GAP;
+      let titulo = secao[k].toUpperCase();
+      while (titulo.length > 4 && fontBold.widthOfTextAtSize(titulo, 11) > w) titulo = titulo.slice(0, -1);
+      page.drawText(titulo, { x: x0, y: yTitulo, size: 11, font: fontBold, color: COLOR_PRIMARY_DARK });
+      page.drawLine({ start: { x: x0, y: yTitulo - 5 }, end: { x: x0 + w, y: yTitulo - 5 }, thickness: 1.2, color: COLOR_PRIMARY });
+      cells.forEach((cell, j) => drawCell(cell, MARGIN_X + (col + j) * (PRODUCT_COL_WIDTH + PRODUCT_COL_GAP), yTitulo - 22));
+      col += cells.length;
+    });
+    y = yTitulo - 22 - rowHeight - ROW_GAP;
+    page.drawLine({ start: { x: MARGIN_X, y: y + ROW_GAP / 2 }, end: { x: PAGE_WIDTH - MARGIN_X, y: y + ROW_GAP / 2 }, thickness: 0.6, color: COLOR_LINE });
+    y -= 6;
+  }
+
+  for (const secao of secoes) {
+    if (secao.length > 1) { desenharCompartilhada(secao); continue; }
+    const category = secao[0];
     currentCategoryLabel = category;
     const itemsCat = byCategory.get(category) ?? [];
     const primeiraLinha = itemsCat
@@ -407,59 +437,7 @@ export async function buildCatalogPdf(products: Product[], siteUrl?: string): Pr
 
       const rowTopY = y;
 
-      cells.forEach((cell, col) => {
-        const cellX = MARGIN_X + col * (PRODUCT_COL_WIDTH + PRODUCT_COL_GAP);
-        let cy = rowTopY;
-
-        if (cell.image) {
-          const photoX = cellX + Math.max(0, (PRODUCT_COL_WIDTH - cell.photoDims.width) / 2);
-          const photoY = cy - CARD_IMAGE_MAX + (CARD_IMAGE_MAX - cell.photoDims.height) / 2;
-          page.drawImage(cell.image, {
-            x: photoX,
-            y: photoY,
-            width: cell.photoDims.width,
-            height: cell.photoDims.height,
-          });
-          cy -= CARD_IMAGE_MAX + 8;
-        }
-
-        cy -= 2; // respiro entre a foto e o nome
-
-        for (const line of cell.nameLines) {
-          page.drawText(line, { x: cellX, y: cy, size: 9.5, font: fontBold, color: COLOR_TEXT });
-          cy -= 11;
-        }
-        cy -= 2;
-
-        for (const line of cell.descriptionLines) {
-          page.drawText(line, { x: cellX, y: cy, size: 7.5, font: fontRegular, color: COLOR_MUTED });
-          cy -= 9.2;
-        }
-
-        // Código Compass (ex.: C043B620) logo depois da descrição, só quando
-        // o produto tem um.
-        if (cell.codigo) {
-          cy -= 2;
-          page.drawText(`Código: ${cell.codigo}`, {
-            x: cellX,
-            y: cy,
-            size: 7.5,
-            font: fontBold,
-            color: COLOR_PRIMARY,
-          });
-          cy -= 10;
-        }
-
-        for (const line of cell.extraLines) {
-          page.drawText(line, { x: cellX, y: cy, size: 7.5, font: fontRegular, color: COLOR_TEXT });
-          cy -= 9.2;
-        }
-
-        for (const line of cell.colorLines) {
-          page.drawText(line, { x: cellX, y: cy, size: 7, font: fontItalic, color: COLOR_MUTED });
-          cy -= 8.6;
-        }
-      });
+      cells.forEach((cell, col) => drawCell(cell, MARGIN_X + col * (PRODUCT_COL_WIDTH + PRODUCT_COL_GAP), rowTopY));
 
       y = rowTopY - rowHeight - ROW_GAP;
 
@@ -475,10 +453,10 @@ export async function buildCatalogPdf(products: Product[], siteUrl?: string): Pr
   }
 
   // ---------------------------------------------------------------------
-  // Rodapé em todas as páginas (exceto a capa)
+  // Rodapé em todas as páginas
   // ---------------------------------------------------------------------
   const allPages = pdfDoc.getPages();
-  for (let i = 1; i < allPages.length; i++) {
+  for (let i = 0; i < allPages.length; i++) {
     const p = allPages[i];
     const label = pageCategoryLabel.get(p) ?? "";
     const pageNumber = `${i + 1}`;
