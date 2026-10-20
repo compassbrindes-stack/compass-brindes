@@ -9,16 +9,16 @@ import { LOGO_DATA_URI } from "@/lib/logo";
 
 const PAGE_WIDTH = 595.28; // A4 em pontos
 const PAGE_HEIGHT = 841.89;
-const MARGIN_X = 48;
-const MARGIN_TOP = 56;
-const MARGIN_BOTTOM = 44;
+const MARGIN_X = 34;
+const MARGIN_TOP = 42;
+const MARGIN_BOTTOM = 40;
 const CONTENT_WIDTH = PAGE_WIDTH - MARGIN_X * 2;
 
-const PRODUCT_COLS = 2; // produtos lado a lado, na mesma linha
-const PRODUCT_COL_GAP = 24;
+const PRODUCT_COLS = 3; // produtos lado a lado, na mesma linha (catálogo mais curto)
+const PRODUCT_COL_GAP = 16;
 const PRODUCT_COL_WIDTH = (CONTENT_WIDTH - PRODUCT_COL_GAP * (PRODUCT_COLS - 1)) / PRODUCT_COLS;
-const CARD_IMAGE_MAX = 168; // lado máximo (quadrado) da foto, no topo do card
-const ROW_GAP = 18; // espaço vertical entre uma linha de produtos e a próxima
+const CARD_IMAGE_MAX = 120; // lado máximo (quadrado) da foto, no topo do card
+const ROW_GAP = 14; // espaço vertical entre uma linha de produtos e a próxima
 
 const COLOR_PRIMARY_DARK = rgb(0x0b / 255, 0x44 / 255, 0x36 / 255); // verde escuro da marca
 const COLOR_PRIMARY = rgb(0x16 / 255, 0xa3 / 255, 0x4a / 255); // verde da marca
@@ -130,7 +130,7 @@ interface ProductCell {
 }
 
 // Monta o conteúdo (linhas de texto já quebradas e dimensões da foto) de um
-// card de produto, para o layout de 2 produtos lado a lado.
+// card de produto, para o layout de 3 produtos lado a lado.
 function buildProductCell(
   product: Product,
   image: PDFImage | undefined,
@@ -139,11 +139,11 @@ function buildProductCell(
   fontItalic: PDFFont
 ): ProductCell {
   const codigo = product.supplierCode ?? "";
-  const nameLines = wrapText(product.name, fontBold, 10.5, PRODUCT_COL_WIDTH).slice(0, 3);
+  const nameLines = wrapText(product.name, fontBold, 9.5, PRODUCT_COL_WIDTH).slice(0, 2);
   const descriptionLines = wrapText(
-    cleanDescription(product.description).slice(0, 220),
+    cleanDescription(product.description).slice(0, 200),
     fontRegular,
-    8.5,
+    7.5,
     PRODUCT_COL_WIDTH
   ).slice(0, 4);
 
@@ -152,7 +152,7 @@ function buildProductCell(
     .filter((c): c is string => Boolean(c))
     .join(", ");
   const colorLines = colorsText
-    ? wrapText(`Cores: ${colorsText}`, fontItalic, 8, PRODUCT_COL_WIDTH).slice(0, 2)
+    ? wrapText(`Cores: ${colorsText}`, fontItalic, 7, PRODUCT_COL_WIDTH).slice(0, 2)
     : [];
 
   const extraLines: string[] = [];
@@ -165,15 +165,16 @@ function buildProductCell(
 
   const textHeight =
     2 + // respiro entre a foto e o nome
-    (codigo ? 14 : 0) + // linha do código, depois da descrição
-    nameLines.length * 12.5 +
-    3 +
-    descriptionLines.length * 10.5 +
-    extraLines.length * 10.5 +
-    colorLines.length * 10 +
-    6;
+    (codigo ? 12 : 0) + // linha do código, depois da descrição
+    nameLines.length * 11 +
+    2 +
+    descriptionLines.length * 9.2 +
+    extraLines.length * 9.2 +
+    colorLines.length * 8.6 +
+    4;
 
-  const cellHeight = (image ? photoDims.height + 10 : 0) + textHeight;
+  // a foto ocupa sempre a mesma caixa quadrada: as linhas ficam alinhadas
+  const cellHeight = (image ? CARD_IMAGE_MAX + 8 : 0) + textHeight;
 
   return { product, image, codigo, nameLines, descriptionLines, extraLines, colorLines, photoDims, cellHeight };
 }
@@ -316,14 +317,14 @@ export async function buildCatalogPdf(products: Product[], siteUrl?: string): Pr
   page.drawText("ÍNDICE", { x: MARGIN_X, y, size: 20, font: fontBold, color: COLOR_PRIMARY_DARK });
   y -= 30;
 
-  const INDEX_COLS = 2;
-  const INDEX_GAP = 16;
+  const INDEX_COLS = 3;
+  const INDEX_GAP = 12;
   const indexCardWidth = (CONTENT_WIDTH - INDEX_GAP * (INDEX_COLS - 1)) / INDEX_COLS;
-  const indexCardHeight = 64;
+  const indexCardHeight = 50;
 
   for (let i = 0; i < categories.length; i++) {
     const col = i % INDEX_COLS;
-    if (col === 0) ensureSpace(indexCardHeight + 14);
+    if (col === 0) ensureSpace(indexCardHeight + 10);
 
     const cardX = MARGIN_X + col * (indexCardWidth + INDEX_GAP);
     const cardTopY = y;
@@ -346,7 +347,7 @@ export async function buildCatalogPdf(products: Product[], siteUrl?: string): Pr
     });
 
     const nameLines = wrapText(categories[i].toUpperCase(), fontBold, 10.5, indexCardWidth - 24).slice(0, 2);
-    let ny = cardTopY - 18;
+    let ny = cardTopY - 16;
     for (const line of nameLines) {
       page.drawText(line, { x: cardX + 14, y: ny, size: 10.5, font: fontBold, color: accent });
       ny -= 13;
@@ -360,7 +361,7 @@ export async function buildCatalogPdf(products: Product[], siteUrl?: string): Pr
     });
 
     if (col === INDEX_COLS - 1 || i === categories.length - 1) {
-      y -= indexCardHeight + 14;
+      y -= indexCardHeight + 10;
     }
   }
 
@@ -371,24 +372,28 @@ export async function buildCatalogPdf(products: Product[], siteUrl?: string): Pr
   // ---------------------------------------------------------------------
   for (const category of categories) {
     currentCategoryLabel = category;
-    ensureSpace(44);
+    const itemsCat = byCategory.get(category) ?? [];
+    const primeiraLinha = itemsCat
+      .slice(0, PRODUCT_COLS)
+      .map((pr) => buildProductCell(pr, imageByProduct.get(pr), fontRegular, fontBold, fontItalic).cellHeight);
+    ensureSpace(34 + Math.max(0, ...primeiraLinha) + ROW_GAP); // título não fica sozinho no fim da página
     if (!pageCategoryLabel.has(page)) pageCategoryLabel.set(page, currentCategoryLabel);
 
     page.drawText(category.toUpperCase(), {
       x: MARGIN_X,
       y,
-      size: 15,
+      size: 13,
       font: fontBold,
       color: COLOR_PRIMARY_DARK,
     });
-    y -= 6;
+    y -= 5;
     page.drawLine({
       start: { x: MARGIN_X, y },
       end: { x: PAGE_WIDTH - MARGIN_X, y },
       thickness: 1.2,
       color: COLOR_PRIMARY,
     });
-    y -= 26;
+    y -= 18;
 
     const items = byCategory.get(category) ?? [];
     for (let i = 0; i < items.length; i += PRODUCT_COLS) {
@@ -408,27 +413,27 @@ export async function buildCatalogPdf(products: Product[], siteUrl?: string): Pr
 
         if (cell.image) {
           const photoX = cellX + Math.max(0, (PRODUCT_COL_WIDTH - cell.photoDims.width) / 2);
-          const photoY = cy - cell.photoDims.height;
+          const photoY = cy - CARD_IMAGE_MAX + (CARD_IMAGE_MAX - cell.photoDims.height) / 2;
           page.drawImage(cell.image, {
             x: photoX,
             y: photoY,
             width: cell.photoDims.width,
             height: cell.photoDims.height,
           });
-          cy -= cell.photoDims.height + 10;
+          cy -= CARD_IMAGE_MAX + 8;
         }
 
         cy -= 2; // respiro entre a foto e o nome
 
         for (const line of cell.nameLines) {
-          page.drawText(line, { x: cellX, y: cy, size: 10.5, font: fontBold, color: COLOR_TEXT });
-          cy -= 12.5;
+          page.drawText(line, { x: cellX, y: cy, size: 9.5, font: fontBold, color: COLOR_TEXT });
+          cy -= 11;
         }
-        cy -= 3;
+        cy -= 2;
 
         for (const line of cell.descriptionLines) {
-          page.drawText(line, { x: cellX, y: cy, size: 8.5, font: fontRegular, color: COLOR_MUTED });
-          cy -= 10.5;
+          page.drawText(line, { x: cellX, y: cy, size: 7.5, font: fontRegular, color: COLOR_MUTED });
+          cy -= 9.2;
         }
 
         // Código Compass (ex.: C043B620) logo depois da descrição, só quando
@@ -438,21 +443,21 @@ export async function buildCatalogPdf(products: Product[], siteUrl?: string): Pr
           page.drawText(`Código: ${cell.codigo}`, {
             x: cellX,
             y: cy,
-            size: 8.5,
+            size: 7.5,
             font: fontBold,
             color: COLOR_PRIMARY,
           });
-          cy -= 12;
+          cy -= 10;
         }
 
         for (const line of cell.extraLines) {
-          page.drawText(line, { x: cellX, y: cy, size: 8.5, font: fontRegular, color: COLOR_TEXT });
-          cy -= 10.5;
+          page.drawText(line, { x: cellX, y: cy, size: 7.5, font: fontRegular, color: COLOR_TEXT });
+          cy -= 9.2;
         }
 
         for (const line of cell.colorLines) {
-          page.drawText(line, { x: cellX, y: cy, size: 8, font: fontItalic, color: COLOR_MUTED });
-          cy -= 10;
+          page.drawText(line, { x: cellX, y: cy, size: 7, font: fontItalic, color: COLOR_MUTED });
+          cy -= 8.6;
         }
       });
 
@@ -466,7 +471,7 @@ export async function buildCatalogPdf(products: Product[], siteUrl?: string): Pr
       });
     }
 
-    y -= 10;
+    y -= 6;
   }
 
   // ---------------------------------------------------------------------
