@@ -10,7 +10,7 @@
       "https://supliutech.nyc3.cdn.digitaloceanspaces.com/products2/86e9597c-0c00-4315-bd80-bc895d79f011.jpeg",
       "https://supliutech.nyc3.cdn.digitaloceanspaces.com/products2/7fe565aa-da4e-42ce-8ad0-14e399a3d39b.jpeg"
     ],
-    "supplierCode": "C090B630"
+    "supplierCode": "CB501"
   },
   {
     "sku": "1942483-bolsa-termica-oxford-11l-c189b650",
@@ -22,7 +22,7 @@
       "https://supliutech.nyc3.cdn.digitaloceanspaces.com/products2/b0835aca-eca4-4886-a5ba-035d6e1829c1.jpeg",
       "https://supliutech.nyc3.cdn.digitaloceanspaces.com/products2/fa3d8e54-79ca-48d8-b698-b8899ff1b470.jpeg"
     ],
-    "supplierCode": "C189B650"
+    "supplierCode": "CB506"
   },
   {
     "sku": "xbz-02798-bolsa-termica-10l",
@@ -37,7 +37,7 @@
     "colors": [
       "Cinza"
     ],
-    "supplierCode": "C027B980"
+    "supplierCode": "CB502"
   },
   {
     "sku": "1947187-caixa-de-som-c043b620",
@@ -48,7 +48,7 @@
     "images": [
       "https://supliutech.nyc3.cdn.digitaloceanspaces.com/products2/83078e64-1313-4aba-9ca4-21fa523d3a09.jpeg"
     ],
-    "supplierCode": "C043B620"
+    "supplierCode": "CB556"
   },
   {
     "sku": "1947192-caixa-de-som-c060b310",
@@ -60,7 +60,7 @@
       "https://supliutech.nyc3.cdn.digitaloceanspaces.com/products2/a3647f99-84e3-4e74-bb25-2a3ad3966db5.jpeg",
       "https://supliutech.nyc3.cdn.digitaloceanspaces.com/products2/aa35495a-d57a-4ce2-9dbe-73a6da07e6f9.jpeg"
     ],
-    "supplierCode": "C060B310"
+    "supplierCode": "CB557"
   },
   {
     "sku": "1947185-caixa-de-som-c080b020",
@@ -71,7 +71,7 @@
     "images": [
       "https://supliutech.nyc3.cdn.digitaloceanspaces.com/products2/a902294c-695f-47e4-8eff-5cc5cd7e681e.jpeg"
     ],
-    "supplierCode": "C080B020"
+    "supplierCode": "CB552"
   },
   {
     "sku": "1938267-caneca-chopp-c040b700",
@@ -82,7 +82,7 @@
     "images": [
       "https://supliutech.nyc3.cdn.digitaloceanspaces.com/products2/c393767f-a451-458a-b603-26ce55faa30a.jpeg"
     ],
-    "supplierCode": "C040B700",
+    "supplierCode": "CB003",
     "subcategory": "Canecas"
   },
   {
@@ -96,7 +96,7 @@
       "https://supliutech.nyc3.cdn.digitaloceanspaces.com/products2/de2f0144-a950-4809-bd5a-5830b805d439.jpeg",
       "https://supliutech.nyc3.cdn.digitaloceanspaces.com/products2/af8963c5-5228-41dd-b458-61fb2878bb40.jpeg"
     ],
-    "supplierCode": "C091B950",
+    "supplierCode": "CB007",
     "subcategory": "Canecas"
   },
   {
@@ -108,7 +108,7 @@
     "images": [
       "https://supliutech.nyc3.cdn.digitaloceanspaces.com/products2/b1d69e70-c2ce-4c6e-8844-0735fce220fc.jpeg"
     ],
-    "supplierCode": "C060B610",
+    "supplierCode": "CB008",
     "subcategory": "Canecas"
   },
   {
@@ -121,7 +121,7 @@
       "https://supliutech.nyc3.cdn.digitaloceanspaces.com/products2/90347eab-acca-44da-a4ef-807b935f816b.jpeg"
     ],
     "minQuantity": 50,
-    "supplierCode": "CB-ER143B"
+    "supplierCode": "CB215"
   },
   {
     "sku": "1947196-caneta-metal-lisa-c082b670",
@@ -133,7 +133,7 @@
       "https://supliutech.nyc3.cdn.digitaloceanspaces.com/products2/366e65e6-e150-4ecb-a66f-d03db2e0f0a0.jpeg"
     ],
     "minQuantity": 50,
-    "supplierCode": "C082B670"
+    "supplierCode": "CB220"
   },
   {
     "sku": "1947206-caneta-metal-touch-c050b120",
@@ -145,7 +145,7 @@
       "https://supliutech.nyc3.cdn.digitaloceanspaces.com/products2/4572b76b-8086-466a-a265-00cf59ca81c5.jpeg"
     ],
     "minQuantity": 50,
-    "supplierCode": "C050B120"
+    "supplierCode": "CB221"
   },
   {
     "sku": "1947202-caneta-metal-touch-c050b190",
@@ -159,7 +159,7 @@
       "https://supliutech.nyc3.cdn.digitaloceanspaces.com/products2/8ab42900-5120-45e8-b08c-2c2e109a25ee.jpeg"
     ],
     "minQuantity": 50,
-    "supplierCode": "C050B190"
+    "supplierCode": "CB222"
   },
   {
     "sku": "1947208-chaveiro-abridor-c098b240",
@@ -172,7 +172,7 @@
       "https://supliutech.nyc3.cdn.digitaloceanspaces.com/products2/67280b34-5c3e-4a60-8474-147373893d4f.jpeg"
     ],
     "minQuantity": 100,
-    "supplierCode": "C098B240"
+    "supplierCode": "CB704"
   },
   {
     "sku": "1942482-chaveiro-trena-plastico-1m-c082b040",
@@ -185,7 +185,7 @@
       "https://supliutech.nyc3.cdn.digitaloceanspaces.com/products2/9cc43253-aacd-4827-a7cd-2a482c3289fd.jpeg"
     ],
     "minQuantity": 50,
-    "supplierCode": "C082B040"
+    "supplierCode": "CB710"
   },
   {
     "sku": "1942487-chaveiro-trena-plastico-2-metros-c082b320",
@@ -198,7 +198,7 @@
       "https://supliutech.nyc3.cdn.digitaloceanspaces.com/products2/58d61f51-01e0-4282-a4f1-21251346b271.jpeg"
     ],
     "minQuantity": 50,
-    "supplierCode": "C082B320"
+    "supplierCode": "CB711"
   },
   {
     "sku": "1938314-copo-c040b800",
@@ -220,7 +220,7 @@
       "https://www.xbzbrindes.com.br/img/produtos/3/Copo-Termico-de-Inox-473ml-14284d4-1653319721.jpg",
       "https://supliutech.nyc3.cdn.digitaloceanspaces.com/products2/2d532b4d-9747-4fa0-9ed6-f5e329984c36.jpeg"
     ],
-    "supplierCode": "C040B800",
+    "supplierCode": "CB023",
     "colors": [
       "Preto",
       "Azul",
@@ -241,7 +241,7 @@
     "images": [
       "https://supliutech.nyc3.cdn.digitaloceanspaces.com/products2/c731ce2c-ca48-4e04-af67-fa299cac5f79.jpeg"
     ],
-    "supplierCode": "C187B630",
+    "supplierCode": "CB017",
     "subcategory": "Copos"
   },
   {
@@ -253,7 +253,7 @@
     "images": [
       "https://supliutech.nyc3.cdn.digitaloceanspaces.com/products2/f4f3c6d1-02ed-46ee-a55e-9de08e6f35cd.jpeg"
     ],
-    "supplierCode": "C082B450",
+    "supplierCode": "CB012",
     "subcategory": "Copos"
   },
   {
@@ -265,7 +265,7 @@
     "images": [
       "https://supliutech.nyc3.cdn.digitaloceanspaces.com/products2/007543bd-29a7-435b-b23f-d54aaac850f7.jpeg"
     ],
-    "supplierCode": "C187B490",
+    "supplierCode": "CB561",
     "subcategory": "Copos"
   },
   {
@@ -280,7 +280,7 @@
       "https://supliutech.nyc3.cdn.digitaloceanspaces.com/products2/89f0b3fd-13bb-4eca-921a-e4bda2503807.jpeg"
     ],
     "subcategory": "Copos",
-    "supplierCode": "C147B260"
+    "supplierCode": "CB013"
   },
   {
     "sku": "1934024-copo-tradicional",
@@ -294,7 +294,7 @@
       "https://supliutech.nyc3.cdn.digitaloceanspaces.com/products2/bd2a7c02-47fd-45e8-8838-242589c9690c.jpeg"
     ],
     "subcategory": "Copos",
-    "supplierCode": "C092B520"
+    "supplierCode": "CB026"
   },
   {
     "sku": "1938405-coqueteleira-c092b370",
@@ -307,7 +307,7 @@
       "https://supliutech.nyc3.cdn.digitaloceanspaces.com/products2/7c4d22db-5d7f-4545-8196-2c9f35be0949.jpeg",
       "https://supliutech.nyc3.cdn.digitaloceanspaces.com/products2/c8dc1f49-cff5-49fa-851d-3bad8e983642.jpeg"
     ],
-    "supplierCode": "C092B370",
+    "supplierCode": "CB102",
     "subcategory": "Garrafas"
   },
   {
@@ -320,7 +320,7 @@
       "https://supliutech.nyc3.cdn.digitaloceanspaces.com/products2/1349151b-7002-45c2-9906-a1f95a995c5b.jpeg",
       "https://supliutech.nyc3.cdn.digitaloceanspaces.com/products2/e8b4bc79-6b94-46ad-86bd-42f836f8d95e.jpeg"
     ],
-    "supplierCode": "C190B390",
+    "supplierCode": "CB101",
     "subcategory": "Inox"
   },
   {
@@ -332,7 +332,7 @@
     "images": [
       "https://supliutech.nyc3.cdn.digitaloceanspaces.com/products2/f1682eea-acac-4837-be84-21b6c794e1e3.jpeg"
     ],
-    "supplierCode": "C152B480"
+    "supplierCode": "CB714"
   },
   {
     "sku": "1947211-escova-espelho-coracao-c189b190",
@@ -343,7 +343,7 @@
     "images": [
       "https://supliutech.nyc3.cdn.digitaloceanspaces.com/products2/fad188fd-ccb3-4f6e-9bd4-1e8c434a4c46.jpeg"
     ],
-    "supplierCode": "C189B190"
+    "supplierCode": "CB712"
   },
   {
     "sku": "1947214-escova-espelho-redonda-c103b420",
@@ -357,7 +357,7 @@
       "https://supliutech.nyc3.cdn.digitaloceanspaces.com/products2/1123e0e7-50d4-4823-a64e-31eacb846261.jpeg",
       "https://supliutech.nyc3.cdn.digitaloceanspaces.com/products2/638a5df7-88cf-4783-b6e6-59498d9fb4e1.jpeg"
     ],
-    "supplierCode": "C103B420"
+    "supplierCode": "CB713"
   },
   {
     "sku": "1947217-fone-de-ouvido-bluetooth-touch-com-case-carregador-c050b210",
@@ -369,7 +369,7 @@
       "https://supliutech.nyc3.cdn.digitaloceanspaces.com/products2/3250415e-9184-466b-8010-d75b0230321c.jpeg",
       "https://supliutech.nyc3.cdn.digitaloceanspaces.com/products2/0a5a0674-dcad-4e5f-9040-e561a18ed6bd.jpeg"
     ],
-    "supplierCode": "C050B210"
+    "supplierCode": "CB565"
   },
   {
     "sku": "1938408-garrafa-c042b05",
@@ -381,7 +381,7 @@
       "https://supliutech.nyc3.cdn.digitaloceanspaces.com/products2/80f59ff1-5675-46c8-8b8f-0e0cf2ea1ebf.jpeg",
       "https://supliutech.nyc3.cdn.digitaloceanspaces.com/products2/e9ddb841-f3de-4262-a5e8-538b6afa7d8f.jpeg"
     ],
-    "supplierCode": "C042B05",
+    "supplierCode": "CB126",
     "subcategory": "Garrafas"
   },
   {
@@ -394,7 +394,7 @@
       "https://supliutech.nyc3.cdn.digitaloceanspaces.com/products2/e43d3831-74be-427a-959e-40a11a67250c.jpeg",
       "https://supliutech.nyc3.cdn.digitaloceanspaces.com/products2/88bdc83e-1866-4cd3-98ef-655e04fca017.jpeg"
     ],
-    "supplierCode": "C186B770",
+    "supplierCode": "CB115",
     "subcategory": "Garrafas"
   },
   {
@@ -406,7 +406,7 @@
     "images": [
       "https://supliutech.nyc3.cdn.digitaloceanspaces.com/products2/1c8f0b1e-ab9a-418d-82e9-fcd03942c127.jpeg"
     ],
-    "supplierCode": "C186B780",
+    "supplierCode": "CB124",
     "subcategory": "Garrafas"
   },
   {
@@ -419,7 +419,7 @@
       "https://supliutech.nyc3.cdn.digitaloceanspaces.com/products2/4aa51003-7523-408d-9ee6-b32514471857.jpeg",
       "https://supliutech.nyc3.cdn.digitaloceanspaces.com/products2/8ae02c00-4ec8-439a-b9c3-f721eacb055b.jpeg"
     ],
-    "supplierCode": "C189B100",
+    "supplierCode": "CB125",
     "subcategory": "Garrafas"
   },
   {
@@ -431,7 +431,7 @@
     "images": [
       "https://supliutech.nyc3.cdn.digitaloceanspaces.com/products2/48243dd4-f3ed-4a3b-ab61-1ba517ed4506.jpeg"
     ],
-    "supplierCode": "C040B980",
+    "supplierCode": "CB123",
     "subcategory": "Garrafas"
   },
   {
@@ -443,7 +443,7 @@
     "images": [
       "https://supliutech.nyc3.cdn.digitaloceanspaces.com/products2/48243dd4-f3ed-4a3b-ab61-1ba517ed4506.jpeg"
     ],
-    "supplierCode": "C040B970",
+    "supplierCode": "CB122",
     "subcategory": "Garrafas"
   },
   {
@@ -456,7 +456,7 @@
       "https://supliutech.nyc3.cdn.digitaloceanspaces.com/products2/23455815-0c2d-4435-84ef-b73607b4cf20.jpeg",
       "https://supliutech.nyc3.cdn.digitaloceanspaces.com/products2/e5c8128d-ee0a-4fcb-a994-91e60c2c3f89.jpeg"
     ],
-    "supplierCode": "C190B330",
+    "supplierCode": "CB116",
     "subcategory": "Garrafas"
   },
   {
@@ -468,7 +468,7 @@
     "images": [
       "https://supliutech.nyc3.cdn.digitaloceanspaces.com/products2/ae64c521-dbce-4215-a854-dea5887d38b7.jpeg"
     ],
-    "supplierCode": "C185B180",
+    "supplierCode": "CB120",
     "subcategory": "Garrafas"
   },
   {
@@ -482,7 +482,7 @@
       "https://supliutech.nyc3.cdn.digitaloceanspaces.com/products2/22778270-13b0-4cc3-a4d1-c09a4774a779.jpeg",
       "https://supliutech.nyc3.cdn.digitaloceanspaces.com/products2/95364eb1-cfff-44a2-b129-a50c77c83cab.jpeg"
     ],
-    "supplierCode": "C190B140",
+    "supplierCode": "CB121",
     "subcategory": "Garrafas"
   },
   {
@@ -495,7 +495,7 @@
       "https://supliutech.nyc3.cdn.digitaloceanspaces.com/products2/4ce4d6e3-a79e-4039-84ac-8d66842ed01b.jpeg",
       "https://supliutech.nyc3.cdn.digitaloceanspaces.com/products2/0bbd9da8-1faf-41f9-819a-e1cab61235b7.jpeg"
     ],
-    "supplierCode": "C074B470",
+    "supplierCode": "CB361",
     "subcategory": "Kit Churrasco"
   },
   {
@@ -509,7 +509,7 @@
       "https://supliutech.nyc3.cdn.digitaloceanspaces.com/products2/7c9b85a4-d7fa-498b-b5ab-68680c2568f5.jpeg",
       "https://supliutech.nyc3.cdn.digitaloceanspaces.com/products2/4049309e-9692-43b6-84ce-f5105380e682.jpeg"
     ],
-    "supplierCode": "C082B170",
+    "supplierCode": "CB366",
     "subcategory": "Kit Churrasco"
   },
   {
@@ -526,7 +526,7 @@
     "colors": [
       "Madeira"
     ],
-    "supplierCode": "CBI013"
+    "supplierCode": "CB359"
   },
   {
     "sku": "1947225-mochila-c013b200",
@@ -550,7 +550,7 @@
       "https://supliutech.nyc3.cdn.digitaloceanspaces.com/products2/201bebe3-658c-469f-a7ac-127949cd51cb.jpeg",
       "https://supliutech.nyc3.cdn.digitaloceanspaces.com/products2/f3dd184b-65e5-447c-9db5-fe172e2571a0.jpeg"
     ],
-    "supplierCode": "C013B200",
+    "supplierCode": "CB516",
     "colors": [
       "Azul",
       "Cinza",
@@ -582,7 +582,7 @@
       "Preto",
       "Vermelho"
     ],
-    "supplierCode": "C013B250"
+    "supplierCode": "CB515"
   },
   {
     "sku": "xbz-02658-mochila-couro-sintetico-23l-com-bolsos-modulares-c026b580",
@@ -606,7 +606,7 @@
     "colors": [
       "Preto"
     ],
-    "supplierCode": "C026B580"
+    "supplierCode": "CB510"
   },
   {
     "sku": "xbz-08172-mochila-couro-sintetico-usb-26l-c081b720",
@@ -637,7 +637,7 @@
       "Verde",
       "Verde Claro"
     ],
-    "supplierCode": "C081B720"
+    "supplierCode": "CB513"
   },
   {
     "sku": "xbz-20061-mochila-couro-sintetico-usb-20l-c200b610",
@@ -664,7 +664,7 @@
     "colors": [
       "Preto"
     ],
-    "supplierCode": "C200B610"
+    "supplierCode": "CB511"
   },
   {
     "sku": "xbz-01902-mochila-couro-sintetico-usb-25l-c019b020",
@@ -684,7 +684,7 @@
     "colors": [
       "Cinza"
     ],
-    "supplierCode": "C019B020"
+    "supplierCode": "CB512"
   },
   {
     "sku": "xbz-08342-mochila-couro-sintetico-23l-c083b420",
@@ -704,7 +704,7 @@
       "Creme",
       "Preto"
     ],
-    "supplierCode": "C083B420"
+    "supplierCode": "CB509"
   },
   {
     "sku": "1947227-necessaire-c190b190",
@@ -717,7 +717,7 @@
       "https://supliutech.nyc3.cdn.digitaloceanspaces.com/products2/c6b90ce8-3d3b-4fc4-9065-41e8b9fd49bd.jpeg",
       "https://supliutech.nyc3.cdn.digitaloceanspaces.com/products2/7676eea4-45ce-473e-82d7-034e1601c418.jpeg"
     ],
-    "supplierCode": "C190B190"
+    "supplierCode": "CB716"
   },
   {
     "sku": "1947231-porta-joias-c016b22b0",
@@ -728,7 +728,7 @@
     "images": [
       "https://supliutech.nyc3.cdn.digitaloceanspaces.com/products2/130b4959-0ce8-4a6f-884b-41023cf0c82b.jpeg"
     ],
-    "supplierCode": "C016B22B0"
+    "supplierCode": "CB717"
   },
   {
     "sku": "1941590-squeeze-inox-500ml-c091b880",
@@ -740,7 +740,7 @@
       "https://supliutech.nyc3.cdn.digitaloceanspaces.com/products2/4afa5584-09e6-4c04-9c96-5fe036c1ec67.jpeg",
       "https://supliutech.nyc3.cdn.digitaloceanspaces.com/products2/ddf4a156-afb3-4941-bf2d-d5848304039e.jpeg"
     ],
-    "supplierCode": "C091B880",
+    "supplierCode": "CB136",
     "subcategory": "Inox"
   },
   {
@@ -753,7 +753,7 @@
       "https://supliutech.nyc3.cdn.digitaloceanspaces.com/products2/64640f77-3cb1-4b76-817e-1f415e7010c2.jpeg",
       "https://supliutech.nyc3.cdn.digitaloceanspaces.com/products2/2eb90f63-7216-4c96-ae99-2e9a6c636047.jpeg"
     ],
-    "supplierCode": "C913B9I0",
+    "supplierCode": "CB137",
     "subcategory": "Inox"
   },
   {
@@ -766,7 +766,7 @@
       "https://supliutech.nyc3.cdn.digitaloceanspaces.com/products2/ad663caf-91fc-4ba4-b567-71df64928026.jpeg",
       "https://supliutech.nyc3.cdn.digitaloceanspaces.com/products2/92b1aefb-5447-4ff8-bea0-19c709cbfefb.jpeg"
     ],
-    "supplierCode": "C185B580",
+    "supplierCode": "CB138",
     "subcategory": "Inox"
   },
   {
@@ -778,7 +778,7 @@
     "images": [
       "https://supliutech.nyc3.cdn.digitaloceanspaces.com/products2/f5db86b1-0ef7-4fd1-84e5-5ad3aa3cf9ce.jpeg"
     ],
-    "supplierCode": "C188B210",
+    "supplierCode": "CB139",
     "subcategory": "Inox"
   },
   {
@@ -791,7 +791,7 @@
       "https://supliutech.nyc3.cdn.digitaloceanspaces.com/products2/9cc92f53-5e96-4e5d-ba5b-5ff273abeb78.jpeg",
       "https://supliutech.nyc3.cdn.digitaloceanspaces.com/products2/f740b53e-2742-42ad-b9df-ac223c5a6b02.jpeg"
     ],
-    "supplierCode": "C187B800",
+    "supplierCode": "CB140",
     "subcategory": "Inox"
   },
   {
@@ -805,7 +805,7 @@
       "https://www.xbzbrindes.com.br/img/produtos/3/Caneca-Termica-1-2L-16950d1-1716388358.jpg",
       "https://www.xbzbrindes.com.br/img/produtos/3/Caneca-Termica-1-2L-16950d5-1771595149.jpg"
     ],
-    "supplierCode": "C060B330",
+    "supplierCode": "CB005",
     "subcategory": "Canecas"
   },
   {
@@ -893,7 +893,7 @@
         ]
       }
     ],
-    "supplierCode": "C147B240",
+    "supplierCode": "CB020",
     "subcategory": "Copos"
   },
   {
@@ -919,7 +919,7 @@
       "Laranja",
       "Rosa"
     ],
-    "supplierCode": "C040B140",
+    "supplierCode": "CB022",
     "subcategory": "Copos"
   },
   {
@@ -933,7 +933,7 @@
       "https://www.xbzbrindes.com.br/img/produtos/3/Garrafa-Termica-Inox-450ml-13933d1-1716307808.jpg",
       "https://www.xbzbrindes.com.br/img/produtos/3/Garrafa-Termica-Inox-450ml-13933d2-1716307855.jpg"
     ],
-    "supplierCode": "C186B390",
+    "supplierCode": "CB127",
     "subcategory": "Garrafas"
   },
   {
@@ -947,7 +947,7 @@
       "https://www.xbzbrindes.com.br/img/produtos/3/Kit-Garrafa-Termica-17871d1-1702554422.jpg",
       "https://www.xbzbrindes.com.br/img/produtos/3/Kit-Garrafa-Termica-17871d2-1716389943.jpg"
     ],
-    "supplierCode": "KIT18639",
+    "supplierCode": "CB132",
     "subcategory": "Garrafas"
   },
   {
@@ -963,7 +963,7 @@
     "colors": [
       "Preto"
     ],
-    "supplierCode": "C090B590"
+    "supplierCode": "CB461"
   },
   {
     "sku": "canivete-chave-de-boca-01",
@@ -978,7 +978,7 @@
     "extraCategories": [
       "Agro"
     ],
-    "supplierCode": "CBI001"
+    "supplierCode": "CB452"
   },
   {
     "sku": "canivete-inox-presilha-pesca-01",
@@ -993,7 +993,7 @@
     "extraCategories": [
       "Agro"
     ],
-    "supplierCode": "CBI004"
+    "supplierCode": "CB456"
   },
   {
     "sku": "canivete-premium-hunter-clip-01",
@@ -1008,7 +1008,7 @@
     "extraCategories": [
       "Agro"
     ],
-    "supplierCode": "CBI002"
+    "supplierCode": "CB457"
   },
   {
     "sku": "canivete-inox-cabo-anatomico-01",
@@ -1022,7 +1022,7 @@
     "extraCategories": [
       "Agro"
     ],
-    "supplierCode": "CBI003"
+    "supplierCode": "CB453"
   },
   {
     "sku": "vestuario-camiseta-poliamida-masculina",
@@ -1063,7 +1063,7 @@
       "genero": "Masculino"
     },
     "minQuantity": 20,
-    "supplierCode": "CBI011"
+    "supplierCode": "CB654"
   },
   {
     "sku": "vestuario-babylook-poliamida-feminina",
@@ -1156,7 +1156,7 @@
       "genero": "Feminino"
     },
     "minQuantity": 20,
-    "supplierCode": "CBI012"
+    "supplierCode": "CB652"
   },
   {
     "sku": "vestuario-camiseta-algodao-confort-masculina",
@@ -1292,7 +1292,7 @@
       ]
     },
     "minQuantity": 20,
-    "supplierCode": "CBI009"
+    "supplierCode": "CB653"
   },
   {
     "sku": "vestuario-babylook-algodao-feminina",
@@ -1383,7 +1383,7 @@
       ]
     },
     "minQuantity": 20,
-    "supplierCode": "CBI010"
+    "supplierCode": "CB651"
   },
   {
     "sku": "xbz-06104-caderneta-em-linho",
@@ -1413,7 +1413,7 @@
       "Verde",
       "Vermelho"
     ],
-    "supplierCode": "C061B040"
+    "supplierCode": "CB301"
   },
   {
     "sku": "xbz-08288-caderneta-palha-de-trigo-com-caneta",
@@ -1443,7 +1443,7 @@
       "Verde",
       "Vermelho"
     ],
-    "supplierCode": "C082B880"
+    "supplierCode": "CB305"
   },
   {
     "sku": "xbz-08290-caderneta-fibra-de-arroz-com-caneta",
@@ -1474,7 +1474,7 @@
       "Verde",
       "Vermelho"
     ],
-    "supplierCode": "C082B900"
+    "supplierCode": "CB304"
   },
   {
     "sku": "xbz-08119-aspirador-de-po-3-em-1",
@@ -1495,7 +1495,7 @@
     "colors": [
       "Preto"
     ],
-    "supplierCode": "C081B190"
+    "supplierCode": "CB551"
   },
   {
     "sku": "mini-compressor-de-ar-digital-usb-c",
@@ -1516,7 +1516,7 @@
       "Preto"
     ],
     "minQuantity": 50,
-    "supplierCode": "CBI006"
+    "supplierCode": "CB566"
   },
   {
     "sku": "xbz-08003-caixa-de-som-multimidia-tws-rgb",
@@ -1541,7 +1541,7 @@
       "Preto",
       "Vermelho"
     ],
-    "supplierCode": "C080B030"
+    "supplierCode": "CB553"
   },
   {
     "sku": "asia-cj405-kit-escritorio-caderno-caneca-caneta",
@@ -1568,7 +1568,7 @@
       "Azul",
       "Preto"
     ],
-    "supplierCode": "CBCJ405",
+    "supplierCode": "CB306",
     "subcategory": "Kit Escritório"
   },
   {
@@ -1592,7 +1592,7 @@
     "colors": [
       "Preto"
     ],
-    "supplierCode": "CBCJ305",
+    "supplierCode": "CB308",
     "subcategory": "Kit Escritório"
   },
   {
@@ -1614,7 +1614,7 @@
     "colors": [
       "Preto"
     ],
-    "supplierCode": "CBCJ410",
+    "supplierCode": "CB307",
     "subcategory": "Kit Escritório"
   },
   {
@@ -1635,7 +1635,7 @@
     "colors": [
       "Preto"
     ],
-    "supplierCode": "C060B460",
+    "supplierCode": "CB460",
     "subcategory": "Kit Ferramenta"
   },
   {
@@ -1651,7 +1651,7 @@
     "colors": [
       "Preto"
     ],
-    "supplierCode": "C140B120",
+    "supplierCode": "CB459",
     "subcategory": "Kit Ferramenta"
   },
   {
@@ -1668,7 +1668,7 @@
     "colors": [
       "Preto"
     ],
-    "supplierCode": "C013B97A0"
+    "supplierCode": "CB465"
   },
   {
     "sku": "xbz-08138-copo-termico-200ml",
@@ -1702,7 +1702,7 @@
       "Verde",
       "Vermelho"
     ],
-    "supplierCode": "C081B380"
+    "supplierCode": "CB016"
   },
   {
     "sku": "xbz-18621-saca-rolhas-metal-2-estagios",
@@ -1726,7 +1726,7 @@
       "Branco",
       "Vinho"
     ],
-    "supplierCode": "C186B210"
+    "supplierCode": "CB371"
   },
   {
     "sku": "copo-termico-inox-250ml-tampa-acrilico",
@@ -1742,7 +1742,7 @@
     "colors": [
       "Preto"
     ],
-    "supplierCode": "CBI007"
+    "supplierCode": "CB018"
   },
   {
     "sku": "compressor-ar-4em1-auxiliar-partida",
@@ -1760,7 +1760,7 @@
       "Preto"
     ],
     "minQuantity": 50,
-    "supplierCode": "CBI005"
+    "supplierCode": "CB560"
   },
   {
     "sku": "copo-termico-inox-360ml-tampa-acrilica",
@@ -1777,7 +1777,7 @@
       "Preto",
       "Branco"
     ],
-    "supplierCode": "CBI008"
+    "supplierCode": "CB021"
   },
   {
     "sku": "xbz-09138-squeeze-aluminio-420ml-c091b380",
@@ -1802,7 +1802,7 @@
       "https://www.xbzbrindes.com.br/img/produtos/3/Squeeze-Aluminio-420ml-16523d3-1688146680.jpg",
       "https://www.xbzbrindes.com.br/img/produtos/3/Squeeze-Aluminio-420ml-16523d4-1688146681.jpg"
     ],
-    "supplierCode": "C091B380",
+    "supplierCode": "CB133",
     "colors": [
       "Preto",
       "Azul Escuro",
@@ -1850,7 +1850,7 @@
       "Verde Escuro",
       "Vermelho"
     ],
-    "supplierCode": "C132B820"
+    "supplierCode": "CB002"
   },
   {
     "sku": "xbz-18726a-garrafa-aluminio-800ml-c187b26a0",
@@ -1879,7 +1879,7 @@
       "Laranja",
       "Verde Escuro"
     ],
-    "supplierCode": "C187B26A0"
+    "supplierCode": "CB106"
   },
   {
     "sku": "xbz-19175-kit-churrasco-2-pecas-c191b750",
@@ -1898,6 +1898,6 @@
     "colors": [
       "Kraft"
     ],
-    "supplierCode": "C191B750"
+    "supplierCode": "CB360"
   }
 ]
