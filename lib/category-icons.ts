@@ -7,6 +7,7 @@ const CATEGORY_ICONS: Record<string, string> = {
   Canivetes: "🔪",
   Chaveiros: "🔑",
   Copos: "🥤",
+  Cozinha: "🍳",
   Diversos: "✨",
   Eletrônicos: "🎧",
   Escritório: "📒",

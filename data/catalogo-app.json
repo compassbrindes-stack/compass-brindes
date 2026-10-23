@@ -1899,5 +1899,1282 @@
       "Kraft"
     ],
     "supplierCode": "CB360"
+  },
+  {
+    "sku": "cb010-copo-termico-473ml",
+    "name": "Copo Térmico 473ml CB010",
+    "title": "Copo Térmico 473ml",
+    "category": "Térmicos",
+    "subcategory": "Copos",
+    "description": "Copo térmico de 473ml, ideal para personalização com a sua marca.",
+    "images": [
+      "/produtos/cb010.jpg"
+    ],
+    "supplierCode": "CB010"
+  },
+  {
+    "sku": "cb019-copo-termico-inox-350ml",
+    "name": "Copo Térmico Inox 350ml CB019",
+    "title": "Copo Térmico Inox 350ml",
+    "category": "Térmicos",
+    "subcategory": "Copos",
+    "description": "Copo térmico de inox 350ml com parede dupla, parte inferior com borracha antideslizante e tampa rosqueável com abertura de bocal. Altura: 14,8 cm. Largura: 8,8 cm. Peso aproximado: 251 g.",
+    "images": [
+      "https://www.xbzbrindes.com.br/img/produtos/3/Copo-Termico-Inox-350ml-BRANCO-COM-ROSA-21640-1732031221.jpg",
+      "https://www.xbzbrindes.com.br/img/produtos/3/Copo-Termica-Inox-350ml-15546d1-1669208736.jpg",
+      "https://www.xbzbrindes.com.br/img/produtos/3/Copo-Termico-Inox-350ml-15546d2-1717178447.jpg"
+    ],
+    "colors": [
+      "Branco",
+      "Branco com Creme",
+      "Preto",
+      "Rosa"
+    ],
+    "supplierCode": "CB019"
+  },
+  {
+    "sku": "cb105-garrafa-de-aluminio-400ml",
+    "name": "Garrafa de Alumínio 400ml CB105",
+    "title": "Garrafa de Alumínio 400ml",
+    "category": "Garrafas",
+    "subcategory": "Alumínio",
+    "description": "Garrafa em alumínio com capacidade máxima de 400ml. Possui acabamento em verniz transparente e tampa rosqueável em alumínio com interior em plástico. Altura: 17,7 cm. Largura: 6,6 cm. Peso aproximado: 71 g.",
+    "images": [
+      "/produtos/cb105.jpg",
+      "https://www.xbzbrindes.com.br/img/produtos/3/Garrafa-Aluminio-400ml-VERMELHO-27398-1772460477.jpg",
+      "https://www.xbzbrindes.com.br/img/produtos/3/Garrafa-Aluminio-400ml-27346d1-1772460539.jpg",
+      "https://www.xbzbrindes.com.br/img/produtos/3/Garrafa-Aluminio-400ml-27346d2-1772460562.jpg"
+    ],
+    "colors": [
+      "Azul",
+      "Branco",
+      "Dourado",
+      "Prata",
+      "Preto",
+      "Rosa Escuro",
+      "Verde",
+      "Vermelho"
+    ],
+    "supplierCode": "CB105"
+  },
+  {
+    "sku": "cb109-garrafa-inox-625ml",
+    "name": "Garrafa Inox 625ml CB109",
+    "title": "Garrafa Inox 625ml",
+    "category": "Garrafas",
+    "subcategory": "Inox",
+    "description": "Garrafa 625ml em inox com tampa rosqueável e pintura brilhante (não é modelo térmico). Altura: 23,4 cm. Largura: 7,3 cm. Peso aproximado: 165 g.",
+    "images": [
+      "/produtos/cb109.jpg",
+      "https://www.xbzbrindes.com.br/img/produtos/3/Garrafa-Inox-650ml-21998d1-1746619359.jpg",
+      "https://www.xbzbrindes.com.br/img/produtos/3/Garrafa-Inox-625ml-AZUL-CLARO-28943-1783348674.jpg",
+      "https://www.xbzbrindes.com.br/img/produtos/3/Garrafa-Inox-650ml-BRANCO-21999-1738766704.jpg"
+    ],
+    "colors": [
+      "Azul Claro",
+      "Branco",
+      "Preto",
+      "Rosa",
+      "Roxo",
+      "Verde Água"
+    ],
+    "supplierCode": "CB109"
+  },
+  {
+    "sku": "cb112-garrafa-sport-800ml",
+    "name": "Garrafa Sport 800ml CB112",
+    "title": "Garrafa Sport 800ml",
+    "category": "Garrafas",
+    "subcategory": "Plástico",
+    "description": "Garrafa sport de 800ml com tampa rosqueável, leve e resistente para o dia a dia.",
+    "images": [
+      "/produtos/cb112.jpg"
+    ],
+    "supplierCode": "CB112"
+  },
+  {
+    "sku": "cb114-garrafa-termica-1-2-litros",
+    "name": "Garrafa Térmica 1,2 Litros CB114",
+    "title": "Garrafa Térmica 1,2 Litros",
+    "category": "Térmicos",
+    "subcategory": "Garrafas",
+    "description": "Garrafa térmica em inox com parede dupla, capacidade de 1,2 litros. Tampa livre de BPA com alça para transporte e tampa de proteção para o bocal. Altura: 30 cm. Largura: 9,6 cm. Peso aproximado: 471 g.",
+    "images": [
+      "/produtos/cb114.jpg",
+      "https://www.xbzbrindes.com.br/img/produtos/3/Garrafa-Termica-1-2-Litros-VERDE-16191-1681324355.jpg",
+      "https://www.xbzbrindes.com.br/img/produtos/3/Garrafa-Termica-1-2-Litros-16134d1-1710501414.jpg",
+      "https://www.xbzbrindes.com.br/img/produtos/3/Garrafa-Termica-1-2-Litros-16134d2-1681324351.jpg"
+    ],
+    "colors": [
+      "Azul",
+      "Branco",
+      "Inox",
+      "Laranja",
+      "Preto",
+      "Verde",
+      "Vermelho"
+    ],
+    "supplierCode": "CB114"
+  },
+  {
+    "sku": "cb118-garrafa-termica-500ml",
+    "name": "Garrafa Térmica 500ml CB118",
+    "title": "Garrafa Térmica 500ml",
+    "category": "Térmicos",
+    "subcategory": "Garrafas",
+    "description": "Garrafa térmica 500ml feita em aço inoxidável 304, acompanha infusor de bebidas. Altura: 22,6 cm. Largura: 6,5 cm. Peso aproximado: 327 g.",
+    "images": [
+      "https://www.xbzbrindes.com.br/img/produtos/3/Garrafa-Termica-500ml-CREME-15182-1740754381.jpg",
+      "https://www.xbzbrindes.com.br/img/produtos/3/Garrafa-Termica-500ml-15179d1-1667241015.jpg",
+      "https://www.xbzbrindes.com.br/img/produtos/3/Garrafa-Termica-500ml-15179d2-1740754379.jpg"
+    ],
+    "colors": [
+      "Azul",
+      "Branco",
+      "Champagne",
+      "Creme",
+      "Grafite",
+      "Preto",
+      "Rosa Claro"
+    ],
+    "supplierCode": "CB118"
+  },
+  {
+    "sku": "cb119-garrafa-termica-inox-500ml",
+    "name": "Garrafa Térmica Inox 500ml CB119",
+    "title": "Garrafa Térmica Inox 500ml",
+    "category": "Térmicos",
+    "subcategory": "Garrafas",
+    "description": "Garrafa térmica em inox com tampa rosqueável, pintura em spray e capacidade para até 500ml. Parede dupla e vedação a vácuo, conserva a temperatura por mais tempo. Altura: 27,6 cm. Largura: 7 cm.",
+    "images": [
+      "https://www.xbzbrindes.com.br/img/produtos/3/Garrafa-Termica-500ml-BRANCO-26381-1764097367.jpg",
+      "https://www.xbzbrindes.com.br/img/produtos/3/Garrafa-Termica-500ml-26373d1-1764067660.jpg",
+      "https://www.xbzbrindes.com.br/img/produtos/3/Garrafa-Termica-500ml-26373d2-1764097367.jpg"
+    ],
+    "colors": [
+      "Azul",
+      "Azul Claro",
+      "Branco",
+      "Laranja",
+      "Preto",
+      "Rosa",
+      "Vermelho"
+    ],
+    "supplierCode": "CB119"
+  },
+  {
+    "sku": "cb128-garrafa-termica-inox-850ml",
+    "name": "Garrafa Térmica Inox 850ml CB128",
+    "title": "Garrafa Térmica Inox 850ml",
+    "category": "Térmicos",
+    "subcategory": "Garrafas",
+    "description": "Garrafa térmica de 850ml em inox com trava embutida na tampa, que se mantém fixa durante o uso e evita que a tampa bata no rosto ao beber. Altura: 26,7 cm. Largura: 8 cm.",
+    "images": [
+      "https://www.xbzbrindes.com.br/img/produtos/3/Garrafa-Termica-Inox-850ml-VERDE-21080-1730914793.jpg",
+      "https://www.xbzbrindes.com.br/img/produtos/3/Garrafa-Termica-Inox-850ml-21075d1-1730984890.jpg",
+      "https://www.xbzbrindes.com.br/img/produtos/3/Garrafa-Termica-Inox-850ml-21075d2-1730914791.jpg"
+    ],
+    "colors": [
+      "Azul",
+      "Branco",
+      "Laranja",
+      "Preto",
+      "Verde",
+      "Vermelho"
+    ],
+    "supplierCode": "CB128"
+  },
+  {
+    "sku": "cb129-garrafa-termica-inox-850ml-magnetica",
+    "name": "Garrafa Térmica Inox 850ml Magnética CB129",
+    "title": "Garrafa Térmica Inox 850ml Magnética",
+    "category": "Térmicos",
+    "subcategory": "Garrafas",
+    "description": "Garrafa térmica de 850ml em inox 304 com alça flexível e magnética integrada à tampa, que funciona como tripé para o celular (compatível a partir do iPhone 12). Tampa plástica rosqueável com proteção para o bocal. Acompanha disco metálico autocolante para celulares sem compatibilidade magnética.",
+    "images": [
+      "https://www.xbzbrindes.com.br/img/produtos/3/Garrafa-Termica-850ml-PRETO-20805-1727123953.jpg",
+      "https://www.xbzbrindes.com.br/img/produtos/3/Garrafa-Termica-850ml-20801d1-1727124000.jpg",
+      "https://www.xbzbrindes.com.br/img/produtos/3/Garrafa-Termica-850ml-20801d2-1779995479.jpg"
+    ],
+    "colors": [
+      "Azul",
+      "Branco",
+      "Inox",
+      "Laranja",
+      "Preto",
+      "Rosa Escuro",
+      "Verde",
+      "Vermelho"
+    ],
+    "supplierCode": "CB129"
+  },
+  {
+    "sku": "cb130-garrafa-termica-roma-tradicao-1-litro",
+    "name": "Garrafa Térmica Roma Tradição 1 Litro CB130",
+    "title": "Garrafa Térmica Roma Tradição 1 Litro",
+    "category": "Térmicos",
+    "subcategory": "Garrafas",
+    "description": "Garrafa térmica Roma Tradição com capacidade de 1 litro, ideal para café, chá e chimarrão.",
+    "images": [
+      "/produtos/cb130.jpg"
+    ],
+    "supplierCode": "CB130"
+  },
+  {
+    "sku": "cb131-garrafa-termica-verona-1-litro",
+    "name": "Garrafa Térmica Verona 1 Litro CB131",
+    "title": "Garrafa Térmica Verona 1 Litro",
+    "category": "Térmicos",
+    "subcategory": "Garrafas",
+    "description": "Garrafa térmica Verona com capacidade de 1 litro, mantém a temperatura das bebidas por horas.",
+    "images": [
+      "/produtos/cb131.jpg"
+    ],
+    "supplierCode": "CB131"
+  },
+  {
+    "sku": "cb134-squeeze-de-aluminio-500ml",
+    "name": "Squeeze de Alumínio 500ml CB134",
+    "title": "Squeeze de Alumínio 500ml",
+    "category": "Garrafas",
+    "subcategory": "Alumínio",
+    "description": "Squeeze em alumínio com capacidade máxima de 500ml, pintura spray e tampa rosqueável em PP com bico e protetor fixo. Acompanha tampa removível com mosquetão metálico. Altura: 20,9 cm. Largura: 6,6 cm. Peso aproximado: 102 g.",
+    "images": [
+      "https://www.xbzbrindes.com.br/img/produtos/3/Squeeze-Aluminio-500ml-AZUL-16454-1686687964.jpg",
+      "https://www.xbzbrindes.com.br/img/produtos/3/Squeeze-Aluminio-500ml-12973d1-1697223039.jpg",
+      "https://www.xbzbrindes.com.br/img/produtos/3/Squeeze-Aluminio-500ml-12973d2-1686687963.jpg"
+    ],
+    "colors": [
+      "Azul",
+      "Azul Claro",
+      "Branco",
+      "Lilás",
+      "Marrom",
+      "Preto",
+      "Rosa Claro",
+      "Turquesa",
+      "Vermelho"
+    ],
+    "supplierCode": "CB134"
+  },
+  {
+    "sku": "cb135-squeeze-de-aluminio-650ml",
+    "name": "Squeeze de Alumínio 650ml CB135",
+    "title": "Squeeze de Alumínio 650ml",
+    "category": "Garrafas",
+    "subcategory": "Alumínio",
+    "description": "Squeeze em alumínio com capacidade máxima de 650ml, pintura fosca e revestimento plástico no bocal. Tampa rosqueável em PP com protetor para o bocal e alça fixa. Altura: 21 cm. Largura: 8,3 cm. Peso aproximado: 112 g.",
+    "images": [
+      "https://www.xbzbrindes.com.br/img/produtos/3/Squeeze-Aluminio-600ml-ROSA-164-1654515710.jpg",
+      "https://www.xbzbrindes.com.br/img/produtos/3/Squeeze-600ml-Aluminio-162d1-1563376143.jpg",
+      "https://www.xbzbrindes.com.br/img/produtos/3/Squeeze-600ml-Aluminio-162d2-1563375221.jpg"
+    ],
+    "colors": [
+      "Azul",
+      "Inox",
+      "Preto",
+      "Rosa",
+      "Verde",
+      "Vermelho"
+    ],
+    "supplierCode": "CB135"
+  },
+  {
+    "sku": "cb201-caneta-metalica-com-ponteira-e-clip",
+    "name": "Caneta Metálica com Ponteira e Clip CB201",
+    "title": "Caneta Metálica com Ponteira e Clip",
+    "category": "Canetas",
+    "description": "Caneta de corpo metálico, ponteira e clip em plástico e acionamento por clique. Carga esferográfica azul de 1.0mm. Largura: 1,5 cm. Comprimento: 14 cm. Peso aproximado: 14 g.",
+    "images": [
+      "/produtos/cb201.jpg",
+      "https://www.xbzbrindes.com.br/img/produtos/3/Caneta-Metal-24094-1753816745.jpg",
+      "https://www.xbzbrindes.com.br/img/produtos/3/Caneta-Metal-24094d1-1753816745.jpg",
+      "https://www.xbzbrindes.com.br/img/produtos/3/Caneta-Metal-24094d2-1753816746.jpg"
+    ],
+    "colors": [
+      "Azul",
+      "Champagne",
+      "Chumbo",
+      "Cinza Claro",
+      "Dourado",
+      "Marrom",
+      "Prata",
+      "Preto",
+      "Vermelho"
+    ],
+    "supplierCode": "CB201"
+  },
+  {
+    "sku": "cb202-caneta-de-metal",
+    "name": "Caneta de Metal CB202",
+    "title": "Caneta de Metal",
+    "category": "Canetas",
+    "description": "Caneta de metal com acabamento vibrante, acionamento por clique e carga esferográfica azul de 1.0mm para escrita macia e precisa. Largura: 1,4 cm. Comprimento: 13,7 cm.",
+    "images": [
+      "/produtos/cb202.jpg",
+      "https://www.xbzbrindes.com.br/img/produtos/3/Caneta-Metal-PRETO-21986-1739392950.jpg",
+      "https://www.xbzbrindes.com.br/img/produtos/3/Caneta-Metal-21981d1-1739390677.jpg",
+      "https://www.xbzbrindes.com.br/img/produtos/3/Caneta-Metal-21981d2-1739390678.jpg"
+    ],
+    "colors": [
+      "Azul",
+      "Azul Claro",
+      "Branco",
+      "Laranja",
+      "Preto",
+      "Rosa",
+      "Roxo",
+      "Verde",
+      "Vermelho"
+    ],
+    "supplierCode": "CB202"
+  },
+  {
+    "sku": "cb203-caneta-de-metal-com-clip",
+    "name": "Caneta de Metal com Clip CB203",
+    "title": "Caneta de Metal com Clip",
+    "category": "Canetas",
+    "description": "Caneta de metal com clip metálico e acionamento por clique.",
+    "images": [
+      "/produtos/cb203.jpg"
+    ],
+    "supplierCode": "CB203"
+  },
+  {
+    "sku": "cb204-caneta-de-metal-clip-plastico-1-0mm",
+    "name": "Caneta de Metal Clip Plástico 1.0mm CB204",
+    "title": "Caneta de Metal Clip Plástico 1.0mm",
+    "category": "Canetas",
+    "description": "Caneta de metal com clip plástico e carga esferográfica de 1.0mm.",
+    "images": [
+      "/produtos/cb204.jpg",
+      "/produtos/cb204-2.jpg"
+    ],
+    "supplierCode": "CB204"
+  },
+  {
+    "sku": "cb206-caneta-de-metal-touch-brilho",
+    "name": "Caneta de Metal Touch Brilho CB206",
+    "title": "Caneta de Metal Touch Brilho",
+    "category": "Canetas",
+    "description": "Caneta metálica touchscreen com acabamento brilhante, acionamento por clique e carga esferográfica azul de 1.0mm. A ponta touch permite usar em telas sem tocar diretamente. Altura: 14,1 cm.",
+    "images": [
+      "https://www.xbzbrindes.com.br/img/produtos/3/Caneta-Metal-Touch-BRANCO-20983-1730734191.jpg",
+      "https://www.xbzbrindes.com.br/img/produtos/3/Caneta-Metal-Touch-20979d1-1728321554.jpg",
+      "https://www.xbzbrindes.com.br/img/produtos/3/Caneta-Metal-Touch-20979d2-1730734215.jpg"
+    ],
+    "colors": [
+      "Amarelo",
+      "Azul Claro",
+      "Azul Escuro",
+      "Branco",
+      "Laranja",
+      "Laranja Claro",
+      "Preto",
+      "Rosa",
+      "Rosa Claro",
+      "Roxo",
+      "Verde Claro",
+      "Verde Escuro",
+      "Vermelho"
+    ],
+    "supplierCode": "CB206"
+  },
+  {
+    "sku": "cb207-caneta-metal-touch-clique",
+    "name": "Caneta Metal Touch Clique CB207",
+    "title": "Caneta Metal Touch Clique",
+    "category": "Canetas",
+    "description": "Caneta metálica touchscreen com acabamento similar à borracha, acionamento por clique e carga esferográfica azul 1.0mm. Largura: 1,5 cm. Comprimento: 14,1 cm. Peso aproximado: 18 g.",
+    "images": [
+      "/produtos/cb207.jpg",
+      "https://www.xbzbrindes.com.br/img/produtos/3/Caneta-Metal-Touch-15194-1776268645.jpg",
+      "https://www.xbzbrindes.com.br/img/produtos/3/Caneta-Metal-Touch-15194d1-1776268645.jpg",
+      "https://www.xbzbrindes.com.br/img/produtos/3/Caneta-Metal-Touch-15194d2-1762258300.jpg"
+    ],
+    "colors": [
+      "Azul Escuro",
+      "Branco",
+      "Chumbo",
+      "Prata",
+      "Preto",
+      "Rosa",
+      "Verde Escuro",
+      "Vinho"
+    ],
+    "supplierCode": "CB207"
+  },
+  {
+    "sku": "cb208-caneta-metal-touch-clique-slim",
+    "name": "Caneta Metal Touch Clique Slim CB208",
+    "title": "Caneta Metal Touch Clique Slim",
+    "category": "Canetas",
+    "description": "Caneta metálica touchscreen com acabamento similar à borracha, acionamento por clique e carga esferográfica azul 1.0mm. Largura: 1,5 cm. Comprimento: 14,1 cm. Peso aproximado: 17 g.",
+    "images": [
+      "/produtos/cb208.jpg",
+      "https://www.xbzbrindes.com.br/img/produtos/3/Caneta-Metal-Touch-17461-1697483509.jpg",
+      "https://www.xbzbrindes.com.br/img/produtos/3/Caneta-Metal-Touch-17461d1-1699473845.jpg",
+      "https://www.xbzbrindes.com.br/img/produtos/3/Caneta-Metal-Touch-17461d2-1697483644.jpg"
+    ],
+    "colors": [
+      "Azul",
+      "Branco",
+      "Cinza",
+      "Cinza Escuro",
+      "Preto",
+      "Rosa",
+      "Verde",
+      "Verde Escuro",
+      "Vinho"
+    ],
+    "supplierCode": "CB208"
+  },
+  {
+    "sku": "cb209-caneta-metal-touch-clique-premium",
+    "name": "Caneta Metal Touch Clique Premium CB209",
+    "title": "Caneta Metal Touch Clique Premium",
+    "category": "Canetas",
+    "description": "Caneta metálica touchscreen com parte inferior texturizada, acionamento por clique e carga esferográfica azul 1.0mm. Largura: 1,6 cm. Comprimento: 13,8 cm. Peso aproximado: 19 g.",
+    "images": [
+      "/produtos/cb209.jpg",
+      "https://www.xbzbrindes.com.br/img/produtos/3/Caneta-Metal-Touch-PRETO-23812-1752687839.jpg",
+      "https://www.xbzbrindes.com.br/img/produtos/3/Caneta-Metal-Touch-15214d1-1667239848.jpg",
+      "https://www.xbzbrindes.com.br/img/produtos/3/Caneta-Metal-Touch-15214d2-1667239891.jpg"
+    ],
+    "colors": [
+      "Azul Escuro",
+      "Branco",
+      "Champagne",
+      "Chumbo",
+      "Prata",
+      "Preto",
+      "Rosa",
+      "Roxo",
+      "Verde",
+      "Verde Escuro",
+      "Vinho"
+    ],
+    "supplierCode": "CB209"
+  },
+  {
+    "sku": "cb210-caneta-metal-touch-clique-colorida",
+    "name": "Caneta Metal Touch Clique Colorida CB210",
+    "title": "Caneta Metal Touch Clique Colorida",
+    "category": "Canetas",
+    "description": "Caneta metálica com carga esferográfica azul 1.0mm e acionamento por clique. Altura: 13,8 cm. Largura: 1,3 cm. Peso aproximado: 17 g.",
+    "images": [
+      "/produtos/cb210.jpg",
+      "https://www.xbzbrindes.com.br/img/produtos/3/Caneta-Metal-PRETO-21258-1730736981.jpg",
+      "https://www.xbzbrindes.com.br/img/produtos/3/Caneta-Metal-21254d1-1730489272.jpg",
+      "https://www.xbzbrindes.com.br/img/produtos/3/Caneta-Metal-21254d2-1730736979.jpg"
+    ],
+    "colors": [
+      "Azul Claro",
+      "Dourado",
+      "Prata",
+      "Preto",
+      "Verde Água",
+      "Vermelho"
+    ],
+    "supplierCode": "CB210"
+  },
+  {
+    "sku": "cb211-caneta-metal-touch-clique-executiva",
+    "name": "Caneta Metal Touch Clique Executiva CB211",
+    "title": "Caneta Metal Touch Clique Executiva",
+    "category": "Canetas",
+    "description": "Caneta metálica com ponteira touch e acionamento por clique.",
+    "images": [
+      "/produtos/cb211.jpg"
+    ],
+    "supplierCode": "CB211"
+  },
+  {
+    "sku": "cb212-caneta-metal-touch-giratoria",
+    "name": "Caneta Metal Touch Giratória CB212",
+    "title": "Caneta Metal Touch Giratória",
+    "category": "Canetas",
+    "description": "Caneta esferográfica de carga azul 1.0mm com acionamento por rotação e construção totalmente em metal, com pegada confortável. Largura: 1,5 cm. Comprimento: 13,5 cm. Peso aproximado: 30 g.",
+    "images": [
+      "/produtos/cb212.jpg",
+      "https://www.xbzbrindes.com.br/img/produtos/3/Caneta-Metal-23958-1753450637.jpg",
+      "https://www.xbzbrindes.com.br/img/produtos/3/Caneta-Metal-23958d1-1753450842.jpg",
+      "https://www.xbzbrindes.com.br/img/produtos/3/Caneta-Metal-23958d2-1753450842.jpg"
+    ],
+    "colors": [
+      "Azul Escuro",
+      "Branco",
+      "Prata",
+      "Preto",
+      "Verde",
+      "Vermelho"
+    ],
+    "supplierCode": "CB212"
+  },
+  {
+    "sku": "cb213-caneta-metal-touch-giratoria-executiva",
+    "name": "Caneta Metal Touch Giratória Executiva CB213",
+    "title": "Caneta Metal Touch Giratória Executiva",
+    "category": "Canetas",
+    "description": "Caneta metálica com touchscreen, carga esferográfica azul 1.0mm e acionamento por rotação. Largura: 1,4 cm. Comprimento: 13,9 cm. Peso aproximado: 21 g.",
+    "images": [
+      "/produtos/cb213.jpg",
+      "https://www.xbzbrindes.com.br/img/produtos/3/Caneta-Metal-Touch-PRATA-18310-1706886434.jpg",
+      "https://www.xbzbrindes.com.br/img/produtos/3/Caneta-Metal-Touch-18054d1-1706886573.jpg",
+      "https://www.xbzbrindes.com.br/img/produtos/3/Caneta-Metal-Touch-18054d2-1706886573.jpg"
+    ],
+    "colors": [
+      "Azul Escuro",
+      "Dourado",
+      "Prata",
+      "Preto",
+      "Rosa",
+      "Verde",
+      "Vermelho"
+    ],
+    "supplierCode": "CB213"
+  },
+  {
+    "sku": "cb214-caneta-metalica-clique",
+    "name": "Caneta Metálica Clique CB214",
+    "title": "Caneta Metálica Clique",
+    "category": "Canetas",
+    "description": "Caneta metálica com acionamento por clique e carga esferográfica azul de 1,0mm. Altura: 13,5 cm. Largura: 1,4 cm. Peso aproximado: 14 g.",
+    "images": [
+      "/produtos/cb214.jpg",
+      "https://www.xbzbrindes.com.br/img/produtos/3/Caneta-Metal-PRETO-22208-1739389447.jpg",
+      "https://www.xbzbrindes.com.br/img/produtos/3/Caneta-Metal-22202d1-1739389444.jpg",
+      "https://www.xbzbrindes.com.br/img/produtos/3/Caneta-Metal-22202d2-1739389444.jpg"
+    ],
+    "colors": [
+      "Azul",
+      "Azul Claro",
+      "Azul Escuro",
+      "Branco",
+      "Cinza",
+      "Laranja",
+      "Preto",
+      "Rosa",
+      "Roxo",
+      "Verde",
+      "Verde Escuro",
+      "Vermelho"
+    ],
+    "supplierCode": "CB214"
+  },
+  {
+    "sku": "cb218-caneta-metalica-touch-screen",
+    "name": "Caneta Metálica Touch Screen CB218",
+    "title": "Caneta Metálica Touch Screen",
+    "category": "Canetas",
+    "description": "Caneta metálica com touch screen, acabamento emborrachado, carga esferográfica azul 1.0mm e acionamento por clique. Na gravação a laser o corpo adota a cor da borracha touch (exceto a preta, que fica prata). Largura: 1,4 cm. Comprimento: 14,7 cm. Peso aproximado: 16 g.",
+    "images": [
+      "/produtos/cb218.jpg",
+      "https://www.xbzbrindes.com.br/img/produtos/3/Caneta-Metal-Touch-PRETO-17468-1697488217.jpg",
+      "https://www.xbzbrindes.com.br/img/produtos/3/Caneta-Metal-Touch-17448d1-1774356076.jpg",
+      "https://www.xbzbrindes.com.br/img/produtos/3/Caneta-Metal-Touch-17448d2-1697458933.jpg"
+    ],
+    "colors": [
+      "Azul Claro",
+      "Azul Escuro",
+      "Dourado",
+      "Preto",
+      "Roxo",
+      "Vermelho"
+    ],
+    "supplierCode": "CB218"
+  },
+  {
+    "sku": "cb219-caneta-metalica-touch-giratoria",
+    "name": "Caneta Metálica Touch Giratória CB219",
+    "title": "Caneta Metálica Touch Giratória",
+    "category": "Canetas",
+    "description": "Caneta metálica com ponteira touch screen e acionamento por rotação.",
+    "images": [
+      "/produtos/cb219.jpg"
+    ],
+    "supplierCode": "CB219"
+  },
+  {
+    "sku": "cb224-caneta-multifuncao-com-regua-nivel-e-chaves",
+    "name": "Caneta Multifunção com Régua, Nível e Chaves CB224",
+    "title": "Caneta Multifunção com Régua, Nível e Chaves",
+    "category": "Canetas",
+    "description": "Caneta multifunção com régua, nível e kit de chaves, um brinde prático para quem trabalha com ferramentas.",
+    "images": [
+      "/produtos/cb224.jpg"
+    ],
+    "supplierCode": "CB224"
+  },
+  {
+    "sku": "cb302-caderneta-emborrachada-com-porta-caneta",
+    "name": "Caderneta Emborrachada com Porta-Caneta CB302",
+    "title": "Caderneta Emborrachada com Porta-Caneta",
+    "category": "Escritório",
+    "description": "Caderneta emborrachada com porta-caneta elástico, marcador de página em cetim e fita elástica para fechar. Aproximadamente 80 folhas pardas pautadas. Altura: 21,2 cm. Largura: 14 cm. Peso aproximado: 266 g.",
+    "images": [
+      "/produtos/cb302.jpg",
+      "/produtos/cb302-2.jpg",
+      "/produtos/cb302-3.jpg",
+      "https://www.xbzbrindes.com.br/img/produtos/3/Caderneta-Emborrachada-com-Porta-Caneta-AZUL-14476-1661514158.jpg",
+      "https://www.xbzbrindes.com.br/img/produtos/3/Caderneta-Emborrachada-com-Porta-Caneta-14389d1-1661514661.jpg",
+      "https://www.xbzbrindes.com.br/img/produtos/3/Caderneta-Emborrachada-com-Porta-Caneta-14389d2-1661514664.jpg"
+    ],
+    "colors": [
+      "Amarelo",
+      "Azul",
+      "Branco",
+      "Cinza",
+      "Laranja",
+      "Lilás",
+      "Preto",
+      "Rosa Claro",
+      "Rosa Escuro",
+      "Verde",
+      "Verde Água",
+      "Vermelho",
+      "Vinho"
+    ],
+    "supplierCode": "CB302"
+  },
+  {
+    "sku": "cb303-caderneta-emborrachada",
+    "name": "Caderneta Emborrachada CB303",
+    "title": "Caderneta Emborrachada",
+    "category": "Escritório",
+    "description": "Caderneta emborrachada com marcador de página em cetim e fita elástica para fechar. Aproximadamente 80 folhas amareladas com pauta. Largura: 8,8 cm. Comprimento: 14,1 cm. Peso aproximado: 96 g.",
+    "images": [
+      "/produtos/cb303.jpg",
+      "https://www.xbzbrindes.com.br/img/produtos/3/Caderneta-Tipo-Moleskine-AZUL-ESCURO-11553-1581343896.jpg",
+      "https://www.xbzbrindes.com.br/img/produtos/3/Caderneta-Tipo-Moleskine-11548d1-1581345935.jpg",
+      "https://www.xbzbrindes.com.br/img/produtos/3/Caderneta-Tipo-Moleskine-11548d2-1584020355.jpg"
+    ],
+    "colors": [
+      "Azul Claro",
+      "Azul Escuro",
+      "Branco",
+      "Cinza",
+      "Laranja",
+      "Marrom",
+      "Preto",
+      "Verde",
+      "Vermelho"
+    ],
+    "supplierCode": "CB303"
+  },
+  {
+    "sku": "cb309-luminaria-led-com-carregador-por-inducao",
+    "name": "Luminária LED com Carregador por Indução CB309",
+    "title": "Luminária LED com Carregador por Indução",
+    "category": "Escritório",
+    "description": "Luminária LED com 3 estágios de iluminação (luz quente, fria e mista) com ajuste de intensidade, base antideslizante, haste articulável, porta-caneta e área para carregamento de celular por indução.",
+    "images": [
+      "/produtos/cb309.jpg",
+      "https://www.xbzbrindes.com.br/img/produtos/3/Luminaria-Led-com-Carregamento-via-Inducao-e-Porta-caneta-22625-1743614472.jpg",
+      "https://www.xbzbrindes.com.br/img/produtos/3/Luminaria-Led-com-Carregamento-via-Inducao-e-Porta-caneta-22625d1-1743614498.jpg",
+      "https://www.xbzbrindes.com.br/img/produtos/3/Luminaria-Led-com-Carregamento-via-Inducao-e-Porta-caneta-22625d2-1743614498.jpg"
+    ],
+    "colors": [
+      "Branco"
+    ],
+    "supplierCode": "CB309"
+  },
+  {
+    "sku": "cb310-porta-documentos-em-couro-sintetico",
+    "name": "Porta-Documentos em Couro Sintético CB310",
+    "title": "Porta-Documentos em Couro Sintético",
+    "category": "Escritório",
+    "description": "Porta-documento em couro sintético, frente e verso lisos. Parte interna com dois bolsos de visor plástico. Aberto: 13,2 cm x 20,2 cm.",
+    "images": [
+      "/produtos/cb310.jpg",
+      "https://www.xbzbrindes.com.br/img/produtos/3/Porta-Documento-em-Couro-Sintetico-MARROM-6093-1629129082.jpg",
+      "https://www.xbzbrindes.com.br/img/produtos/3/Porta-Documento-em-Couro-Sintetico-6091d1-1629129081.jpg",
+      "https://www.xbzbrindes.com.br/img/produtos/3/Porta-Documento-em-Couro-Sintetico-PRETO-6092-1629129082.jpg"
+    ],
+    "colors": [
+      "Marrom",
+      "Preto"
+    ],
+    "supplierCode": "CB310"
+  },
+  {
+    "sku": "cb351-cantil-porta-whisky-7oz",
+    "name": "Cantil Porta Whisky 7oz CB351",
+    "title": "Cantil Porta Whisky 7oz",
+    "category": "Diversos",
+    "description": "Cantil porta whisky em inox com capacidade de 7oz.",
+    "images": [
+      "/produtos/cb351.jpg"
+    ],
+    "supplierCode": "CB351"
+  },
+  {
+    "sku": "cb352-chaleira-eletrica-inox-1-8l",
+    "name": "Chaleira Elétrica Inox 1,8L CB352",
+    "title": "Chaleira Elétrica Inox 1,8L",
+    "category": "Cozinha",
+    "description": "Chaleira elétrica em inox com capacidade de 1,8 litros. Voltagem 220V.",
+    "images": [
+      "/produtos/cb352.jpg"
+    ],
+    "supplierCode": "CB352"
+  },
+  {
+    "sku": "cb353-chaleira-eletrica-inox-2l",
+    "name": "Chaleira Elétrica Inox 2L CB353",
+    "title": "Chaleira Elétrica Inox 2L",
+    "category": "Cozinha",
+    "description": "Chaleira elétrica em inox com capacidade de 2 litros, acabamento black. Voltagem 220V.",
+    "images": [
+      "/produtos/cb353.jpg"
+    ],
+    "supplierCode": "CB353"
+  },
+  {
+    "sku": "cb354-chaleira-eletrica-inox-2l-black",
+    "name": "Chaleira Elétrica Inox 2L Black CB354",
+    "title": "Chaleira Elétrica Inox 2L Black",
+    "category": "Cozinha",
+    "description": "Chaleira elétrica em inox com capacidade de 2 litros. Voltagem 220V.",
+    "images": [
+      "/produtos/cb354.jpg"
+    ],
+    "supplierCode": "CB354"
+  },
+  {
+    "sku": "cb355-chaleira-eletrica-inox-2l-digital",
+    "name": "Chaleira Elétrica Inox 2L Digital CB355",
+    "title": "Chaleira Elétrica Inox 2L Digital",
+    "category": "Cozinha",
+    "description": "Chaleira elétrica em inox com capacidade de 2 litros. Voltagem 220V.",
+    "images": [
+      "/produtos/cb355.jpg"
+    ],
+    "supplierCode": "CB355"
+  },
+  {
+    "sku": "cb356-churrasqueira-portatil",
+    "name": "Churrasqueira Portátil CB356",
+    "title": "Churrasqueira Portátil",
+    "category": "Kits Corporativos",
+    "subcategory": "Kit Churrasco",
+    "description": "Churrasqueira portátil, prática para levar a qualquer lugar.",
+    "images": [
+      "/produtos/cb356.jpg"
+    ],
+    "supplierCode": "CB356"
+  },
+  {
+    "sku": "cb357-churrasqueira-portatil-com-maleta",
+    "name": "Churrasqueira Portátil com Maleta CB357",
+    "title": "Churrasqueira Portátil com Maleta",
+    "category": "Kits Corporativos",
+    "subcategory": "Kit Churrasco",
+    "description": "Churrasqueira em ferro com aberturas para ventilação e pés montáveis que viram alças para transporte. Grelha em metal galvanizado e bandeja metálica com alças removíveis para o carvão. Altura: 22,8 cm. Largura: 52,3 cm. Profundidade: 29,5 cm.",
+    "images": [
+      "/produtos/cb357.jpg",
+      "https://www.xbzbrindes.com.br/img/produtos/3/Churrasqueira-Portatil-27673-1773415534.jpg",
+      "https://www.xbzbrindes.com.br/img/produtos/3/Churrasqueira-Portatil-27673d1-1773415543.jpg",
+      "https://www.xbzbrindes.com.br/img/produtos/3/Churrasqueira-Portatil-27673d2-1773415601.jpg"
+    ],
+    "colors": [
+      "Preto"
+    ],
+    "supplierCode": "CB357"
+  },
+  {
+    "sku": "cb358-churrasqueira-portatil-aco-com-grelha-inox",
+    "name": "Churrasqueira Portátil Aço com Grelha Inox CB358",
+    "title": "Churrasqueira Portátil Aço com Grelha Inox",
+    "category": "Kits Corporativos",
+    "subcategory": "Kit Churrasco",
+    "description": "Churrasqueira portátil em aço com grelha inox.",
+    "images": [
+      "/produtos/cb358.jpg"
+    ],
+    "supplierCode": "CB358"
+  },
+  {
+    "sku": "cb362-kit-churrasco-3-pecas",
+    "name": "Kit Churrasco 3 Peças CB362",
+    "title": "Kit Churrasco 3 Peças",
+    "category": "Kits Corporativos",
+    "subcategory": "Kit Churrasco",
+    "description": "Kit churrasco com faca de 8 polegadas, garfo e pegador em aço inoxidável com cabos de madeira, acomodados em estojo de nylon com alça. Acompanha plaquinha para personalização.",
+    "images": [
+      "https://www.xbzbrindes.com.br/img/produtos/3/Kit-Churrasco-3-Pecas-21753-1733345718.jpg",
+      "https://www.xbzbrindes.com.br/img/produtos/3/Kit-Churrasco-3-Pecas-21753d1-1733345766.jpg",
+      "https://www.xbzbrindes.com.br/img/produtos/3/Kit-Churrasco-3-Pecas-21753d2-1733345766.jpg"
+    ],
+    "colors": [
+      "Preto"
+    ],
+    "supplierCode": "CB362"
+  },
+  {
+    "sku": "cb364-kit-churrasco-5-pecas",
+    "name": "Kit Churrasco 5 Peças CB364",
+    "title": "Kit Churrasco 5 Peças",
+    "category": "Kits Corporativos",
+    "subcategory": "Kit Churrasco",
+    "description": "Kit churrasco 5 peças em estojo de nylon com alça e elásticos internos: tábua de madeira com canaleta, três facas de corte e tesoura. Largura: 21,5 cm. Comprimento: 36,5 cm.",
+    "images": [
+      "https://www.xbzbrindes.com.br/img/produtos/3/Kit-Churrasco-5-Pecas-17824-1701373104.jpg",
+      "https://www.xbzbrindes.com.br/img/produtos/3/Kit-Churrasco-5-Pecas-17824d1-1701373104.jpg",
+      "https://www.xbzbrindes.com.br/img/produtos/3/Kit-Churrasco-5-Pecas-17824d2-1701373105.jpg"
+    ],
+    "colors": [
+      "Preto"
+    ],
+    "supplierCode": "CB364"
+  },
+  {
+    "sku": "cb365-kit-churrasco-5-pecas-com-estojo",
+    "name": "Kit Churrasco 5 Peças com Estojo CB365",
+    "title": "Kit Churrasco 5 Peças com Estojo",
+    "category": "Kits Corporativos",
+    "subcategory": "Kit Churrasco",
+    "description": "Kit churrasco 5 peças em inox com cabos plásticos simulando madeira: três facas (7\", 6\" e 3\"), garfo e chaira, acomodados em estojo de nylon prático para transporte.",
+    "images": [
+      "/produtos/cb365.jpg",
+      "https://www.xbzbrindes.com.br/img/produtos/3/Kit-Churrasco-5-Pecas-PRETO-20172-1726497201.jpg",
+      "https://www.xbzbrindes.com.br/img/produtos/3/Kit-Churrasco-5-Pecas-20171d1-1726497200.jpg",
+      "https://www.xbzbrindes.com.br/img/produtos/3/Kit-Churrasco-5-Pecas-20171d2-1723548642.jpg"
+    ],
+    "colors": [
+      "Preto"
+    ],
+    "supplierCode": "CB365"
+  },
+  {
+    "sku": "cb367-kit-terere",
+    "name": "Kit Tererê CB367",
+    "title": "Kit Tererê",
+    "category": "Kits Corporativos",
+    "subcategory": "Kit Chimarrão",
+    "description": "Kit tererê completo para presentear clientes e colaboradores.",
+    "images": [
+      "/produtos/cb367.jpg"
+    ],
+    "supplierCode": "CB367"
+  },
+  {
+    "sku": "cb368-kit-vinho-4-pecas",
+    "name": "Kit Vinho 4 Peças CB368",
+    "title": "Kit Vinho 4 Peças",
+    "category": "Kits Corporativos",
+    "subcategory": "Kit Vinho",
+    "description": "Kit vinho 4 itens: saca-rolhas de dois estágios em inox, anel corta-gotas, bico dosador e tampa de bico. Estojo em MDF com pés antiderrapantes, interior em EVA e tecido acetinado, fecho giratório e alça.",
+    "images": [
+      "/produtos/cb368.jpg",
+      "https://www.xbzbrindes.com.br/img/produtos/3/Kit-Vinho-4-Pecas-28059-1776174446.jpg",
+      "https://www.xbzbrindes.com.br/img/produtos/3/Kit-Vinho-4-Pecas-28059d1-1776174446.jpg",
+      "https://www.xbzbrindes.com.br/img/produtos/3/Kit-Vinho-4-Pecas-28059d2-1776174446.jpg"
+    ],
+    "colors": [
+      "Vinho"
+    ],
+    "supplierCode": "CB368"
+  },
+  {
+    "sku": "cb369-kit-vinho-4-pecas-estojo",
+    "name": "Kit Vinho 4 Peças Estojo CB369",
+    "title": "Kit Vinho 4 Peças Estojo",
+    "category": "Kits Corporativos",
+    "subcategory": "Kit Vinho",
+    "description": "Kit vinho 4 peças em maleta de couro sintético: saca-rolhas metálico, bico condutor com tampa, cortador de lacre e wine collar. Maleta com alça, trava e interior em veludo com espaço para garrafa. Comprimento: 34,2 cm.",
+    "images": [
+      "/produtos/cb369.jpg",
+      "https://www.xbzbrindes.com.br/img/produtos/3/Kit-Vinho-4-Pecas-17354-1696361888.jpg",
+      "https://www.xbzbrindes.com.br/img/produtos/3/Kit-Vinho-4-Pecas-17354d1-1696361880.jpg",
+      "https://www.xbzbrindes.com.br/img/produtos/3/Kit-Vinho-4-Pecas-17354d2-1696361953.jpg"
+    ],
+    "colors": [
+      "Preto"
+    ],
+    "supplierCode": "CB369"
+  },
+  {
+    "sku": "cb372-tabua-de-churrasco-20x30",
+    "name": "Tábua de Churrasco 20x30 CB372",
+    "title": "Tábua de Churrasco 20x30",
+    "category": "Kits Corporativos",
+    "subcategory": "Kit Churrasco",
+    "description": "Tábua de churrasco em madeira, medidas 20 x 30 cm.",
+    "images": [
+      "/produtos/cb372.jpg"
+    ],
+    "supplierCode": "CB372"
+  },
+  {
+    "sku": "cb373-tabua-de-corte-com-canaleta",
+    "name": "Tábua de Corte com Canaleta CB373",
+    "title": "Tábua de Corte com Canaleta",
+    "category": "Kits Corporativos",
+    "subcategory": "Kit Churrasco",
+    "description": "Tábua de corte em bambu com canaleta e acesso para gancho. Largura: 20 cm. Comprimento: 30 cm. Espessura: 1 cm.",
+    "images": [
+      "/produtos/cb373.jpg",
+      "https://www.xbzbrindes.com.br/img/produtos/3/Tabua-de-Corte-com-Canaleta-21014-1728391199.jpg",
+      "https://www.xbzbrindes.com.br/img/produtos/3/Tabua-de-Corte-com-Canaleta-21014d1-1728391214.jpg"
+    ],
+    "supplierCode": "CB373"
+  },
+  {
+    "sku": "cb374-taca-termica",
+    "name": "Taça Térmica CB374",
+    "title": "Taça Térmica",
+    "category": "Térmicos",
+    "subcategory": "Copos",
+    "description": "Taça térmica em inox com parede dupla, mantém a bebida gelada por mais tempo.",
+    "images": [
+      "/produtos/cb374.jpg"
+    ],
+    "supplierCode": "CB374"
+  },
+  {
+    "sku": "cb451-canivete-inox-205mm-com-clip",
+    "name": "Canivete Inox 205mm com Clip CB451",
+    "title": "Canivete Inox 205mm com Clip",
+    "category": "Canivetes",
+    "description": "Canivete em inox de 205mm com clip, acompanha caixa almofadada.",
+    "images": [
+      "/produtos/cb451.jpg"
+    ],
+    "supplierCode": "CB451"
+  },
+  {
+    "sku": "cb454-canivete-inox-cabo-de-madeira-com-bainha",
+    "name": "Canivete Inox Cabo de Madeira com Bainha CB454",
+    "title": "Canivete Inox Cabo de Madeira com Bainha",
+    "category": "Canivetes",
+    "description": "Canivete em inox com cabo de madeira e bainha em couro.",
+    "images": [
+      "/produtos/cb454.jpg"
+    ],
+    "supplierCode": "CB454"
+  },
+  {
+    "sku": "cb455-canivete-inox-com-clip-e-abridor",
+    "name": "Canivete Inox com Clip e Abridor CB455",
+    "title": "Canivete Inox com Clip e Abridor",
+    "category": "Canivetes",
+    "description": "Canivete em inox com clip e abridor de garrafas, acompanha caixa almofadada.",
+    "images": [
+      "/produtos/cb455.jpg"
+    ],
+    "supplierCode": "CB455"
+  },
+  {
+    "sku": "cb503-bolsa-termica-14l",
+    "name": "Bolsa Térmica 14L CB503",
+    "title": "Bolsa Térmica 14L",
+    "category": "Bolsas Térmicas",
+    "description": "Bolsa térmica de nylon 14 litros com bolso frontal e bolsos laterais em malha. Compartimento principal com revestimento térmico soldado antivazamento. Acompanha alça transversal. Altura: 22 cm. Largura: 26 cm. Profundidade: 17,7 cm.",
+    "images": [
+      "/produtos/cb503.jpg",
+      "https://www.xbzbrindes.com.br/img/produtos/3/Bolsa-Termica-14-Litros-CINZA-13806-1755712663.jpg",
+      "https://www.xbzbrindes.com.br/img/produtos/3/Bolsa-Termica-14-Litros-13758d1-1755712662.jpg",
+      "https://www.xbzbrindes.com.br/img/produtos/3/Bolsa-Termica-14-Litros-13758d2-1755712662.jpg"
+    ],
+    "colors": [
+      "Azul",
+      "Cinza",
+      "Preto"
+    ],
+    "supplierCode": "CB503"
+  },
+  {
+    "sku": "cb504-bolsa-termica-15l",
+    "name": "Bolsa Térmica 15L CB504",
+    "title": "Bolsa Térmica 15L",
+    "category": "Bolsas Térmicas",
+    "description": "Sacola térmica de poliéster 900D+300D de 15 litros com bolso frontal e revestimento em PEVA. Altura: 33 cm. Largura: 42 cm. Profundidade: 15 cm.",
+    "images": [
+      "/produtos/cb504.jpg",
+      "https://www.xbzbrindes.com.br/img/produtos/3/Bolsa-Termica-15-Litros-900D-300D-AZUL-ESCURO-12763-1616444898.jpg",
+      "https://www.xbzbrindes.com.br/img/produtos/3/Bolsa-Termica-15-Litros-900D-300D-12756d1-1616444896.jpg",
+      "https://www.xbzbrindes.com.br/img/produtos/3/Bolsa-Termica-15-Litros-900D-300D-12756d2-1616444897.jpg"
+    ],
+    "colors": [
+      "Azul Claro",
+      "Azul Escuro",
+      "Laranja",
+      "Vermelho"
+    ],
+    "supplierCode": "CB504"
+  },
+  {
+    "sku": "cb505-bolsa-termica-dupla-expansivel-15l",
+    "name": "Bolsa Térmica Dupla Expansível 15L CB505",
+    "title": "Bolsa Térmica Dupla Expansível 15L",
+    "category": "Bolsas Térmicas",
+    "description": "Bolsa térmica dupla expansível até 15 litros, em Oxford 300D impermeável com espuma e revestimento térmico em PEVA nos dois compartimentos. Dois bolsos frontais, bolsos telados e alça superior.",
+    "images": [
+      "/produtos/cb505.jpg",
+      "https://www.xbzbrindes.com.br/img/produtos/3/Bolsa-Termica-Dupla-Expansivel-15L-29186-1785256152.jpg",
+      "https://www.xbzbrindes.com.br/img/produtos/3/Bolsa-Termica-Dupla-Expansivel-15L-29186d1-1787056711.jpg",
+      "https://www.xbzbrindes.com.br/img/produtos/3/Bolsa-Termica-Dupla-Expansivel-15L-29186d2-1787056711.jpg"
+    ],
+    "colors": [
+      "Azul com Marrom",
+      "Cinza com Marrom",
+      "Preto com Marrom"
+    ],
+    "supplierCode": "CB505"
+  },
+  {
+    "sku": "cb507-caixa-termica-cooler-50l-metal",
+    "name": "Caixa Térmica Cooler 50L Metal CB507",
+    "title": "Caixa Térmica Cooler 50L Metal",
+    "category": "Bolsas Térmicas",
+    "description": "Caixa térmica cooler de 50 litros em metal, personalizável com a sua marca.",
+    "images": [
+      "/produtos/cb507.jpg"
+    ],
+    "supplierCode": "CB507"
+  },
+  {
+    "sku": "cb508-lixocar-em-couro-sintetico",
+    "name": "Lixocar em Couro Sintético CB508",
+    "title": "Lixocar em Couro Sintético",
+    "category": "Diversos",
+    "description": "Lixeira para carro em couro sintético. Altura: 28,4 cm. Largura: 19,1 cm. Peso aproximado: 91 g.",
+    "images": [
+      "/produtos/cb508.jpg",
+      "https://www.xbzbrindes.com.br/img/produtos/3/Lixocar-de-Couro-Sintetico-3655-1618950691.jpg",
+      "https://www.xbzbrindes.com.br/img/produtos/3/Lixocar-de-Couro-Sintetico-3655d1-1618950692.jpg",
+      "https://www.xbzbrindes.com.br/img/produtos/3/Lixocar-de-Couro-Sintetico-3655d2-1618950692.jpg"
+    ],
+    "colors": [
+      "Azul",
+      "Marrom",
+      "Preto"
+    ],
+    "supplierCode": "CB508"
+  },
+  {
+    "sku": "cb514-mochila-de-nylon-22l",
+    "name": "Mochila de Nylon 22L CB514",
+    "title": "Mochila de Nylon 22L",
+    "category": "Mochilas",
+    "description": "Mochila de nylon 22 litros com detalhes em couro sintético e três compartimentos, o principal com bolso para notebook 15,6\". Bolso lateral e suporte externo USB. Altura: 40 cm. Largura: 26 cm. Profundidade: 12 cm.",
+    "images": [
+      "https://www.xbzbrindes.com.br/img/produtos/3/Mochila-de-Nylon-22-Litros-17234-1695842731.jpg",
+      "https://www.xbzbrindes.com.br/img/produtos/3/Mochila-de-Nylon-22-Litros-17234d1-1695843292.jpg",
+      "https://www.xbzbrindes.com.br/img/produtos/3/Mochila-de-Nylon-22-Litros-17234d2-1695843292.jpg"
+    ],
+    "colors": [
+      "Azul",
+      "Cinza",
+      "Preto",
+      "Vermelho"
+    ],
+    "supplierCode": "CB514"
+  },
+  {
+    "sku": "cb518-mochila-nylon-oxford-14l",
+    "name": "Mochila Nylon Oxford 14L CB518",
+    "title": "Mochila Nylon Oxford 14L",
+    "category": "Mochilas",
+    "description": "Mochila em nylon Oxford impermeável com detalhes em couro sintético, capacidade de 14 litros. Divisória para notebook até 15,6\", dois compartimentos frontais, entrada para cabo USB e bolso lateral.",
+    "images": [
+      "https://www.xbzbrindes.com.br/img/produtos/3/Mochila-Nylon-Oxford-14L-26438-1765380770.jpg",
+      "https://www.xbzbrindes.com.br/img/produtos/3/Mochila-Nylon-Oxford-14L-26438d2-1765380770.jpg",
+      "https://www.xbzbrindes.com.br/img/produtos/3/Mochila-Nylon-Oxford-14L-26438d3-1765380770.jpg"
+    ],
+    "colors": [
+      "Azul com Preto"
+    ],
+    "supplierCode": "CB518"
+  },
+  {
+    "sku": "cb519-sacochila-em-poliester",
+    "name": "Sacochila em Poliéster CB519",
+    "title": "Sacochila em Poliéster",
+    "category": "Mochilas",
+    "description": "Mochila saco multifuncional em poliéster resistente a respingos d'água, com cordões de nylon que servem de fechamento e alças. Altura: 40,5 cm. Largura: 33,8 cm.",
+    "images": [
+      "/produtos/cb519.jpg",
+      "https://www.xbzbrindes.com.br/img/produtos/3/Mochila-Saco-em-Nylon-BRANCO-11117-1573502087.jpg",
+      "https://www.xbzbrindes.com.br/img/produtos/3/Mochila-Saco-em-Nylon-7109d1-1573502086.jpg",
+      "https://www.xbzbrindes.com.br/img/produtos/3/Mochila-Saco-em-Nylon-VERDE-8828d1-1543586422.jpg"
+    ],
+    "colors": [
+      "Amarelo",
+      "Azul Claro",
+      "Azul Escuro",
+      "Branco",
+      "Branco com Preto",
+      "Laranja",
+      "Preto",
+      "Rosa",
+      "Verde",
+      "Vermelho",
+      "Vinho"
+    ],
+    "supplierCode": "CB519"
+  },
+  {
+    "sku": "cb520-sacola-termica-rpet-10l",
+    "name": "Sacola Térmica rPET 10L CB520",
+    "title": "Sacola Térmica rPET 10L",
+    "category": "Bolsas Térmicas",
+    "description": "Sacola térmica de rPET com capacidade de 10 litros e fechamento com zíper. Altura: 29 cm. Largura: 40 cm. Profundidade: 16 cm.",
+    "images": [
+      "https://www.xbzbrindes.com.br/img/produtos/3/Sacola-rPET-Termica-10-Litros-PRETO-17577-1699966306.jpg",
+      "https://www.xbzbrindes.com.br/img/produtos/3/Sacola-rPET-Termica-10-Litros-17574d1-1699966302.jpg",
+      "https://www.xbzbrindes.com.br/img/produtos/3/Sacola-rPET-Termica-10-Litros-17574d2-1699966303.jpg"
+    ],
+    "colors": [
+      "Azul",
+      "Marrom",
+      "Preto",
+      "Verde",
+      "Vermelho"
+    ],
+    "supplierCode": "CB520"
+  },
+  {
+    "sku": "cb554-caixa-de-som-bluetooth-tws",
+    "name": "Caixa de Som Bluetooth TWS CB554",
+    "title": "Caixa de Som Bluetooth TWS",
+    "category": "Eletrônicos",
+    "description": "Caixa de som sem fio em plástico com base emborrachada, Bluetooth 5.0 e tecnologia TWS para sincronizar duas caixas. Acompanha cabo micro-USB e cordão de nylon. Altura: 4,7 cm. Largura: 4,6 cm.",
+    "images": [
+      "/produtos/cb554.jpg",
+      "https://www.xbzbrindes.com.br/img/produtos/3/Caixa-de-Som-Bluetooth-TWS-VERMELHO-17262-1762801057.jpg",
+      "https://www.xbzbrindes.com.br/img/produtos/3/Caixa-de-Som-Bluetooth-TWS-17190d1-1762801587.jpg",
+      "https://www.xbzbrindes.com.br/img/produtos/3/Caixa-de-Som-Bluetooth-TWS-17190d2-1697221439.jpg"
+    ],
+    "colors": [
+      "Azul",
+      "Branco",
+      "Preto",
+      "Rosa",
+      "Verde",
+      "Vermelho"
+    ],
+    "supplierCode": "CB554"
+  },
+  {
+    "sku": "cb555-caixa-de-som-bluetooth-tws-compacta",
+    "name": "Caixa de Som Bluetooth TWS Compacta CB555",
+    "title": "Caixa de Som Bluetooth TWS Compacta",
+    "category": "Eletrônicos",
+    "description": "Caixa de som em metal e plástico com base emborrachada, Bluetooth 5.0, autonomia de até 2h30 e entrada USB-C. Acompanha cordão de nylon e cabo USB-C. Altura: 3,6 cm. Largura: 4,4 cm.",
+    "images": [
+      "/produtos/cb555.jpg",
+      "https://www.xbzbrindes.com.br/img/produtos/3/Caixa-de-Som-Bluetooth-TWS-DOURADO-26233-1763584388.jpg",
+      "https://www.xbzbrindes.com.br/img/produtos/3/Caixa-de-Som-Bluetooth-TWS-26230d1-1763483217.jpg",
+      "https://www.xbzbrindes.com.br/img/produtos/3/Caixa-de-Som-Bluetooth-TWS-26230d2-1763584388.jpg"
+    ],
+    "colors": [
+      "Azul",
+      "Dourado",
+      "Prata",
+      "Preto",
+      "Vermelho"
+    ],
+    "supplierCode": "CB555"
+  },
+  {
+    "sku": "cb558-power-bank-10-000mah-multiconectores",
+    "name": "Power Bank 10.000mAh Multiconectores CB558",
+    "title": "Power Bank 10.000mAh Multiconectores",
+    "category": "Eletrônicos",
+    "description": "Carregador portátil power bank de 10.000mAh com múltiplos conectores (V8 e iPhone).",
+    "images": [
+      "/produtos/cb558.jpg"
+    ],
+    "supplierCode": "CB558"
+  },
+  {
+    "sku": "cb567-power-bank-10-000mah-com-suporte-de-celular",
+    "name": "Power Bank 10.000mAh com Suporte de Celular CB567",
+    "title": "Power Bank 10.000mAh com Suporte de Celular",
+    "category": "Eletrônicos",
+    "description": "Power bank de 10.000mAh com múltiplas saídas e suporte para celular.",
+    "images": [
+      "/produtos/cb567.jpg"
+    ],
+    "supplierCode": "CB567"
+  },
+  {
+    "sku": "cb568-power-bank-20-000mah-com-lanterna",
+    "name": "Power Bank 20.000mAh com Lanterna CB568",
+    "title": "Power Bank 20.000mAh com Lanterna",
+    "category": "Eletrônicos",
+    "description": "Power bank com capacidade de até 20.000mAh, quatro cabos integrados (Lightning, USB-C, Micro-USB e USB), entradas USB-A e USB-C, painel LED numérico, lanterna frontal e alça em couro sintético. Acompanha cabo USB-C.",
+    "images": [
+      "/produtos/cb568.jpg",
+      "https://www.xbzbrindes.com.br/img/produtos/3/Power-Bank-20-000mAh-com-Lanterna-e-Multissaidas-PRETO-23402-1748953548.jpg",
+      "https://www.xbzbrindes.com.br/img/produtos/3/Power-Bank-20-000mAh-com-Lanterna-e-Multissaidas-23400d1-1748953590.jpg",
+      "https://www.xbzbrindes.com.br/img/produtos/3/Power-Bank-20-000mAh-com-Lanterna-e-Multissaidas-23400d2-1748953590.jpg"
+    ],
+    "colors": [
+      "Preto"
+    ],
+    "supplierCode": "CB568"
+  },
+  {
+    "sku": "cb569-power-bank-20-000mah-com-lanterna-e-multissaidas",
+    "name": "Power Bank 20.000mAh com Lanterna e Multissaídas CB569",
+    "title": "Power Bank 20.000mAh com Lanterna e Multissaídas",
+    "category": "Eletrônicos",
+    "description": "Power bank de 20.000mAh com lanterna e múltiplas saídas.",
+    "images": [
+      "/produtos/cb569.jpg"
+    ],
+    "supplierCode": "CB569"
+  },
+  {
+    "sku": "cb701-cadeira-alta-aco-tela",
+    "name": "Cadeira Alta Aço Tela CB701",
+    "title": "Cadeira Alta Aço Tela",
+    "category": "Diversos",
+    "description": "Cadeira alta em aço com assento e encosto em tela.",
+    "images": [
+      "/produtos/cb701.jpg"
+    ],
+    "supplierCode": "CB701"
+  },
+  {
+    "sku": "cb705-chaveiro-de-metal",
+    "name": "Chaveiro de Metal CB705",
+    "title": "Chaveiro de Metal",
+    "category": "Chaveiros",
+    "description": "Chaveiro com detalhe plástico e chapa metálica grafite, personalizável frente e verso. Altura: 5 cm. Largura: 3,6 cm.",
+    "images": [
+      "/produtos/cb705.jpg",
+      "https://www.xbzbrindes.com.br/img/produtos/3/Chaveiro-metal-BRANCO-15383-1668082004.jpg",
+      "https://www.xbzbrindes.com.br/img/produtos/3/Chaveiro-metal-15380d1-1668082033.jpg",
+      "https://www.xbzbrindes.com.br/img/produtos/3/Chaveiro-metal-15380d2-1668082034.jpg"
+    ],
+    "colors": [
+      "Amarelo",
+      "Azul",
+      "Branco",
+      "Preto",
+      "Verde"
+    ],
+    "supplierCode": "CB705"
+  },
+  {
+    "sku": "cb706-chaveiro-de-metal-com-mosquetao",
+    "name": "Chaveiro de Metal com Mosquetão CB706",
+    "title": "Chaveiro de Metal com Mosquetão",
+    "category": "Chaveiros",
+    "description": "Chaveiro metálico com mosquetão e abridor de garrafa, plaquinha frontal em grafite espelhado e alça em couro sintético. Altura: 10,1 cm. Largura: 3,2 cm.",
+    "images": [
+      "/produtos/cb706.jpg",
+      "https://www.xbzbrindes.com.br/img/produtos/3/Chaveiro-Metal-com-Mosquetao-24858-1781613648.jpg",
+      "https://www.xbzbrindes.com.br/img/produtos/3/Chaveiro-Metal-com-Mosquetao-24858d1-1781613649.jpg",
+      "https://www.xbzbrindes.com.br/img/produtos/3/Chaveiro-Metal-com-Mosquetao-24858d2-1781613664.jpg"
+    ],
+    "colors": [
+      "Prata"
+    ],
+    "supplierCode": "CB706"
   }
 ]
