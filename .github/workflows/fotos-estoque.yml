@@ -23,7 +23,7 @@ jobs:
           done < xbz.txt
           while IFS=$'\t' read -r k u; do
             [ -z "$k" ] && continue
-            if curl -sSfL --max-time 25 -o raw "$u" && $(command -v magick || echo convert) "raw[0]" -auto-orient -resize 800x800 -background white -flatten -gravity center -extent 800x800 -quality 85 "site/$k.jpg"; then :; else echo "bling $k" >> falhas.txt; fi
+            if curl -sSfL --max-time 25 -o raw "$u" && $(command -v magick || echo convert) "raw[0]" -auto-orient -resize "800x800>" -background white -flatten -gravity center -extent 800x800 -quality 85 "site/$k.jpg"; then :; else echo "bling $k" >> falhas.txt; fi
             rm -f raw
           done < bling.txt
           ls -la xbz; cat falhas.txt; true
