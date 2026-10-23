@@ -11,7 +11,9 @@ jobs:
     steps:
       - uses: actions/checkout@v4
       - name: Paginas XBZ e fotos Bling
+        shell: bash {0}
         run: |
+          exec > >(tee log.txt) 2>&1
           command -v convert >/dev/null || (sudo apt-get update -qq && sudo apt-get install -y -qq imagemagick)
           mkdir -p xbz site; : > falhas.txt
           while IFS=$'\t' read -r k c; do
@@ -21,11 +23,12 @@ jobs:
           done < xbz.txt
           while IFS=$'\t' read -r k u; do
             [ -z "$k" ] && continue
-            if curl -sSfL --max-time 25 -o raw "$u" && convert "raw[0]" -auto-orient -resize 800x800 -background white -flatten -gravity center -extent 800x800 -quality 85 "site/$k.jpg"; then :; else echo "bling $k" >> falhas.txt; fi
+            if curl -sSfL --max-time 25 -o raw "$u" && $(command -v magick || echo convert) "raw[0]" -auto-orient -resize 800x800 -background white -flatten -gravity center -extent 800x800 -quality 85 "site/$k.jpg"; then :; else echo "bling $k" >> falhas.txt; fi
             rm -f raw
           done < bling.txt
-          ls -la xbz | head -60; cat falhas.txt
+          ls -la xbz; cat falhas.txt; true
       - name: Salvar
+        if: always()
         run: |
           git config user.name "fotos-bot"; git config user.email "fotos-bot@users.noreply.github.com"
-          git add xbz site falhas.txt; git commit -qm "catalogo: paginas xbz e fotos bling" || true; git push
+          git add -A xbz site falhas.txt log.txt; git commit -qm "catalogo: paginas xbz e fotos bling" || true; git push
