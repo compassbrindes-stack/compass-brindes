@@ -2,7 +2,7 @@ name: fotos-estoque
 on:
   push:
     branches: [fotos-estoque]
-    paths: ['urls.txt']
+    paths: ['xbz.txt','bling.txt','.github/workflows/fotos-estoque.yml']
 permissions:
   contents: write
 jobs:
@@ -10,17 +10,22 @@ jobs:
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v4
-      - name: Miniaturas
+      - name: Paginas XBZ e fotos Bling
         run: |
           command -v convert >/dev/null || (sudo apt-get update -qq && sudo apt-get install -y -qq imagemagick)
-          mkdir -p fotos; : > fotos/falhas.txt
+          mkdir -p xbz site; : > falhas.txt
+          while IFS=$'\t' read -r k c; do
+            [ -z "$k" ] && continue
+            curl -sSL --max-time 30 -A "Mozilla/5.0 (Windows NT 10.0; Win64; x64) Chrome/124" -o "xbz/$k.html" "https://www.xbzbrindes.com.br/$c" || echo "xbz $k" >> falhas.txt
+            sleep 1
+          done < xbz.txt
           while IFS=$'\t' read -r k u; do
             [ -z "$k" ] && continue
-            if curl -sSfL --max-time 25 -A "Mozilla/5.0" -o raw "$u" && convert "raw[0]" -auto-orient -thumbnail 150x150 -background white -flatten -gravity center -extent 150x150 -quality 82 "fotos/$k.jpg"; then :; else echo "$k" >> fotos/falhas.txt; fi
+            if curl -sSfL --max-time 25 -o raw "$u" && convert "raw[0]" -auto-orient -resize 800x800 -background white -flatten -gravity center -extent 800x800 -quality 85 "site/$k.jpg"; then :; else echo "bling $k" >> falhas.txt; fi
             rm -f raw
-          done < urls.txt
-          ls fotos | wc -l
+          done < bling.txt
+          ls -la xbz | head -60; cat falhas.txt
       - name: Salvar
         run: |
           git config user.name "fotos-bot"; git config user.email "fotos-bot@users.noreply.github.com"
-          git add fotos; git commit -qm "miniaturas do estoque" || true; git push
+          git add xbz site falhas.txt; git commit -qm "catalogo: paginas xbz e fotos bling" || true; git push
