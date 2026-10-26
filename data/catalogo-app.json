@@ -3176,5 +3176,23 @@
       "Prata"
     ],
     "supplierCode": "CB706"
+  },
+  {
+    "sku": "cb141-garrafa-termica-inox-airpot-com-alavanca-1-9l",
+    "name": "Garrafa Térmica Inox Airpot com Alavanca 1,9L CB141",
+    "title": "Garrafa Térmica Inox Airpot com Alavanca 1,9L",
+    "category": "Térmicos",
+    "subcategory": "Garrafas",
+    "description": "Garrafa térmica de 1,9 litros com corpo e ampola em inox. Alça e cabeça fixas ao corpo, o que traz mais segurança no manuseio. Tecnologia Airpot com alavanca para servir com facilidade e sistema corta-pingos. Conserva bebidas quentes ou frias por mais tempo.",
+    "images": [
+      "https://lojamor.vtexassets.com/arquivos/ids/194886-800-800?v=639225918412900000&width=800&height=800&aspect=true",
+      "https://lojamor.vtexassets.com/arquivos/ids/194887-800-800?v=639225918413830000&width=800&height=800&aspect=true",
+      "https://lojamor.vtexassets.com/arquivos/ids/194888-800-800?v=639225918413970000&width=800&height=800&aspect=true",
+      "https://lojamor.vtexassets.com/arquivos/ids/194889-800-800?v=639225918414130000&width=800&height=800&aspect=true"
+    ],
+    "colors": [
+      "Inox"
+    ],
+    "supplierCode": "CB141"
   }
 ]
