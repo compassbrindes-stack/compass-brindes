@@ -1,6 +1,6 @@
 import { NextResponse } from "next/server";
 import { conversasDesde, historico, registrarMensagem } from "@/lib/conversas";
-import { enviarTexto } from "@/lib/uazapi";
+import { enviarTexto, enviarMidia } from "@/lib/uazapi";
 import { registrarCompras, todasCompras } from "@/lib/compras";
 import catalogo from "@/data/catalogo-app.json";
 
@@ -18,6 +18,7 @@ export const dynamic = "force-dynamic";
  *   registrar_compras   — o painel informa as compras feitas nos fornecedores (nº do pedido e valor)
  *   compras_pagas       — quais dessas compras já foram pagas pelo grupo Compass Recibos
  *   enviar_whatsapp     — envia uma mensagem de texto pelo WhatsApp da Compass (usado pelo painel, a pessoa digita e clica Enviar)
+ *   enviar_arquivo_whatsapp — envia foto/PDF (base64) pelo WhatsApp da Compass, com legenda opcional
  *   foto_produto        — foto do produto (catálogo do site pelo código, ou link do Bling/fornecedor) em base64,
  *                         para o painel montar o orçamento em PDF (o painel não consegue baixar imagens de fora)
  */
@@ -129,6 +130,22 @@ const FERRAMENTAS = [
     annotations: { readOnlyHint: false, destructiveHint: false, openWorldHint: true },
   },
   {
+    name: "enviar_arquivo_whatsapp",
+    description: "Envia uma foto ou um arquivo (PDF de layout, orçamento, boleto) pelo WhatsApp da Compass Brindes para um número, com legenda opcional (a pessoa escolheu o arquivo no painel e clicou em Enviar). Grava no histórico da conversa.",
+    inputSchema: {
+      type: "object",
+      properties: {
+        numero: { type: "string", description: "Número com DDI e DDD, só dígitos (ex.: 5549999990000)." },
+        base64: { type: "string", description: "Conteúdo do arquivo em base64 (sem o prefixo data:), até cerca de 3 MB." },
+        mimetype: { type: "string", description: "Tipo do arquivo, ex.: image/jpeg, image/png, application/pdf." },
+        nome: { type: "string", description: "Nome do arquivo, ex.: layout-V2.pdf." },
+        legenda: { type: "string", description: "Texto que acompanha o arquivo (opcional)." },
+      },
+      required: ["numero", "base64", "mimetype"],
+    },
+    annotations: { readOnlyHint: false, destructiveHint: false, openWorldHint: true },
+  },
+  {
     name: "foto_produto",
     description: "Foto de um produto em base64 (mime + base64). Procura primeiro no catálogo do site pelo código (ex.: CBI005, C040B800); se não houver, baixa o link informado (Bling, XBZ, Asia Import, site).",
     inputSchema: {
@@ -186,6 +203,22 @@ export async function POST(request: Request, { params }: { params: { chave: stri
         const quando = Date.now();
         await registrarMensagem({ num, texto, tipo: "conversation", deCompass: true, quando, id: "painel-" + quando });
         dados = { enviado: true, numero: num, em: new Date(quando).toISOString() };
+      }
+      else if (nome === "enviar_arquivo_whatsapp") {
+        let num = String(a.numero || "").replace(/\D/g, "");
+        if (num.length >= 10 && num.length <= 11) num = "55" + num;
+        const b64 = String(a.base64 || "").replace(/^data:[^,]*,/, "");
+        const mime = String(a.mimetype || "application/octet-stream").toLowerCase();
+        const nomeArq = String(a.nome || "").slice(0, 120) || (mime === "application/pdf" ? "arquivo.pdf" : "foto.jpg");
+        const legenda = String(a.legenda || "").trim().slice(0, 1000);
+        if (num.length < 12 || num.length > 13) return ok(id, { content: [{ type: "text", text: "Erro: número inválido" }], isError: true });
+        if (!b64 || b64.length > 4_300_000) return ok(id, { content: [{ type: "text", text: "Erro: arquivo vazio ou maior que 3 MB" }], isError: true });
+        const tipo = mime.startsWith("image/") ? "image" : mime.startsWith("video/") ? "video" : mime.startsWith("audio/") ? "audio" : "document";
+        await enviarMidia(num, tipo, b64, legenda, tipo === "document" ? nomeArq : undefined);
+        const quando = Date.now();
+        const rotulo = tipo === "image" ? "[foto]" : tipo === "document" ? `[arquivo: ${nomeArq}]` : `[${tipo}]`;
+        await registrarMensagem({ num, texto: legenda ? `${rotulo} ${legenda}` : rotulo, tipo: "documentMessage", deCompass: true, quando, id: "painel-" + quando });
+        dados = { enviado: true, numero: num, tipo, em: new Date(quando).toISOString() };
       }
       else if (nome === "foto_produto") {
         const foto = await fotoProduto(String(a.codigo || ""), String(a.url || ""));
