@@ -1,5 +1,6 @@
 import { NextResponse } from "next/server";
-import { conversasDesde, historico } from "@/lib/conversas";
+import { conversasDesde, historico, registrarMensagem } from "@/lib/conversas";
+import { enviarTexto } from "@/lib/uazapi";
 import { registrarCompras, todasCompras } from "@/lib/compras";
 import catalogo from "@/data/catalogo-app.json";
 
@@ -16,6 +17,7 @@ export const dynamic = "force-dynamic";
  *   historico_whatsapp  — últimas mensagens de um número
  *   registrar_compras   — o painel informa as compras feitas nos fornecedores (nº do pedido e valor)
  *   compras_pagas       — quais dessas compras já foram pagas pelo grupo Compass Recibos
+ *   enviar_whatsapp     — envia uma mensagem de texto pelo WhatsApp da Compass (usado pelo painel, a pessoa digita e clica Enviar)
  *   foto_produto        — foto do produto (catálogo do site pelo código, ou link do Bling/fornecedor) em base64,
  *                         para o painel montar o orçamento em PDF (o painel não consegue baixar imagens de fora)
  */
@@ -114,6 +116,19 @@ const FERRAMENTAS = [
     annotations: { readOnlyHint: true },
   },
   {
+    name: "enviar_whatsapp",
+    description: "Envia uma mensagem de texto pelo WhatsApp da Compass Brindes para um número (a pessoa escreveu a mensagem no painel e clicou em Enviar). Grava a mensagem no histórico da conversa.",
+    inputSchema: {
+      type: "object",
+      properties: {
+        numero: { type: "string", description: "Número com DDI e DDD, só dígitos (ex.: 5549999990000)." },
+        texto: { type: "string", description: "Texto da mensagem (até 4000 caracteres)." },
+      },
+      required: ["numero", "texto"],
+    },
+    annotations: { readOnlyHint: false, destructiveHint: false, openWorldHint: true },
+  },
+  {
     name: "foto_produto",
     description: "Foto de um produto em base64 (mime + base64). Procura primeiro no catálogo do site pelo código (ex.: CBI005, C040B800); se não houver, baixa o link informado (Bling, XBZ, Asia Import, site).",
     inputSchema: {
@@ -161,6 +176,17 @@ export async function POST(request: Request, { params }: { params: { chave: stri
       else if (nome === "registrar_compras") dados = { registradas: await registrarCompras(Array.isArray(a.compras) ? a.compras.slice(0, 500) : []) };
       else if (nome === "compras_pagas")
         dados = { pagas: (await todasCompras()).filter((c) => c.pago).map((c) => ({ pedido: c.pedido, pagoEm: c.pagoEm, contaBling: c.contaBling, pagoPor: c.pagoPor })) };
+      else if (nome === "enviar_whatsapp") {
+        let num = String(a.numero || "").replace(/\D/g, "");
+        if (num.length >= 10 && num.length <= 11) num = "55" + num;
+        const texto = String(a.texto || "").trim();
+        if (num.length < 12 || num.length > 13) return ok(id, { content: [{ type: "text", text: "Erro: número inválido" }], isError: true });
+        if (!texto || texto.length > 4000) return ok(id, { content: [{ type: "text", text: "Erro: mensagem vazia ou longa demais" }], isError: true });
+        await enviarTexto(num, texto);
+        const quando = Date.now();
+        await registrarMensagem({ num, texto, tipo: "conversation", deCompass: true, quando, id: "painel-" + quando });
+        dados = { enviado: true, numero: num, em: new Date(quando).toISOString() };
+      }
       else if (nome === "foto_produto") {
         const foto = await fotoProduto(String(a.codigo || ""), String(a.url || ""));
         return ok(id, { content: [{ type: "text", text: JSON.stringify(foto) }], structuredContent: foto });

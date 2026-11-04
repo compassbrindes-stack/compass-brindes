@@ -51,7 +51,8 @@ export async function registrarMensagem(o: { num: string; nome?: string; texto: 
   };
   await redis(["SET", K_CONTATO(o.num), JSON.stringify(c)]);
   await redis(["ZADD", K_ATIV, Date.parse(em), o.num]);
-  await redis(["LPUSH", K_MSGS(o.num), JSON.stringify({ em, de: c.ultimaDe, texto: resumo, id: o.id })]);
+  const completo = o.texto ? o.texto.slice(0, 4000) : resumo;
+  await redis(["LPUSH", K_MSGS(o.num), JSON.stringify({ em, de: c.ultimaDe, texto: completo, id: o.id })]);
   await redis(["LTRIM", K_MSGS(o.num), 0, 99]);
 }
 
