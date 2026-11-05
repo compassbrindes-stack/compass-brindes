@@ -1,6 +1,6 @@
 import { NextResponse } from "next/server";
 import { conversasDesde, historico, registrarMensagem } from "@/lib/conversas";
-import { enviarTexto, enviarMidia } from "@/lib/uazapi";
+import { enviarTexto, enviarMidia, baixarMidia } from "@/lib/uazapi";
 import { registrarCompras, todasCompras } from "@/lib/compras";
 import catalogo from "@/data/catalogo-app.json";
 
@@ -146,6 +146,16 @@ const FERRAMENTAS = [
     annotations: { readOnlyHint: false, destructiveHint: false, openWorldHint: true },
   },
   {
+    name: "midia_whatsapp",
+    description: "Abre a foto, o PDF ou outro arquivo de uma mensagem do WhatsApp da Compass, pelo id da mensagem (campo id do historico_whatsapp, mensagens marcadas [image], [document] etc.). Foto volta como imagem; PDF volta como arquivo.",
+    inputSchema: {
+      type: "object",
+      properties: { id: { type: "string", description: "Id da mensagem (ex.: 3EB0B87DC2BEE3C3522C39)." } },
+      required: ["id"],
+    },
+    annotations: { readOnlyHint: true, openWorldHint: true },
+  },
+  {
     name: "foto_produto",
     description: "Foto de um produto em base64 (mime + base64). Procura primeiro no catálogo do site pelo código (ex.: CBI005, C040B800); se não houver, baixa o link informado (Bling, XBZ, Asia Import, site).",
     inputSchema: {
@@ -219,6 +229,20 @@ export async function POST(request: Request, { params }: { params: { chave: stri
         const rotulo = tipo === "image" ? "[foto]" : tipo === "document" ? `[arquivo: ${nomeArq}]` : `[${tipo}]`;
         await registrarMensagem({ num, texto: legenda ? `${rotulo} ${legenda}` : rotulo, tipo: "documentMessage", deCompass: true, quando, id: "painel-" + quando });
         dados = { enviado: true, numero: num, tipo, em: new Date(quando).toISOString() };
+      }
+      else if (nome === "midia_whatsapp") {
+        const mid = String(a.id || "").trim();
+        if (!/^[A-Za-z0-9_-]{6,80}$/.test(mid)) return ok(id, { content: [{ type: "text", text: "Erro: id inválido" }], isError: true });
+        const arq = await baixarMidia(mid);
+        if (!arq.fileURL) return ok(id, { content: [{ type: "text", text: "Erro: mensagem sem arquivo (ou expirado)" }], isError: true });
+        const r = await fetch(arq.fileURL, { cache: "no-store" });
+        if (!r.ok) throw new Error(`download ${r.status}`);
+        const buf = Buffer.from(await r.arrayBuffer());
+        if (buf.length > 8_000_000) return ok(id, { content: [{ type: "text", text: JSON.stringify({ mimetype: arq.mimetype, tamanho: buf.length, link: arq.fileURL }) }] });
+        const mime = String(arq.mimetype || r.headers.get("content-type") || "application/octet-stream").split(";")[0];
+        const b64 = buf.toString("base64");
+        if (mime.startsWith("image/")) return ok(id, { content: [{ type: "image", data: b64, mimeType: mime }, { type: "text", text: JSON.stringify({ id: mid, mimetype: mime, tamanho: buf.length }) }] });
+        return ok(id, { content: [{ type: "resource", resource: { uri: `whatsapp://midia/${mid}`, mimeType: mime, blob: b64 } }, { type: "text", text: JSON.stringify({ id: mid, mimetype: mime, tamanho: buf.length }) }] });
       }
       else if (nome === "foto_produto") {
         const foto = await fotoProduto(String(a.codigo || ""), String(a.url || ""));
