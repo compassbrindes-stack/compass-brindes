@@ -3262,5 +3262,17 @@
     "sku": "cb720-necessaire-couro-sintetico-com-alca",
     "supplierCode": "CB720",
     "title": "Nécessaire Couro Sintético com Alça"
+  },
+  {
+    "category": "Canivetes",
+    "colors": [],
+    "description": "Alicate dobrável multifuncional.",
+    "images": [
+      "https://http2.mlstatic.com/D_NQ_NP_2X_792207-MLB114370829837_072026-F.jpg"
+    ],
+    "name": "Alicate Dobrável Multifuncional CB721",
+    "sku": "cb721-alicate-dobravel-multifuncional",
+    "supplierCode": "CB721",
+    "title": "Alicate Dobrável Multifuncional"
   }
 ]
