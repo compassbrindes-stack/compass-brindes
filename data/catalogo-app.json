@@ -3273,5 +3273,26 @@
     "sku": "cb721-alicate-dobravel-multifuncional",
     "supplierCode": "CB721",
     "title": "Alicate Dobrável Multifuncional"
+  },
+  {
+    "category": "Diversos",
+    "colors": [
+      "Amarelo",
+      "Branco",
+      "Rosa",
+      "Roxo"
+    ],
+    "description": "Espelho duplo de bolso revestido em PU, com uma face convencional e outra com aumento. Medidas: 2,5 x 7,2 x 2,5 cm. Área de gravação aprox.: 5,5 x 5,5 cm.",
+    "images": [
+      "https://www.xbzbrindes.com.br/img/produtos/3/Espelho-Duplo-Revestido-em-PU-ROXO-20730-1727812811.jpg",
+      "https://www.xbzbrindes.com.br/img/produtos/3/Espelho-Duplo-Revestido-em-PU-ROSA-20729-1727812810.jpg",
+      "https://www.xbzbrindes.com.br/img/produtos/3/Espelho-Duplo-Revestido-em-PU-BRANCO-20728-1727812810.jpg",
+      "https://www.xbzbrindes.com.br/img/produtos/3/Espelho-Duplo-Revestido-em-PU-AMARELO-20727-1727812809.jpg",
+      "https://www.xbzbrindes.com.br/img/produtos/3/Espelho-Duplo-Revestido-em-PU-20726d1-1727812808.jpg"
+    ],
+    "name": "Espelho Duplo Revestido em PU CB722",
+    "sku": "cb722-espelho-duplo-revestido-em-pu",
+    "supplierCode": "CB722",
+    "title": "Espelho Duplo Revestido em PU"
   }
 ]
