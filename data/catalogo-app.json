@@ -3294,5 +3294,33 @@
     "sku": "cb722-espelho-duplo-revestido-em-pu",
     "supplierCode": "CB722",
     "title": "Espelho Duplo Revestido em PU"
+  },
+  {
+    "category": "Canetas",
+    "colors": [
+      "Azul",
+      "Chumbo",
+      "Laranja",
+      "Prata",
+      "Preto",
+      "Verde Escuro",
+      "Vinho"
+    ],
+    "description": "Caneta metálica com acionamento por clique e clip em plástico. Carga esferográfica azul 1,0 mm. Medidas: 13,9 x 1,5 cm. Área de gravação aprox.: 0,7 x 10 cm.",
+    "images": [
+      "https://www.xbzbrindes.com.br/img/produtos/3/Caneta-Metal-27155-1770043441.jpg",
+      "https://www.xbzbrindes.com.br/img/produtos/3/Caneta-Metal-AZUL-27156-1770043409.jpg",
+      "https://www.xbzbrindes.com.br/img/produtos/3/Caneta-Metal-CHUMBO-27157-1770043409.jpg",
+      "https://www.xbzbrindes.com.br/img/produtos/3/Caneta-Metal-LARANJA-27158-1770043409.jpg",
+      "https://www.xbzbrindes.com.br/img/produtos/3/Caneta-Metal-PRATA-27159-1770043410.jpg",
+      "https://www.xbzbrindes.com.br/img/produtos/3/Caneta-Metal-PRETO-27160-1770043410.jpg",
+      "https://www.xbzbrindes.com.br/img/produtos/3/Caneta-Metal-VERDE-ESCURO-27161-1770043410.jpg",
+      "https://www.xbzbrindes.com.br/img/produtos/3/Caneta-Metal-VINHO-27162-1770043410.jpg",
+      "https://www.xbzbrindes.com.br/img/produtos/3/Caneta-Metal-27155d1-1770043441.jpg"
+    ],
+    "name": "Caneta Metal Colorida Clique CB724",
+    "sku": "cb724-caneta-metal-colorida-clique",
+    "supplierCode": "CB724",
+    "title": "Caneta Metal Colorida Clique"
   }
 ]
