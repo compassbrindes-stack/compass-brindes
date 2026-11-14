@@ -2,6 +2,7 @@ import { NextResponse } from "next/server";
 import { conversasDesde, historico, registrarMensagem } from "@/lib/conversas";
 import { enviarTexto, enviarMidia, baixarMidia } from "@/lib/uazapi";
 import { registrarCompras, todasCompras } from "@/lib/compras";
+import { listarDocumentos } from "@/lib/recibos";
 import catalogo from "@/data/catalogo-app.json";
 
 export const dynamic = "force-dynamic";
@@ -146,6 +147,12 @@ const FERRAMENTAS = [
     annotations: { readOnlyHint: false, destructiveHint: false, openWorldHint: true },
   },
   {
+    name: "documentos_whatsapp",
+    description: "Lista os documentos (NF de entrada, CT-e, fatura, boleto) que chegaram no grupo Compass Recibos do WhatsApp e foram lidos pelo sistema: id da mensagem (para abrir o arquivo com midia_whatsapp), tipo, número, emitente, CNPJ, valor, datas, NFs e CT-es citados. Mais novos primeiro.",
+    inputSchema: { type: "object", properties: { limite: { type: "integer", minimum: 1, maximum: 500, description: "Máximo de documentos (padrão 200)." } } },
+    annotations: { readOnlyHint: true },
+  },
+  {
     name: "midia_whatsapp",
     description: "Abre a foto, o PDF ou outro arquivo de uma mensagem do WhatsApp da Compass, pelo id da mensagem (campo id do historico_whatsapp, mensagens marcadas [image], [document] etc.). Foto volta como imagem; PDF volta como arquivo.",
     inputSchema: {
@@ -229,6 +236,10 @@ export async function POST(request: Request, { params }: { params: { chave: stri
         const rotulo = tipo === "image" ? "[foto]" : tipo === "document" ? `[arquivo: ${nomeArq}]` : `[${tipo}]`;
         await registrarMensagem({ num, texto: legenda ? `${rotulo} ${legenda}` : rotulo, tipo: "documentMessage", deCompass: true, quando, id: "painel-" + quando });
         dados = { enviado: true, numero: num, tipo, em: new Date(quando).toISOString() };
+      }
+      else if (nome === "documentos_whatsapp") {
+        const docs = await listarDocumentos(Math.min(500, Math.max(1, Number(a.limite) || 200)));
+        dados = { documentos: docs };
       }
       else if (nome === "midia_whatsapp") {
         const mid = String(a.id || "").trim();

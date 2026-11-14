@@ -79,6 +79,25 @@ interface LidoComprovante {
   mensagem?: string;
   valorDocumento?: number; // valor original do boleto/documento (sem juros/multa)
   acrescimos?: number; // juros + multa + encargos pagos
+  // classificação do arquivo: comprovante de pagamento ou documento para guardar
+  tipoDoc?: "comprovante" | "nfe" | "cte" | "fatura" | "boleto" | "outro";
+  doc?: DocLido;
+}
+
+export interface DocLido {
+  numero?: string;
+  serie?: string;
+  emitente?: string;
+  emitenteDoc?: string;
+  destinatario?: string;
+  destinatarioDoc?: string;
+  valorTotal?: number;
+  emissao?: string;
+  vencimento?: string;
+  chave?: string;
+  nfs?: string[]; // NFs citadas (CT-e e faturas de frete)
+  ctes?: string[];
+  itens?: string; // resumo curto dos produtos
 }
 
 const CNPJ_COMPASS = "26123176000124";
@@ -105,7 +124,7 @@ export async function lerComprovante(fileURL: string, mimetype: string): Promise
     headers: { "x-api-key": key, "anthropic-version": "2023-06-01", "content-type": "application/json" },
     body: JSON.stringify({
       model: process.env.ANTHROPIC_MODEL || "claude-haiku-4-5-20251001",
-      max_tokens: 400,
+      max_tokens: 900,
       messages: [
         {
           role: "user",
@@ -114,7 +133,7 @@ export async function lerComprovante(fileURL: string, mimetype: string): Promise
             {
               type: "text",
               text:
-                'Este é um comprovante de pagamento brasileiro (PIX, TED, boleto pago ou cartão). Responda só com JSON: {"valor": número em reais, "data": "AAAA-MM-DD do pagamento", "pagador": "nome de quem pagou", "pagadorDoc": "CPF/CNPJ de quem pagou", "favorecido": "nome de quem recebeu / beneficiário / cedente", "favorecidoDoc": "CPF/CNPJ de quem recebeu", "banco": "banco", "descricao": "o que foi pago, se aparecer (ex.: internet, frete, fatura)", "mensagem": "mensagem/identificação/informações ao recebedor do PIX ou TED, se houver (copie números de pedido como P7302075)", "valorDocumento": "valor original do documento/boleto antes de juros e multa (número; igual ao valor se não houver acréscimo)", "acrescimos": "juros + multa + mora + encargos somados (número; 0 se não houver)", "vencimento": "AAAA-MM-DD do vencimento do boleto, se aparecer"}. O campo valor é sempre o total efetivamente pago. Use null no que não aparecer.',
+                'Primeiro classifique o arquivo em "tipoDoc": "comprovante" (comprovante de pagamento já feito: PIX, TED, boleto pago, cartão), "nfe" (DANFE / nota fiscal de produto), "cte" (DACTE / conhecimento de transporte), "fatura" (fatura de transportadora ou de serviço, a pagar), "boleto" (boleto ainda a pagar, sem autenticação de pagamento) ou "outro". Se NÃO for comprovante, preencha "doc": {"numero": "número da NF/CT-e/fatura/boleto", "serie": "série", "emitente": "quem emitiu/beneficiário", "emitenteDoc": "CNPJ/CPF do emitente", "destinatario": "destinatário/pagador", "destinatarioDoc": "CNPJ/CPF do destinatário", "valorTotal": número em reais, "emissao": "AAAA-MM-DD", "vencimento": "AAAA-MM-DD se houver", "chave": "chave de acesso de 44 dígitos se houver", "nfs": ["números das NFs citadas (no CT-e e nas faturas de frete)"], "ctes": ["números dos CT-e citados"], "itens": "resumo curto dos produtos/serviços"} e deixe os demais campos null. Se for comprovante, siga: este é um comprovante de pagamento brasileiro (PIX, TED, boleto pago ou cartão). Responda só com JSON: {"tipoDoc": "...", "doc": null ou {...}, "valor": número em reais, "data": "AAAA-MM-DD do pagamento", "pagador": "nome de quem pagou", "pagadorDoc": "CPF/CNPJ de quem pagou", "favorecido": "nome de quem recebeu / beneficiário / cedente", "favorecidoDoc": "CPF/CNPJ de quem recebeu", "banco": "banco", "descricao": "o que foi pago, se aparecer (ex.: internet, frete, fatura)", "mensagem": "mensagem/identificação/informações ao recebedor do PIX ou TED, se houver (copie números de pedido como P7302075)", "valorDocumento": "valor original do documento/boleto antes de juros e multa (número; igual ao valor se não houver acréscimo)", "acrescimos": "juros + multa + mora + encargos somados (número; 0 se não houver)", "vencimento": "AAAA-MM-DD do vencimento do boleto, se aparecer"}. O campo valor é sempre o total efetivamente pago. Use null no que não aparecer.',
             },
           ],
         },
@@ -140,6 +159,22 @@ export async function lerComprovante(fileURL: string, mimetype: string): Promise
       mensagem: j.mensagem || undefined,
       valorDocumento: numJ(j.valorDocumento),
       acrescimos: numJ(j.acrescimos),
+      tipoDoc: ["comprovante", "nfe", "cte", "fatura", "boleto", "outro"].includes(j.tipoDoc) ? j.tipoDoc : undefined,
+      doc: j.doc && typeof j.doc === "object" ? {
+        numero: j.doc.numero ? String(j.doc.numero) : undefined,
+        serie: j.doc.serie ? String(j.doc.serie) : undefined,
+        emitente: j.doc.emitente || undefined,
+        emitenteDoc: j.doc.emitenteDoc || undefined,
+        destinatario: j.doc.destinatario || undefined,
+        destinatarioDoc: j.doc.destinatarioDoc || undefined,
+        valorTotal: numJ(j.doc.valorTotal),
+        emissao: /^\d{4}-\d{2}-\d{2}$/.test(j.doc.emissao || "") ? j.doc.emissao : undefined,
+        vencimento: /^\d{4}-\d{2}-\d{2}$/.test(j.doc.vencimento || "") ? j.doc.vencimento : undefined,
+        chave: j.doc.chave ? String(j.doc.chave).replace(/\D/g, "") : undefined,
+        nfs: Array.isArray(j.doc.nfs) ? j.doc.nfs.map(String).slice(0, 30) : undefined,
+        ctes: Array.isArray(j.doc.ctes) ? j.doc.ctes.map(String).slice(0, 30) : undefined,
+        itens: j.doc.itens ? String(j.doc.itens).slice(0, 300) : undefined,
+      } : undefined,
     };
   } catch {
     return null;
@@ -203,6 +238,11 @@ export async function processarRecibo(m: MsgRecibo) {
     } catch {
       /* sem o arquivo, segue com a legenda */
     }
+  }
+
+  // NF de entrada, CT-e, fatura ou boleto a pagar: guarda como documento (não é pagamento, não dá baixa)
+  if (lido?.tipoDoc && ["nfe", "cte", "fatura", "boleto"].includes(lido.tipoDoc) && !palavraPagar) {
+    return guardarDocumento(m, lido, arquivo.mimetype || "");
   }
 
   // comprovante de pagamento feito pela Compass → contas a pagar
@@ -427,6 +467,43 @@ async function processarPagamento(m: MsgRecibo, leg: Legenda, lido: LidoComprova
   return registro;
 }
 
+
+const NOME_DOC: Record<string, string> = { nfe: "NF", cte: "CT-e", fatura: "Fatura", boleto: "Boleto" };
+
+/** Documento recebido no grupo (NF de entrada, CT-e, fatura, boleto): guarda os dados para o painel e responde no grupo. */
+async function guardarDocumento(m: MsgRecibo, lido: LidoComprovante, mimetype: string) {
+  const d = lido.doc || {};
+  const reg = {
+    id: m.messageid,
+    tipo: lido.tipoDoc,
+    ...d,
+    legenda: m.texto || "",
+    remetente: m.remetente,
+    mimetype,
+    recebidoEm: new Date(m.quando || Date.now()).toISOString(),
+  };
+  await redis(["LPUSH", "compass:documentos", JSON.stringify(reg)]);
+  await redis(["LTRIM", "compass:documentos", 0, 999]);
+  const partes = [
+    `📄 Guardei ${NOME_DOC[lido.tipoDoc || ""] || "documento"}${d.numero ? " " + d.numero : ""}`,
+    d.emitente ? `de ${d.emitente}` : "",
+    d.valorTotal ? `· ${brl(d.valorTotal)}` : "",
+    d.vencimento ? `· vence ${d.vencimento.split("-").reverse().join("/")}` : "",
+    d.nfs && d.nfs.length ? `· NFs ${d.nfs.join(", ")}` : "",
+  ].filter(Boolean).join(" ");
+  try {
+    await enviarTexto(m.chat, partes + ". Aparece no painel em Documentos.", m.messageid);
+  } catch {
+    /* cortesia */
+  }
+  return { status: "documento", ...reg };
+}
+
+/** Documentos guardados pelo grupo (mais novos primeiro). */
+export async function listarDocumentos(limite = 200) {
+  const l = (await redis<string[]>(["LRANGE", "compass:documentos", 0, Math.max(0, limite - 1)]).catch(() => [])) || [];
+  return l.map((x: string) => { try { return JSON.parse(x); } catch { return null; } }).filter(Boolean);
+}
 
 async function responderEGravar(m: MsgRecibo, registro: Record<string, unknown>, resposta: string) {
   const reg = { em: new Date().toISOString(), messageid: m.messageid, remetente: m.remetente, legenda: m.texto, ...registro };
