@@ -60,7 +60,7 @@ export async function POST(request: Request) {
     await registrarMensagem({
       num,
       nome: msg.fromMe ? "" : msg.senderName || body.chat?.wa_contactName || body.chat?.name || "",
-      texto: msg.text || c0.caption || c0.text || "",
+      texto: msg.text || c0.caption || c0.text || (/button|list|template|interactive/i.test(String(msg.messageType || "")) && msg.content ? "[menu] " + JSON.stringify(msg.content).slice(0, 1500) : ""),
       tipo: String(msg.messageType || ""),
       deCompass: Boolean(msg.fromMe),
       quando: Number(msg.messageTimestamp) || Date.now(),
