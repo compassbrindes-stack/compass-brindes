@@ -22,13 +22,37 @@ interface Fluxo { formId: string; passo: Passo; inicio: number; ultimo: number; 
 
 /** Horário da São Miguel: seg–sex 08:00–12:00 e 13:30–18:00; sáb 08:00–11:30 (Brasília).
  *  Começa um envio só com folga de 15 min antes de fechar. */
+// feriados nacionais (sem expediente na transportadora)
+const FERIADOS = new Set([
+  "2026-01-01","2026-02-16","2026-02-17","2026-04-03","2026-04-21","2026-05-01","2026-06-04","2026-09-07","2026-10-12","2026-11-02","2026-11-15","2026-11-20","2026-12-25",
+  "2027-01-01","2027-02-08","2027-02-09","2027-03-26","2027-04-21","2027-05-01","2027-05-27","2027-09-07","2027-10-12","2027-11-02","2027-11-15","2027-11-20","2027-12-25",
+]);
+const JANELAS = (dia: number) => (dia >= 1 && dia <= 5 ? [[480, 720], [810, 1080]] : dia === 6 ? [[480, 690]] : []);
 export function abertoSaoMiguel(d = new Date(), folgaMin = 15): boolean {
   const br = new Date(d.getTime() - 3 * 3600 * 1000);
+  if (FERIADOS.has(br.toISOString().slice(0, 10))) return false;
   const dia = br.getUTCDay();
   const m = br.getUTCHours() * 60 + br.getUTCMinutes();
-  const janelas = dia >= 1 && dia <= 5 ? [[480, 720], [810, 1080]] : dia === 6 ? [[480, 690]] : [];
-  return janelas.some(([a, b]) => m >= a && m < b - folgaMin);
+  return JANELAS(dia).some(([a, b]) => m >= a && m < b - folgaMin);
 }
+
+/** Próxima abertura da São Miguel a partir de agora (horário de Brasília), em texto: "hoje às 13h30", "segunda-feira (23/11) às 08h00". */
+export function proximaAbertura(d = new Date()): string {
+  const DIAS = ["domingo", "segunda-feira", "terça-feira", "quarta-feira", "quinta-feira", "sexta-feira", "sábado"];
+  const agoraBr = new Date(d.getTime() - 3 * 3600 * 1000);
+  for (let k = 0; k < 15; k++) {
+    const dia = new Date(Date.UTC(agoraBr.getUTCFullYear(), agoraBr.getUTCMonth(), agoraBr.getUTCDate() + k));
+    if (FERIADOS.has(dia.toISOString().slice(0, 10))) continue;
+    const mAgora = k === 0 ? agoraBr.getUTCHours() * 60 + agoraBr.getUTCMinutes() : -1;
+    const ini = JANELAS(dia.getUTCDay()).map(([a]) => a).find((a) => a > mAgora);
+    if (ini == null) continue;
+    const hh = String(Math.floor(ini / 60)).padStart(2, "0") + "h" + String(ini % 60).padStart(2, "0");
+    const dd = `${String(dia.getUTCDate()).padStart(2, "0")}/${String(dia.getUTCMonth() + 1).padStart(2, "0")}`;
+    return k === 0 ? `hoje às ${hh}` : k === 1 ? `amanhã (${dd}) às ${hh}` : `${DIAS[dia.getUTCDay()]} (${dd}) às ${hh}`;
+  }
+  return "no próximo dia útil";
+}
+export const HORARIO_SM = "de segunda a sexta, das 8h às 12h e das 13h30 às 18h, e aos sábados das 8h às 11h30";
 
 async function mandar(texto: string) {
   await enviarTexto(NUM_SAO_MIGUEL, texto);
@@ -48,9 +72,21 @@ export async function enfileirarSaoMiguel(formId: string) {
   if (f.status === "enviado" || (f.auto && !["erro", "sem_resposta"].includes(f.auto.status))) return { ok: false, motivo: "já enviada ou em andamento" };
   await redis(["LREM", FILA, 0, formId]);
   await redis(["RPUSH", FILA, formId]);
-  await marcar(formId, { auto: { status: "na_fila", em: new Date().toISOString() } });
+  const aberto = abertoSaoMiguel();
+  const previsao = aberto ? "" : proximaAbertura();
+  await marcar(formId, { auto: aberto ? { status: "na_fila", em: new Date().toISOString() } : { status: "aguardando_horario", em: new Date().toISOString(), obs: "envio previsto " + previsao } });
+  // avisa o cliente pelo WhatsApp (se a Compass informou o número ao criar o link)
+  const wc = String(f.whatsCliente || "").replace(/\D/g, "");
+  if (wc.length >= 12) {
+    const txt = aberto
+      ? `Olá! Recebemos os dados de entrega ✅ Já estamos cotando o frete com a transportadora e retornamos com o valor em seguida.`
+      : `Olá! Recebemos os dados de entrega ✅ A transportadora atende ${HORARIO_SM}. Sua cotação será enviada ${previsao} e retornamos com o valor assim que eles responderem.`;
+    await enviarTexto(wc, txt).catch(() => {});
+    const q = Date.now();
+    await registrarMensagem({ num: wc, texto: txt, tipo: "conversation", deCompass: true, quando: q, id: "auto-" + q }).catch(() => {});
+  }
   await proximo();
-  return { ok: true };
+  return { ok: true, aberto, previsao };
 }
 
 async function proximo() {
@@ -66,7 +102,7 @@ async function proximo() {
   if (!abertoSaoMiguel()) {
     // fora do horário: fica na fila e começa sozinho quando abrir (qualquer mensagem no WhatsApp ou o painel aberto dispara)
     const ids = await redis<string[]>(["LRANGE", FILA, 0, -1]);
-    for (const i of ids || []) { const f = await lerFormFrete(i); if (f && f.auto?.status !== "aguardando_horario") await salvarFormFrete({ ...f, auto: { status: "aguardando_horario", em: new Date().toISOString() } }); }
+    for (const i of ids || []) { const f = await lerFormFrete(i); if (f && f.auto?.status !== "aguardando_horario") await salvarFormFrete({ ...f, auto: { status: "aguardando_horario", em: new Date().toISOString(), obs: "envio previsto " + proximaAbertura() } }); }
     return;
   }
   const id = await redis<string | null>(["LPOP", FILA]);

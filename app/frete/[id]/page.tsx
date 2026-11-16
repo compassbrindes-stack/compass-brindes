@@ -16,6 +16,7 @@ export default function FretePage({ params }: { params: { id: string } }) {
   const [tocado, setTocado] = useState<Record<string, boolean>>({});
   const [enviando, setEnviando] = useState(false);
   const [ok, setOk] = useState(false);
+  const [aviso, setAviso] = useState("");
   const set = (k: keyof typeof VAZIO, v: string) => setF((x) => ({ ...x, [k]: v }));
 
   useEffect(() => {
@@ -45,6 +46,7 @@ export default function FretePage({ params }: { params: { id: string } }) {
       const r = await fetch(`/api/frete/${encodeURIComponent(params.id)}`, { method: "POST", headers: { "Content-Type": "application/json" }, body: JSON.stringify({ ...f, doc: onlyDigits(f.doc), cep: onlyDigits(f.cep) }) });
       const j = await r.json();
       if (!r.ok) throw new Error(j.error || "Não foi possível enviar.");
+      setAviso(j.previsao ? `A transportadora atende ${j.horario}. Sua cotação será enviada ${j.previsao} e retornamos com o valor pelo WhatsApp.` : "");
       setOk(true);
       window.scrollTo({ top: 0, behavior: "smooth" });
     } catch (e: any) {
@@ -97,7 +99,7 @@ export default function FretePage({ params }: { params: { id: string } }) {
           <div className="ok">
             <div style={{ fontSize: 34 }}>✅</div>
             <b>Recebemos seus dados!</b>
-            <p className="hn" style={{ fontSize: 14 }}>Vamos cotar o frete e retornamos pelo WhatsApp.</p>
+            <p className="hn" style={{ fontSize: 14 }}>{aviso || "Vamos cotar o frete e retornamos pelo WhatsApp."}</p>
             <button onClick={() => setOk(false)}>Corrigir dados</button>
           </div>
         ) : (

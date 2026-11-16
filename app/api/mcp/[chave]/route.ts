@@ -189,6 +189,7 @@ const FERRAMENTAS = [
         valorNF: { type: "string", description: "Valor da nota fiscal, ex.: 280,00." },
         produto: { type: "string", description: "O que é e como está embalado." },
         pesoTotal: { type: "string", description: "Peso total em kg, ex.: 3." },
+        whatsCliente: { type: "string", description: "WhatsApp do cliente (para avisar sobre o horário da transportadora quando ele preencher)." },
         volumes: { type: "array", items: { type: "object", properties: { qtd: { type: "string" }, c: { type: "string" }, l: { type: "string" }, a: { type: "string" }, peso: { type: "string" } } } },
       },
     },

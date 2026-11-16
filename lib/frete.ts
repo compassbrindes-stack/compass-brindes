@@ -18,6 +18,7 @@ export interface FormFrete {
   volumes: Volume[];
   pesoTotal: string;
   autoEnviar?: boolean;
+  whatsCliente?: string;
   dest?: Destinatario;
   preenchidoEm?: string;
   enviadoEm?: string;
@@ -45,6 +46,7 @@ export async function criarFormFrete(d: Partial<FormFrete>): Promise<FormFrete> 
     volumes: (Array.isArray(d.volumes) ? d.volumes : []).slice(0, 30).map((v: any) => ({ qtd: String(v.qtd || "1"), c: String(v.c || ""), l: String(v.l || ""), a: String(v.a || ""), peso: String(v.peso || "") })),
     pesoTotal: String(d.pesoTotal || "").slice(0, 20),
     autoEnviar: d.autoEnviar !== false,
+    whatsCliente: String(d.whatsCliente || "").replace(/\D/g, "").replace(/^(\d{10,11})$/, "55$1").slice(0, 13),
     ...(d.dest ? { dest: d.dest } : {}),
   };
   await redis(["SET", CHAVE(id), JSON.stringify(f), "EX", VALIDADE]);

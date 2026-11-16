@@ -1,6 +1,6 @@
 import { NextResponse } from "next/server";
 import { lerFormFrete, salvarFormFrete, publico, UFS, completo } from "@/lib/frete";
-import { enfileirarSaoMiguel } from "@/lib/saomiguel";
+import { enfileirarSaoMiguel, HORARIO_SM } from "@/lib/saomiguel";
 import { fetchAddressByCep } from "@/lib/validators";
 import { isValidCpfCnpj, isValidCEP, onlyDigits } from "@/lib/validators";
 
@@ -34,6 +34,7 @@ export async function POST(req: Request, ctx: { params: { id: string } }) {
   if (!completo(novo)) return NextResponse.json({ error: "Faltam dados obrigatórios." }, { status: 400 });
   await salvarFormFrete(novo);
   // envio automático para a Expresso São Miguel (só se a Compass não desligou para este link)
-  if (process.env.SAO_MIGUEL_AUTO !== "0" && f.autoEnviar !== false) await enfileirarSaoMiguel(novo.id).catch(() => {});
-  return NextResponse.json({ ok: true });
+  let previsao = "";
+  if (process.env.SAO_MIGUEL_AUTO !== "0" && f.autoEnviar !== false) { const r: any = await enfileirarSaoMiguel(novo.id).catch(() => null); previsao = (r && r.previsao) || ""; }
+  return NextResponse.json({ ok: true, previsao, horario: HORARIO_SM });
 }
