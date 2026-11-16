@@ -1,5 +1,7 @@
 import { NextResponse } from "next/server";
-import { lerFormFrete, salvarFormFrete, publico } from "@/lib/frete";
+import { lerFormFrete, salvarFormFrete, publico, UFS, completo } from "@/lib/frete";
+import { enfileirarSaoMiguel } from "@/lib/saomiguel";
+import { fetchAddressByCep } from "@/lib/validators";
 import { isValidCpfCnpj, isValidCEP, onlyDigits } from "@/lib/validators";
 
 export const dynamic = "force-dynamic";
@@ -23,9 +25,15 @@ export async function POST(req: Request, ctx: { params: { id: string } }) {
     nome: txt(b.nome), doc: onlyDigits(txt(b.doc, 20)), cep: onlyDigits(txt(b.cep, 12)), endereco: txt(b.endereco), numero: txt(b.numero, 20),
     complemento: txt(b.complemento, 60), bairro: txt(b.bairro, 80), cidade: txt(b.cidade, 80), uf: txt(b.uf, 2).toUpperCase(), contato: txt(b.contato, 80), telefone: txt(b.telefone, 30),
   };
-  const faltam = [!dest.nome && "nome / razão social", !isValidCpfCnpj(dest.doc) && "CPF ou CNPJ válido", !isValidCEP(dest.cep) && "CEP", !dest.endereco && "endereço", !dest.numero && "número", !dest.bairro && "bairro", !dest.cidade && "cidade", !/^[A-Z]{2}$/.test(dest.uf) && "UF"].filter(Boolean);
+  const faltam = [!dest.nome && "nome / razão social", !isValidCpfCnpj(dest.doc) && "CPF ou CNPJ válido", !isValidCEP(dest.cep) && "CEP", !dest.endereco && "endereço", !dest.numero && "número", !dest.bairro && "bairro", !dest.cidade && "cidade", !UFS.includes(dest.uf) && "UF"].filter(Boolean);
   if (faltam.length) return NextResponse.json({ error: "Confira: " + faltam.join(", ") + "." }, { status: 400 });
+  // CEP precisa existir e bater com a UF informada (endereço errado = cotação devolvida)
+  const end = await fetchAddressByCep(dest.cep).catch(() => null);
+  if (end && end.estado && end.estado !== dest.uf) return NextResponse.json({ error: `O CEP ${dest.cep.slice(0, 5)}-${dest.cep.slice(5)} é de ${end.cidade}/${end.estado}. Confira o CEP ou a UF.` }, { status: 400 });
   const novo = { ...f, dest, obsCliente: txt(b.obs, 300), status: "preenchido" as const, preenchidoEm: new Date().toISOString() };
+  if (!completo(novo)) return NextResponse.json({ error: "Faltam dados obrigatórios." }, { status: 400 });
   await salvarFormFrete(novo);
+  // envio automático para a Expresso São Miguel (só se a Compass não desligou para este link)
+  if (process.env.SAO_MIGUEL_AUTO !== "0" && f.autoEnviar !== false) await enfileirarSaoMiguel(novo.id).catch(() => {});
   return NextResponse.json({ ok: true });
 }

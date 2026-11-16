@@ -17,10 +17,12 @@ export interface FormFrete {
   produto: string;
   volumes: Volume[];
   pesoTotal: string;
+  autoEnviar?: boolean;
   dest?: Destinatario;
   preenchidoEm?: string;
   enviadoEm?: string;
   obsCliente?: string;
+  auto?: { status: string; em: string; obs?: string; protocolo?: string; atendente?: string; msgId?: string; valor?: number; prazo?: string; numero?: string };
 }
 
 const CHAVE = (id: string) => `compass:frete:${id}`;
@@ -42,6 +44,7 @@ export async function criarFormFrete(d: Partial<FormFrete>): Promise<FormFrete> 
     produto: String(d.produto || "produto personalizado/caixa de papelão").slice(0, 200),
     volumes: (Array.isArray(d.volumes) ? d.volumes : []).slice(0, 30).map((v: any) => ({ qtd: String(v.qtd || "1"), c: String(v.c || ""), l: String(v.l || ""), a: String(v.a || ""), peso: String(v.peso || "") })),
     pesoTotal: String(d.pesoTotal || "").slice(0, 20),
+    autoEnviar: d.autoEnviar !== false,
     ...(d.dest ? { dest: d.dest } : {}),
   };
   await redis(["SET", CHAVE(id), JSON.stringify(f), "EX", VALIDADE]);
@@ -88,4 +91,14 @@ export function textoCotacaoSaoMiguel(f: FormFrete): string {
 /** Dados que o cliente pode ver (sem nada interno). */
 export function publico(f: FormFrete) {
   return { id: f.id, status: f.status, clienteNome: f.clienteNome, valorNF: f.valorNF, volumes: f.volumes, pesoTotal: f.pesoTotal, produto: f.produto, dest: f.dest || null };
+}
+
+export const UFS = ["AC","AL","AP","AM","BA","CE","DF","ES","GO","MA","MT","MS","MG","PA","PB","PR","PE","PI","RJ","RN","RS","RO","RR","SC","SP","SE","TO"];
+/** Tudo que a São Miguel exige para cotar (senão devolvem a cotação). */
+export function completo(f: FormFrete): boolean {
+  const d = f.dest;
+  const so = (s: string) => String(s || "").replace(/\D/g, "");
+  const vols = (f.volumes || []).filter((v) => v.c || v.l || v.a || v.peso);
+  return !!(d && d.nome && [11, 14].includes(so(d.doc).length) && so(d.cep).length === 8 && d.endereco && d.numero && d.bairro && d.cidade && UFS.includes(d.uf)
+    && f.valorNF && f.produto && vols.length && vols.every((v) => v.c && v.l && v.a && v.peso));
 }

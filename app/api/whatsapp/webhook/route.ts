@@ -2,6 +2,7 @@ import { NextResponse } from "next/server";
 import { redis } from "@/lib/redis";
 import { processarRecibo } from "@/lib/recibos";
 import { numeroDoChat, registrarMensagem } from "@/lib/conversas";
+import { NUM_SAO_MIGUEL, mensagemSaoMiguel } from "@/lib/saomiguel";
 
 export const dynamic = "force-dynamic";
 export const maxDuration = 60;
@@ -66,6 +67,8 @@ export async function POST(request: Request) {
       quando: Number(msg.messageTimestamp) || Date.now(),
       id: msg.messageid || msg.id || "",
     }).catch(() => {});
+    // robô / atendente da Expresso São Miguel: segue o envio automático da cotação
+    if (num === NUM_SAO_MIGUEL && !msg.fromMe) await mensagemSaoMiguel(msg).catch(() => {});
     return NextResponse.json({ ok: true, registrado: "conversa" });
   }
 

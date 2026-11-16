@@ -6,6 +6,7 @@ import { listarDocumentos } from "@/lib/recibos";
 import catalogo from "@/data/catalogo-app.json";
 import { criarFormFrete, listarFormFrete, lerFormFrete, salvarFormFrete, textoCotacaoSaoMiguel } from "@/lib/frete";
 import { redis } from "@/lib/redis";
+import { enfileirarSaoMiguel, situacaoSaoMiguel } from "@/lib/saomiguel";
 
 export const dynamic = "force-dynamic";
 
@@ -206,6 +207,12 @@ const FERRAMENTAS = [
     annotations: { readOnlyHint: false, destructiveHint: false },
   },
   {
+    name: "enviar_sao_miguel",
+    description: "Manda a cotação de um formulário de frete preenchido para a Expresso São Miguel pelo WhatsApp da Compass, passando sozinho pelo robô (CNPJ, IRAI, Cotações) e lendo a imagem com o valor quando a atendente responder. Só envia se o formulário estiver completo. Sem id, devolve a situação da fila.",
+    inputSchema: { type: "object", properties: { id: { type: "string", description: "Id do formulário de frete." } } },
+    annotations: { readOnlyHint: false, destructiveHint: false, openWorldHint: true },
+  },
+  {
     name: "menu_whatsapp",
     description: "Mensagens de robô (botões e listas de opções) recebidas de um número no WhatsApp da Compass, com o conteúdo completo das opções — usado para entender o atendimento automático da transportadora.",
     inputSchema: { type: "object", properties: { numero: { type: "string", description: "Número com DDI e DDD, só dígitos." }, limite: { type: "integer", minimum: 1, maximum: 50 } }, required: ["numero"] },
@@ -312,6 +319,9 @@ export async function POST(request: Request, { params }: { params: { chave: stri
         const st = ["aguardando_cliente", "preenchido", "enviado", "cancelado"].includes(a.status) ? a.status : f.status;
         await salvarFormFrete({ ...f, status: st, ...(st === "enviado" ? { enviadoEm: new Date().toISOString() } : {}) });
         dados = { id: f.id, status: st };
+      }
+      else if (nome === "enviar_sao_miguel") {
+        dados = a.id ? { ...(await enfileirarSaoMiguel(String(a.id))), ...(await situacaoSaoMiguel()) } : await situacaoSaoMiguel();
       }
       else if (nome === "menu_whatsapp") {
         const num = String(a.numero || "").replace(/\D/g, "");
