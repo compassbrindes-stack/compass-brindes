@@ -6,7 +6,7 @@ import { listarDocumentos } from "@/lib/recibos";
 import catalogo from "@/data/catalogo-app.json";
 import { criarFormFrete, listarFormFrete, lerFormFrete, salvarFormFrete, textoCotacaoSaoMiguel } from "@/lib/frete";
 import { redis } from "@/lib/redis";
-import { enfileirarSaoMiguel, situacaoSaoMiguel } from "@/lib/saomiguel";
+import { enfileirarSaoMiguel, situacaoSaoMiguel, tickSaoMiguel } from "@/lib/saomiguel";
 
 export const dynamic = "force-dynamic";
 
@@ -310,6 +310,7 @@ export async function POST(request: Request, { params }: { params: { chave: stri
         dados = { id: f.id, url, mensagem };
       }
       else if (nome === "formularios_frete") {
+        await tickSaoMiguel().catch(() => {});
         const lista = await listarFormFrete(Math.min(200, Math.max(1, Number(a.limite) || 50)));
         dados = { formularios: lista.map((f) => ({ ...f, url: `${SITE}/frete/${f.id}`, texto: f.dest ? textoCotacaoSaoMiguel(f) : null })) };
       }

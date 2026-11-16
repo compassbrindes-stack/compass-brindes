@@ -18,7 +18,17 @@ const LIMITE_ROBO_MS = 15 * 60 * 1000; // sem resposta do robô em 15 min → er
 const LIMITE_ATENDENTE_MS = 4 * 60 * 60 * 1000; // aguardando atendente/valor até 4 h
 
 type Passo = "oi" | "cnpj" | "local" | "opcao" | "atendente" | "enviado";
-interface Fluxo { formId: string; passo: Passo; inicio: number; ultimo: number; protocolo?: string; atendente?: string }
+interface Fluxo { formId: string; passo: Passo; inicio: number; ultimo: number; protocolo?: string; atendente?: string; pausado?: boolean }
+
+/** Horário da São Miguel: seg–sex 08:00–12:00 e 13:30–18:00; sáb 08:00–11:30 (Brasília).
+ *  Começa um envio só com folga de 15 min antes de fechar. */
+export function abertoSaoMiguel(d = new Date(), folgaMin = 15): boolean {
+  const br = new Date(d.getTime() - 3 * 3600 * 1000);
+  const dia = br.getUTCDay();
+  const m = br.getUTCHours() * 60 + br.getUTCMinutes();
+  const janelas = dia >= 1 && dia <= 5 ? [[480, 720], [810, 1080]] : dia === 6 ? [[480, 690]] : [];
+  return janelas.some(([a, b]) => m >= a && m < b - folgaMin);
+}
 
 async function mandar(texto: string) {
   await enviarTexto(NUM_SAO_MIGUEL, texto);
@@ -46,11 +56,18 @@ export async function enfileirarSaoMiguel(formId: string) {
 async function proximo() {
   const atual = await redisGetJSON<Fluxo>(FLUXO);
   if (atual) {
+    if (atual.pausado) { if (Date.now() - atual.ultimo < 20 * 3600 * 1000) return; }
     const parado = Date.now() - atual.ultimo;
     const limite = atual.passo === "atendente" || atual.passo === "enviado" ? LIMITE_ATENDENTE_MS : LIMITE_ROBO_MS;
     if (parado < limite) return; // ainda em andamento
     await marcar(atual.formId, { auto: { status: atual.passo === "enviado" ? "sem_resposta" : "erro", em: new Date().toISOString(), obs: `parou no passo "${atual.passo}"` } });
     await redis(["DEL", FLUXO]);
+  }
+  if (!abertoSaoMiguel()) {
+    // fora do horário: fica na fila e começa sozinho quando abrir (qualquer mensagem no WhatsApp ou o painel aberto dispara)
+    const ids = await redis<string[]>(["LRANGE", FILA, 0, -1]);
+    for (const i of ids || []) { const f = await lerFormFrete(i); if (f && f.auto?.status !== "aguardando_horario") await salvarFormFrete({ ...f, auto: { status: "aguardando_horario", em: new Date().toISOString() } }); }
+    return;
   }
   const id = await redis<string | null>(["LPOP", FILA]);
   if (!id) return;
@@ -75,9 +92,16 @@ export async function mensagemSaoMiguel(msg: any) {
 
   // robô
   if (botoes.length && tem(botoes, CNPJ) && ["oi", "cnpj"].includes(fl.passo)) { await mandar(CNPJ); return salvarFluxo({ ...fl, passo: "cnpj" }); }
+  if (/hor[aá]rio de atendimento [eé] de/i.test(texto)) {
+    // a São Miguel está fora do horário: espera reabrir (eles mesmos retomam a conversa)
+    await marcar(fl.formId, { auto: { status: "aguardando_horario", em: new Date().toISOString(), obs: "São Miguel fora do horário; retoma quando abrirem" } });
+    return salvarFluxo({ ...fl, pausado: true });
+  }
   if (botoes.length && /continuar com a tratativa|contato anterior/i.test(texto)) {
-    const nao = botoes.find((b) => /^n[aã]o\b|novo|nova/i.test(b));
-    if (nao) { await mandar(nao); return salvarFluxo(fl); }
+    // se o atendimento anterior é ESTA cotação (já pedimos "Cotações"), continua; senão começa um novo
+    const continuar = fl.pausado || ["opcao", "atendente"].includes(fl.passo);
+    const esc = continuar ? botoes.find((b) => /^sim\b|continuar/i.test(b)) : botoes.find((b) => /^n[aã]o\b|novo|nova/i.test(b));
+    if (esc) { await mandar(esc); if (continuar) await marcar(fl.formId, { auto: { status: "falando_com_robo", em: new Date().toISOString(), obs: "retomado após o horário" } }); return salvarFluxo({ ...fl, pausado: false }); }
     await marcar(fl.formId, { auto: { status: "erro", em: new Date().toISOString(), obs: "robô perguntou sobre atendimento anterior: " + botoes.join(" / ") } });
     await redis(["DEL", FLUXO]); return proximo();
   }
@@ -150,4 +174,11 @@ export async function situacaoSaoMiguel() {
   const fl = await redisGetJSON<Fluxo>(FLUXO);
   const fila = await redis<string[]>(["LRANGE", FILA, 0, -1]);
   return { emAndamento: fl, fila };
+}
+
+/** Chamado em qualquer movimento (webhook, painel): começa a fila quando a São Miguel abrir. */
+export async function tickSaoMiguel() {
+  const n = await redis<number>(["LLEN", FILA]).catch(() => 0);
+  const fl = await redisGetJSON<Fluxo>(FLUXO).catch(() => null);
+  if (n || fl) await proximo();
 }
