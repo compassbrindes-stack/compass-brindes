@@ -38,6 +38,8 @@ export default function FretePage({ params }: { params: { id: string } }) {
     e.preventDefault();
     setTocado({ doc: true, cep: true, nome: true, endereco: true, numero: true, bairro: true, cidade: true, uf: true });
     setErro(null);
+    const falta = [!f.nome.trim() && "nome", !isValidCpfCnpj(f.doc) && "CPF/CNPJ", !isValidCEP(f.cep) && "CEP", !f.endereco.trim() && "rua", !f.numero.trim() && "número", !f.bairro.trim() && "bairro", !f.cidade.trim() && "cidade", !/^[A-Z]{2}$/.test(f.uf) && "UF"].filter(Boolean);
+    if (falta.length) { setErro("Preencha todos os campos com * (" + falta.join(", ") + "). A transportadora só cota com o endereço completo."); return; }
     setEnviando(true);
     try {
       const r = await fetch(`/api/frete/${encodeURIComponent(params.id)}`, { method: "POST", headers: { "Content-Type": "application/json" }, body: JSON.stringify({ ...f, doc: onlyDigits(f.doc), cep: onlyDigits(f.cep) }) });
@@ -87,7 +89,7 @@ export default function FretePage({ params }: { params: { id: string } }) {
     <main className="fr">
       <style>{CSS}</style>
       <div className="fr-card">
-        <div className="fr-top"><b>Compass Brindes · Dados para entrega</b><span>{dados.clienteNome ? `${dados.clienteNome}, preencha` : "Preencha"} os dados de quem vai receber</span></div>
+        <div className="fr-top"><b>Compass Brindes · Dados para entrega</b><span>{dados.clienteNome ? `${dados.clienteNome}, preencha` : "Preencha"} os dados de quem vai receber · campos com * são obrigatórios</span></div>
         {(vols.length > 0 || dados.pesoTotal) && (
           <div className="fr-enc">📦 {vols.map((v) => `${v.qtd || 1} vol ${v.c}×${v.l}×${v.a} cm`).join(" · ")}{dados.pesoTotal ? ` · ${dados.pesoTotal} kg` : ""}</div>
         )}
