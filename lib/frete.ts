@@ -19,6 +19,9 @@ export interface FormFrete {
   pesoTotal: string;
   autoEnviar?: boolean;
   whatsCliente?: string;
+  /** cotação montada no painel (cliente já cadastrado): texto pronto, conferido lá */
+  texto?: string;
+  origem?: "link" | "painel";
   dest?: Destinatario;
   preenchidoEm?: string;
   enviadoEm?: string;
@@ -37,7 +40,7 @@ export async function criarFormFrete(d: Partial<FormFrete>): Promise<FormFrete> 
   const f: FormFrete = {
     id,
     criadoEm: new Date().toISOString(),
-    status: "aguardando_cliente",
+    status: d.texto ? "preenchido" : "aguardando_cliente",
     clienteNome: String(d.clienteNome || "").slice(0, 120),
     pedido: String(d.pedido || "").slice(0, 60),
     tomador: d.tomador === "destinatario" ? "destinatario" : "remetente",
@@ -46,6 +49,7 @@ export async function criarFormFrete(d: Partial<FormFrete>): Promise<FormFrete> 
     volumes: (Array.isArray(d.volumes) ? d.volumes : []).slice(0, 30).map((v: any) => ({ qtd: String(v.qtd || "1"), c: String(v.c || ""), l: String(v.l || ""), a: String(v.a || ""), peso: String(v.peso || "") })),
     pesoTotal: String(d.pesoTotal || "").slice(0, 20),
     autoEnviar: d.autoEnviar !== false,
+    ...(d.texto ? { texto: String(d.texto).slice(0, 4000), origem: "painel" as const } : { origem: "link" as const }),
     whatsCliente: String(d.whatsCliente || "").replace(/\D/g, "").replace(/^(\d{10,11})$/, "55$1").slice(0, 13),
     ...(d.dest ? { dest: d.dest } : {}),
   };
@@ -70,6 +74,7 @@ export async function listarFormFrete(limite = 50): Promise<FormFrete[]> {
 
 const so = (s: string) => String(s || "").replace(/\D/g, "");
 export function textoCotacaoSaoMiguel(f: FormFrete): string {
+  if (f.origem === "painel" && f.texto) return f.texto.startsWith("*Compass") ? f.texto : "*Compass Brindes Corporativos:*\n" + f.texto;
   const d = f.dest;
   const r = REMETENTE;
   const vols = (f.volumes || []).filter((v) => v.c || v.l || v.a || v.peso);
@@ -98,6 +103,7 @@ export function publico(f: FormFrete) {
 export const UFS = ["AC","AL","AP","AM","BA","CE","DF","ES","GO","MA","MT","MS","MG","PA","PB","PR","PE","PI","RJ","RN","RS","RO","RR","SC","SP","SE","TO"];
 /** Tudo que a São Miguel exige para cotar (senão devolvem a cotação). */
 export function completo(f: FormFrete): boolean {
+  if (f.origem === "painel") return !!(f.texto && /Destinat/i.test(f.texto) && f.dest && f.dest.nome && [11, 14].includes(String(f.dest.doc || "").replace(/\D/g, "").length));
   const d = f.dest;
   const so = (s: string) => String(s || "").replace(/\D/g, "");
   const vols = (f.volumes || []).filter((v) => v.c || v.l || v.a || v.peso);
