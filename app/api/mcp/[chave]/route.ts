@@ -4,7 +4,7 @@ import { enviarTexto, enviarMidia, baixarMidia } from "@/lib/uazapi";
 import { registrarCompras, todasCompras } from "@/lib/compras";
 import { listarDocumentos } from "@/lib/recibos";
 import catalogo from "@/data/catalogo-app.json";
-import { criarFormFrete, listarFormFrete, lerFormFrete, salvarFormFrete, textoCotacaoSaoMiguel } from "@/lib/frete";
+import { criarFormFrete, listarFormFrete, lerFormFrete, salvarFormFrete, textoCotacaoSaoMiguel, apagarFormFrete } from "@/lib/frete";
 import { redis } from "@/lib/redis";
 import { enfileirarSaoMiguel, situacaoSaoMiguel, tickSaoMiguel } from "@/lib/saomiguel";
 
@@ -205,8 +205,8 @@ const FERRAMENTAS = [
   },
   {
     name: "atualizar_frete",
-    description: "Muda o status de um formulário de frete (enviado = cotação mandada à transportadora; cancelado = link desativado).",
-    inputSchema: { type: "object", properties: { id: { type: "string" }, status: { type: "string", enum: ["aguardando_cliente", "preenchido", "enviado", "cancelado"] } }, required: ["id", "status"] },
+    description: "Muda o status de um formulário de frete (enviado = cotação mandada à transportadora; cancelado = link desativado; apagado = apaga de vez um formulário já cancelado).",
+    inputSchema: { type: "object", properties: { id: { type: "string" }, status: { type: "string", enum: ["aguardando_cliente", "preenchido", "enviado", "cancelado", "apagado"] } }, required: ["id", "status"] },
     annotations: { readOnlyHint: false, destructiveHint: false },
   },
   {
@@ -318,6 +318,7 @@ export async function POST(request: Request, { params }: { params: { chave: stri
         dados = { formularios: lista.map((f) => ({ ...f, url: `${SITE}/frete/${f.id}`, texto: f.dest ? textoCotacaoSaoMiguel(f) : null })) };
       }
       else if (nome === "atualizar_frete") {
+        if (a.status === "apagado") { const ap = await apagarFormFrete(String(a.id || "")); dados = { id: a.id, apagado: ap }; return ok(id, { content: [{ type: "text", text: JSON.stringify(dados) }], structuredContent: dados }); }
         const f = await lerFormFrete(String(a.id || ""));
         if (!f) return ok(id, { content: [{ type: "text", text: "Erro: formulário não encontrado" }], isError: true });
         const st = ["aguardando_cliente", "preenchido", "enviado", "cancelado"].includes(a.status) ? a.status : f.status;

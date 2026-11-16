@@ -110,3 +110,12 @@ export function completo(f: FormFrete): boolean {
   return !!(d && d.nome && [11, 14].includes(so(d.doc).length) && so(d.cep).length === 8 && d.endereco && d.numero && d.bairro && d.cidade && UFS.includes(d.uf)
     && f.valorNF && f.produto && vols.length && vols.every((v) => v.c && v.l && v.a && v.peso));
 }
+
+/** Apaga de vez um formulário (só os cancelados). */
+export async function apagarFormFrete(id: string) {
+  const f = await lerFormFrete(id);
+  if (!f || f.status !== "cancelado") return false;
+  await redis(["DEL", CHAVE(id)]);
+  await redis(["LREM", LISTA, 0, id]);
+  return true;
+}
