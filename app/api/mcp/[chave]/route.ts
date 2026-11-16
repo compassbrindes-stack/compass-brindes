@@ -4,6 +4,8 @@ import { enviarTexto, enviarMidia, baixarMidia } from "@/lib/uazapi";
 import { registrarCompras, todasCompras } from "@/lib/compras";
 import { listarDocumentos } from "@/lib/recibos";
 import catalogo from "@/data/catalogo-app.json";
+import { criarFormFrete, listarFormFrete, lerFormFrete, salvarFormFrete, textoCotacaoSaoMiguel } from "@/lib/frete";
+import { redis } from "@/lib/redis";
 
 export const dynamic = "force-dynamic";
 
@@ -174,6 +176,41 @@ const FERRAMENTAS = [
     },
     annotations: { readOnlyHint: true },
   },
+  {
+    name: "criar_link_frete",
+    description: "Cria um formulário (link público) para o cliente preencher os dados do destinatário da entrega. A Compass informa valor da NF, volumes, peso e produto; o cliente preenche nome, CPF/CNPJ e endereço. Devolve id, link e uma mensagem pronta para mandar ao cliente.",
+    inputSchema: {
+      type: "object",
+      properties: {
+        clienteNome: { type: "string", description: "Nome do cliente (aparece na saudação do formulário)." },
+        pedido: { type: "string", description: "Referência interna (nº do pedido/proposta)." },
+        tomador: { type: "string", enum: ["remetente", "destinatario"], description: "Quem paga o frete." },
+        valorNF: { type: "string", description: "Valor da nota fiscal, ex.: 280,00." },
+        produto: { type: "string", description: "O que é e como está embalado." },
+        pesoTotal: { type: "string", description: "Peso total em kg, ex.: 3." },
+        volumes: { type: "array", items: { type: "object", properties: { qtd: { type: "string" }, c: { type: "string" }, l: { type: "string" }, a: { type: "string" }, peso: { type: "string" } } } },
+      },
+    },
+    annotations: { readOnlyHint: false, destructiveHint: false },
+  },
+  {
+    name: "formularios_frete",
+    description: "Lista os formulários de frete criados (mais novos primeiro): status (aguardando_cliente, preenchido, enviado, cancelado), dados do destinatário preenchidos pelo cliente e o texto da cotação no formato da Expresso São Miguel.",
+    inputSchema: { type: "object", properties: { limite: { type: "integer", minimum: 1, maximum: 200 } } },
+    annotations: { readOnlyHint: true },
+  },
+  {
+    name: "atualizar_frete",
+    description: "Muda o status de um formulário de frete (enviado = cotação mandada à transportadora; cancelado = link desativado).",
+    inputSchema: { type: "object", properties: { id: { type: "string" }, status: { type: "string", enum: ["aguardando_cliente", "preenchido", "enviado", "cancelado"] } }, required: ["id", "status"] },
+    annotations: { readOnlyHint: false, destructiveHint: false },
+  },
+  {
+    name: "menu_whatsapp",
+    description: "Mensagens de robô (botões e listas de opções) recebidas de um número no WhatsApp da Compass, com o conteúdo completo das opções — usado para entender o atendimento automático da transportadora.",
+    inputSchema: { type: "object", properties: { numero: { type: "string", description: "Número com DDI e DDD, só dígitos." }, limite: { type: "integer", minimum: 1, maximum: 50 } }, required: ["numero"] },
+    annotations: { readOnlyHint: true },
+  },
 ];
 
 const ok = (id: unknown, result: unknown) => NextResponse.json({ jsonrpc: "2.0", id, result });
@@ -258,6 +295,29 @@ export async function POST(request: Request, { params }: { params: { chave: stri
       else if (nome === "foto_produto") {
         const foto = await fotoProduto(String(a.codigo || ""), String(a.url || ""));
         return ok(id, { content: [{ type: "text", text: JSON.stringify(foto) }], structuredContent: foto });
+      }
+      else if (nome === "criar_link_frete") {
+        const f = await criarFormFrete(a);
+        const url = `${SITE}/frete/${f.id}`;
+        const mensagem = `Olá${f.clienteNome ? ", " + f.clienteNome : ""}! Para cotarmos o frete do seu pedido, preencha por favor os dados de quem vai receber a mercadoria neste link: ${url}`;
+        dados = { id: f.id, url, mensagem };
+      }
+      else if (nome === "formularios_frete") {
+        const lista = await listarFormFrete(Math.min(200, Math.max(1, Number(a.limite) || 50)));
+        dados = { formularios: lista.map((f) => ({ ...f, url: `${SITE}/frete/${f.id}`, texto: f.dest ? textoCotacaoSaoMiguel(f) : null })) };
+      }
+      else if (nome === "atualizar_frete") {
+        const f = await lerFormFrete(String(a.id || ""));
+        if (!f) return ok(id, { content: [{ type: "text", text: "Erro: formulário não encontrado" }], isError: true });
+        const st = ["aguardando_cliente", "preenchido", "enviado", "cancelado"].includes(a.status) ? a.status : f.status;
+        await salvarFormFrete({ ...f, status: st, ...(st === "enviado" ? { enviadoEm: new Date().toISOString() } : {}) });
+        dados = { id: f.id, status: st };
+      }
+      else if (nome === "menu_whatsapp") {
+        const num = String(a.numero || "").replace(/\D/g, "");
+        const lim = Math.min(50, Math.max(1, Number(a.limite) || 15));
+        const brutos = await redis<string[]>(["LRANGE", `compass:wa:bruto:${num}`, 0, lim - 1]);
+        dados = { mensagens: (brutos || []).map((x) => { try { return JSON.parse(x); } catch { return x; } }) };
       }
       else return erro(id, -32602, `Ferramenta desconhecida: ${nome}`);
       return ok(id, { content: [{ type: "text", text: JSON.stringify(dados) }], structuredContent: dados });

@@ -50,6 +50,13 @@ export async function POST(request: Request) {
     const num = numeroDoChat(chat, msg.sender_pn || body.chat?.wa_chatid);
     if (!num) return NextResponse.json({ ok: true, ignorado: "sem-numero" });
     const c0 = typeof msg.content === "object" && msg.content ? msg.content : {};
+    // mensagens de robô (botões/listas) e as nossas respostas a elas: guarda o conteúdo completo,
+    // para entender o atendimento automático da transportadora (tool menu_whatsapp)
+    if (/button|list|template|interactive/i.test(String(msg.messageType || ""))) {
+      const bruto = JSON.stringify({ em: new Date(Number(msg.messageTimestamp) || Date.now()).toISOString(), deCompass: Boolean(msg.fromMe), tipo: msg.messageType, id: msg.messageid || msg.id || "", text: msg.text || "", content: msg.content ?? null, vote: msg.vote ?? null, buttonOrListid: msg.buttonOrListid ?? null }).slice(0, 20000);
+      await redis(["LPUSH", `compass:wa:bruto:${num}`, bruto]).catch(() => {});
+      await redis(["LTRIM", `compass:wa:bruto:${num}`, 0, 49]).catch(() => {});
+    }
     await registrarMensagem({
       num,
       nome: msg.fromMe ? "" : msg.senderName || body.chat?.wa_contactName || body.chat?.name || "",
