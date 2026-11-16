@@ -51,109 +51,82 @@ export default function FretePage({ params }: { params: { id: string } }) {
     setEnviando(false);
   };
 
-  if (erro && !dados) return <main className="container section"><h1>Dados para entrega</h1><p className="form-error">{erro}</p></main>;
-  if (!dados) return <main className="container section"><p>Carregando…</p></main>;
+  const CSS = `
+.fr{max-width:460px;margin:12px auto 40px;padding:0 12px;font-size:15px}
+.fr-card{background:#fff;border:1px solid #e3e3df;border-radius:14px;overflow:hidden;box-shadow:0 1px 3px rgba(0,0,0,.05)}
+.fr-top{background:#075e54;color:#fff;padding:12px 14px}
+.fr-top b{display:block;font-size:16px}
+.fr-top span{font-size:12.5px;opacity:.85}
+.fr-enc{background:#dcf8c6;color:#1f3d1a;font-size:13px;padding:8px 14px;line-height:1.35}
+.fr form{padding:10px 14px 14px}
+.fr label{display:block;font-size:12px;color:#5b6166;margin:8px 0 2px}
+.fr input,.fr textarea{width:100%;box-sizing:border-box;padding:9px 10px;border:1px solid #d6d6d1;border-radius:9px;font:inherit;font-size:15px;background:#fafaf8}
+.fr input:focus,.fr textarea:focus{outline:none;border-color:#25d366;background:#fff}
+.fr .er{color:#b3261e;font-size:12px;margin-top:2px}
+.fr .hn{color:#6b7177;font-size:12px;margin-top:2px}
+.fr button.go{width:100%;margin-top:14px;padding:12px;border:0;border-radius:24px;background:#25d366;color:#fff;font-weight:700;font-size:15px;cursor:pointer}
+.fr button.go:disabled{opacity:.6}
+.fr .ok{padding:18px 14px;text-align:center}
+.fr .ok button{margin-top:10px;background:none;border:1px solid #25d366;color:#075e54;border-radius:20px;padding:8px 16px;cursor:pointer}
+`;
+  if (erro && !dados) return <main className="fr"><style>{CSS}</style><div className="fr-card"><div className="fr-top"><b>Dados para entrega</b></div><p className="er" style={{ padding: 14 }}>{erro}</p></div></main>;
+  if (!dados) return <main className="fr"><style>{CSS}</style><p>Carregando…</p></main>;
 
   const vols = (dados.volumes || []).filter((v) => v.c || v.peso);
   const req = (k: string, cond: boolean) => tocado[k] && !cond;
+  const tocar = (k: string) => () => setTocado((t) => ({ ...t, [k]: true }));
+  const Campo = (k: keyof typeof VAZIO, rot: string, extra: any = {}, valida?: [boolean, string]) => (
+    <>
+      <label htmlFor={k}>{rot}</label>
+      <input id={k} value={f[k]} onChange={(e) => set(k, e.target.value)} onBlur={tocar(k)} {...extra} />
+      {valida && req(k, valida[0]) && <div className="er">{valida[1]}</div>}
+    </>
+  );
 
   return (
-    <main className="container section" style={{ maxWidth: 760 }}>
-      <h1>Dados para entrega</h1>
-      <p className="form-hint" style={{ fontSize: 15 }}>
-        Olá{dados.clienteNome ? `, ${dados.clienteNome}` : ""}! Para cotarmos o frete do seu pedido com a transportadora, preencha os dados de quem vai <strong>receber a mercadoria</strong> (destinatário da nota fiscal).
-      </p>
-
-      {ok ? (
-        <div className="card" style={{ padding: 20, marginTop: 16, border: "1px solid #b7e1c4", background: "#eefaf2", borderRadius: 12 }}>
-          <h2 style={{ marginTop: 0 }}>Recebemos seus dados ✅</h2>
-          <p>Obrigado! Vamos cotar o frete e retornamos em breve pelo WhatsApp. Se precisar corrigir algo, é só editar abaixo e enviar de novo.</p>
-          <button className="btn btn-outline" onClick={() => setOk(false)}>Editar dados</button>
-        </div>
-      ) : (
-        <form onSubmit={enviar} noValidate style={{ marginTop: 16 }}>
-          <div className="form-field">
-            <label htmlFor="nome">Nome completo ou razão social *</label>
-            <input id="nome" value={f.nome} onChange={(e) => set("nome", e.target.value)} onBlur={() => setTocado((t) => ({ ...t, nome: true }))} autoComplete="name" />
-            {req("nome", !!f.nome.trim()) && <span className="form-error">Informe o nome de quem recebe.</span>}
+    <main className="fr">
+      <style>{CSS}</style>
+      <div className="fr-card">
+        <div className="fr-top"><b>Compass Brindes · Dados para entrega</b><span>{dados.clienteNome ? `${dados.clienteNome}, preencha` : "Preencha"} os dados de quem vai receber</span></div>
+        {(vols.length > 0 || dados.pesoTotal) && (
+          <div className="fr-enc">📦 {vols.map((v) => `${v.qtd || 1} vol ${v.c}×${v.l}×${v.a} cm`).join(" · ")}{dados.pesoTotal ? ` · ${dados.pesoTotal} kg` : ""}</div>
+        )}
+        {ok ? (
+          <div className="ok">
+            <div style={{ fontSize: 34 }}>✅</div>
+            <b>Recebemos seus dados!</b>
+            <p className="hn" style={{ fontSize: 14 }}>Vamos cotar o frete e retornamos pelo WhatsApp.</p>
+            <button onClick={() => setOk(false)}>Corrigir dados</button>
           </div>
-          <div className="form-row">
-            <div className="form-field">
-              <label htmlFor="doc">CPF ou CNPJ *</label>
-              <input id="doc" inputMode="numeric" value={f.doc} onChange={(e) => set("doc", formatCpfCnpj(e.target.value))} onBlur={() => setTocado((t) => ({ ...t, doc: true }))} />
-              {req("doc", isValidCpfCnpj(f.doc)) && <span className="form-error">CPF ou CNPJ inválido.</span>}
-            </div>
-            <div className="form-field">
-              <label htmlFor="cep">CEP *</label>
-              <input id="cep" inputMode="numeric" value={f.cep} onChange={(e) => { const v = formatCEP(e.target.value); set("cep", v); if (onlyDigits(v).length === 8) buscarCep(v); }} onBlur={() => setTocado((t) => ({ ...t, cep: true }))} autoComplete="postal-code" />
-              {cepStatus === "loading" && <span className="form-hint">Buscando endereço…</span>}
-              {cepStatus === "erro" && <span className="form-hint">CEP não encontrado — preencha o endereço à mão.</span>}
-              {req("cep", isValidCEP(f.cep)) && <span className="form-error">CEP inválido.</span>}
-            </div>
-          </div>
-          <div className="form-row">
-            <div className="form-field" style={{ flex: 3 }}>
-              <label htmlFor="endereco">Rua / avenida *</label>
-              <input id="endereco" value={f.endereco} onChange={(e) => set("endereco", e.target.value)} onBlur={() => setTocado((t) => ({ ...t, endereco: true }))} autoComplete="address-line1" />
-              {req("endereco", !!f.endereco.trim()) && <span className="form-error">Informe a rua.</span>}
-            </div>
-            <div className="form-field" style={{ flex: 1 }}>
-              <label htmlFor="numero">Número *</label>
-              <input id="numero" value={f.numero} onChange={(e) => set("numero", e.target.value)} onBlur={() => setTocado((t) => ({ ...t, numero: true }))} />
-              {req("numero", !!f.numero.trim()) && <span className="form-error">Informe o número.</span>}
-            </div>
-          </div>
-          <div className="form-row">
-            <div className="form-field">
-              <label htmlFor="complemento">Complemento</label>
-              <input id="complemento" value={f.complemento} onChange={(e) => set("complemento", e.target.value)} placeholder="Sala, bloco, referência" />
-            </div>
-            <div className="form-field">
-              <label htmlFor="bairro">Bairro *</label>
-              <input id="bairro" value={f.bairro} onChange={(e) => set("bairro", e.target.value)} onBlur={() => setTocado((t) => ({ ...t, bairro: true }))} />
-              {req("bairro", !!f.bairro.trim()) && <span className="form-error">Informe o bairro.</span>}
-            </div>
-          </div>
-          <div className="form-row">
-            <div className="form-field" style={{ flex: 3 }}>
-              <label htmlFor="cidade">Cidade *</label>
-              <input id="cidade" value={f.cidade} onChange={(e) => set("cidade", e.target.value)} onBlur={() => setTocado((t) => ({ ...t, cidade: true }))} />
-              {req("cidade", !!f.cidade.trim()) && <span className="form-error">Informe a cidade.</span>}
-            </div>
-            <div className="form-field" style={{ flex: 1 }}>
-              <label htmlFor="uf">UF *</label>
-              <input id="uf" maxLength={2} value={f.uf} onChange={(e) => set("uf", e.target.value.toUpperCase().replace(/[^A-Z]/g, ""))} onBlur={() => setTocado((t) => ({ ...t, uf: true }))} />
-              {req("uf", /^[A-Z]{2}$/.test(f.uf)) && <span className="form-error">UF com 2 letras.</span>}
-            </div>
-          </div>
-          <div className="form-row">
-            <div className="form-field">
-              <label htmlFor="contato">Quem recebe no local</label>
-              <input id="contato" value={f.contato} onChange={(e) => set("contato", e.target.value)} placeholder="Nome da pessoa" />
-            </div>
-            <div className="form-field">
-              <label htmlFor="telefone">Telefone para a entrega</label>
-              <input id="telefone" inputMode="tel" value={f.telefone} onChange={(e) => set("telefone", e.target.value)} placeholder="(00) 00000-0000" />
-            </div>
-          </div>
-          <div className="form-field">
-            <label htmlFor="obs">Observações para a entrega</label>
-            <textarea id="obs" rows={2} value={f.obs} onChange={(e) => set("obs", e.target.value)} placeholder="Horário de recebimento, portaria etc." />
-          </div>
-
-          {(vols.length > 0 || dados.valorNF) && (
-            <div style={{ margin: "18px 0", padding: 14, borderRadius: 10, background: "#f5f5f2", fontSize: 14 }}>
-              <strong>Sua encomenda</strong>
-              <div>{vols.map((v, i) => <div key={i}>{v.qtd || 1} volume(s) · {v.c}×{v.l}×{v.a} cm{v.peso ? ` · ${v.peso} kg` : ""}</div>)}</div>
-              {dados.pesoTotal && <div>Peso total: {dados.pesoTotal} kg</div>}
-            </div>
-          )}
-
-          {erro && <p className="form-error" role="alert">{erro}</p>}
-          <button type="submit" className="btn btn-primary" disabled={enviando}>{enviando ? "Enviando…" : "Enviar dados"}</button>
-          <p className="form-hint">Seus dados são usados só para a cotação e a entrega deste pedido.</p>
-        </form>
-      )}
+        ) : (
+          <form onSubmit={enviar} noValidate>
+            {Campo("nome", "Nome ou razão social *", { autoComplete: "name" }, [!!f.nome.trim(), "Informe o nome."])}
+            <label htmlFor="doc">CPF ou CNPJ *</label>
+            <input id="doc" inputMode="numeric" value={f.doc} onChange={(e) => set("doc", formatCpfCnpj(e.target.value))} onBlur={tocar("doc")} />
+            {req("doc", isValidCpfCnpj(f.doc)) && <div className="er">CPF ou CNPJ inválido.</div>}
+            <label htmlFor="cep">CEP *</label>
+            <input id="cep" inputMode="numeric" autoComplete="postal-code" value={f.cep} onChange={(e) => { const v = formatCEP(e.target.value); set("cep", v); if (onlyDigits(v).length === 8) buscarCep(v); }} onBlur={tocar("cep")} />
+            {cepStatus === "loading" && <div className="hn">Buscando endereço…</div>}
+            {cepStatus === "erro" && <div className="hn">CEP não encontrado — preencha à mão.</div>}
+            {req("cep", isValidCEP(f.cep)) && <div className="er">CEP inválido.</div>}
+            {Campo("endereco", "Rua / avenida *", { autoComplete: "address-line1" }, [!!f.endereco.trim(), "Informe a rua."])}
+            {Campo("numero", "Número *", { inputMode: "numeric" }, [!!f.numero.trim(), "Informe o número."])}
+            {Campo("complemento", "Complemento", { placeholder: "Sala, bloco, referência" })}
+            {Campo("bairro", "Bairro *", {}, [!!f.bairro.trim(), "Informe o bairro."])}
+            {Campo("cidade", "Cidade *", {}, [!!f.cidade.trim(), "Informe a cidade."])}
+            <label htmlFor="uf">UF *</label>
+            <input id="uf" maxLength={2} value={f.uf} onChange={(e) => set("uf", e.target.value.toUpperCase().replace(/[^A-Z]/g, ""))} onBlur={tocar("uf")} />
+            {req("uf", /^[A-Z]{2}$/.test(f.uf)) && <div className="er">UF com 2 letras.</div>}
+            {Campo("contato", "Quem recebe no local", { placeholder: "Nome da pessoa" })}
+            {Campo("telefone", "Telefone para a entrega", { inputMode: "tel", placeholder: "(00) 00000-0000" })}
+            <label htmlFor="obs">Observações</label>
+            <textarea id="obs" rows={2} value={f.obs} onChange={(e) => set("obs", e.target.value)} placeholder="Horário, portaria etc." />
+            {erro && <div className="er" role="alert" style={{ marginTop: 8 }}>{erro}</div>}
+            <button type="submit" className="go" disabled={enviando}>{enviando ? "Enviando…" : "Enviar dados"}</button>
+            <div className="hn" style={{ textAlign: "center", marginTop: 8 }}>Usado só para o frete e a entrega deste pedido.</div>
+          </form>
+        )}
+      </div>
     </main>
   );
 }
