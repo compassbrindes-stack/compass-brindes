@@ -123,7 +123,7 @@ export async function tirarDoLote(formId: string) {
   return { ok: true };
 }
 
-async function proximo() {
+async function proximo(): Promise<void> {
   const atual = await redisGetJSON<Fluxo>(FLUXO);
   if (atual) {
     if (atual.pausado) { if (Date.now() - atual.ultimo < 20 * 3600 * 1000) return; }
@@ -157,7 +157,7 @@ async function proximo() {
 const ROBO = /boas-vindas|selecione|escolha uma op|protocolo|aguarde enquanto|transfiro|hor[aá]rio de atendimento|atendimento (encerrado|finalizado)|pesquisa de satisfa|como voc[eê] avalia|deseja continuar|agradecemos seu contato|localizei seu cadastro|chat iniciado/i;
 
 /** Manda a cotação do fluxo e as outras da fila, numa conversa só, para a atendente. */
-async function enviarCotacoes(fl: Fluxo, atendente: string) {
+async function enviarCotacoes(fl: Fluxo, atendente: string): Promise<void> {
   const forms: FormFrete[] = [];
   const f0 = await lerFormFrete(fl.formId);
   if (f0 && f0.status !== "enviado") forms.push(f0);
