@@ -6,7 +6,7 @@ import { listarDocumentos } from "@/lib/recibos";
 import catalogo from "@/data/catalogo-app.json";
 import { criarFormFrete, listarFormFrete, lerFormFrete, salvarFormFrete, textoCotacaoSaoMiguel, apagarFormFrete } from "@/lib/frete";
 import { redis } from "@/lib/redis";
-import { enfileirarSaoMiguel, situacaoSaoMiguel, tickSaoMiguel, iniciarLoteSaoMiguel, tirarDoLote, forcarEnvioSaoMiguel } from "@/lib/saomiguel";
+import { enfileirarSaoMiguel, situacaoSaoMiguel, tickSaoMiguel, iniciarLoteSaoMiguel, tirarDoLote, forcarEnvioSaoMiguel, informarCotacao } from "@/lib/saomiguel";
 
 export const dynamic = "force-dynamic";
 
@@ -205,8 +205,8 @@ const FERRAMENTAS = [
   },
   {
     name: "atualizar_frete",
-    description: "Muda o status de um formulário de frete (enviado = cotação mandada à transportadora; cancelado = link desativado; apagado = apaga de vez um formulário já cancelado).",
-    inputSchema: { type: "object", properties: { id: { type: "string" }, status: { type: "string", enum: ["aguardando_cliente", "preenchido", "enviado", "cancelado", "apagado"] } }, required: ["id", "status"] },
+    description: "Muda o status de um formulário de frete (enviado = cotação mandada à transportadora; cancelado = link desativado; apagado = apaga de vez um formulário já cancelado; respondida = grava o resultado da transportadora: valor/prazo/numero informados, ou msgId da imagem recebida no WhatsApp para ler o valor).",
+    inputSchema: { type: "object", properties: { id: { type: "string" }, status: { type: "string", enum: ["aguardando_cliente", "preenchido", "enviado", "cancelado", "apagado", "respondida"] }, valor: { type: "number", description: "Valor do frete em reais (com status respondida)." }, prazo: { type: "string", description: "Prazo/entrega prevista." }, numero: { type: "string", description: "Número da cotação da transportadora." }, obs: { type: "string" }, msgId: { type: "string", description: "Id da imagem da cotação no WhatsApp: lê o valor dela." } }, required: ["id", "status"] },
     annotations: { readOnlyHint: false, destructiveHint: false },
   },
   {
@@ -324,6 +324,7 @@ export async function POST(request: Request, { params }: { params: { chave: stri
         dados = { formularios: lista.map((f) => ({ ...f, url: `${SITE}/frete/${f.id}`, texto: f.dest ? textoCotacaoSaoMiguel(f) : null })) };
       }
       else if (nome === "atualizar_frete") {
+        if (a.status === "respondida") { dados = await informarCotacao(String(a.id || ""), { valor: a.valor != null ? Number(a.valor) : undefined, prazo: a.prazo, numero: a.numero != null ? String(a.numero) : undefined, obs: a.obs, msgId: a.msgId }); return ok(id, { content: [{ type: "text", text: JSON.stringify(dados) }], structuredContent: dados }); }
         if (a.status === "apagado") { const ap = await apagarFormFrete(String(a.id || "")); dados = { id: a.id, apagado: ap }; return ok(id, { content: [{ type: "text", text: JSON.stringify(dados) }], structuredContent: dados }); }
         const f = await lerFormFrete(String(a.id || ""));
         if (!f) return ok(id, { content: [{ type: "text", text: "Erro: formulário não encontrado" }], isError: true });

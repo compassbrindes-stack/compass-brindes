@@ -129,6 +129,7 @@ async function proximo(): Promise<void> {
     if (atual.pausado) { if (Date.now() - atual.ultimo < 20 * 3600 * 1000) return; }
     const parado = Date.now() - atual.ultimo;
     const limite = atual.passo === "atendente" || atual.passo === "enviado" ? LIMITE_ATENDENTE_MS : LIMITE_ROBO_MS;
+    if (atual.passo === "enviado") await recuperarImagens(atual);
     if (parado < limite) return; // ainda em andamento
     for (const id of atual.lote && atual.lote.length ? atual.lote : [atual.formId]) {
       const f = await lerFormFrete(id);
@@ -246,11 +247,26 @@ export async function mensagemSaoMiguel(msg: any) {
   if (["oi", "cnpj", "local", "opcao", "atendente"].includes(fl.passo) && !botoes.length && !linhas.length && texto.trim() && !ROBO.test(texto) && !/image|document|audio|sticker/i.test(tipo)) return enviarCotacoes(fl, fl.atendente || "atendente");
   // resposta da atendente: imagem com o valor
   if (fl.passo === "enviado" && /image|document/i.test(tipo)) {
-    const lido = await lerCotacao(msg.messageid || msg.id).catch(() => null);
+    await ligarImagem(fl, msg.messageid || msg.id);
+    return salvarFluxo(fl);
+  }
+  if (/atendimento (encerrado|finalizado)/i.test(texto)) {
+    if (fl.passo !== "enviado") await marcar(fl.formId, { auto: { status: "erro", em: new Date().toISOString(), obs: "atendimento encerrado antes do envio" } });
+    await redis(["DEL", FLUXO]);
+    return proximo();
+  }
+  if (fl.passo !== "enviado" && !/selecione uma das op/i.test(texto)) return salvarFluxo(fl);
+}
+
+
+/** Lê a imagem da atendente e grava o valor na cotação certa do lote. Devolve o id do formulário respondido. */
+async function ligarImagem(fl: Fluxo, msgId: string): Promise<string | null> {
+    const lido = await lerCotacao(msgId).catch(() => null);
     const ids = fl.lote && fl.lote.length ? fl.lote : [fl.formId];
     const pend: FormFrete[] = [];
     for (const id of ids) { const f = await lerFormFrete(id); if (f && f.auto?.status !== "respondida") pend.push(f); }
-    if (!pend.length) return salvarFluxo(fl);
+    if (!pend.length) return null;
+
     // com várias cotações, acha de qual é a imagem pelo destinatário, cidade ou valor da NF
     const semA = (x: string) => String(x || "").normalize("NFD").replace(/[\u0300-\u036f]/g, "").toLowerCase();
     const pontos = (f: FormFrete) => {
@@ -268,15 +284,36 @@ export async function mensagemSaoMiguel(msg: any) {
     const alvo = ord[0].p > 0 || pend.length === 1 ? ord[0].f : pend[0];
     const incerto = pend.length > 1 && ord[0].p === 0;
     const { destinatario, cidade, valorNF, ...valores } = lido || ({} as any);
-    await salvarFormFrete({ ...alvo, auto: { ...(alvo.auto || {}), status: "respondida", em: new Date().toISOString(), protocolo: fl.protocolo, atendente: fl.atendente, msgId: msg.messageid || msg.id, ...valores, ...(incerto ? { obs: "conferir: imagem ligada pela ordem de chegada" } : {}) } });
-    return salvarFluxo(fl);
+    await salvarFormFrete({ ...alvo, auto: { ...(alvo.auto || {}), status: "respondida", em: new Date().toISOString(), protocolo: fl.protocolo, atendente: fl.atendente, msgId, ...valores, ...(incerto ? { obs: "conferir: imagem ligada pela ordem de chegada" } : {}) } });
+    return alvo.id;
+}
+
+/** Imagens da São Miguel no histórico desde o início do fluxo que ainda não foram lidas (webhook perdido). */
+async function recuperarImagens(fl: Fluxo): Promise<void> {
+  const msgs: any[] = await historico(NUM_SAO_MIGUEL, 60).catch(() => []);
+  const ids = fl.lote && fl.lote.length ? fl.lote : [fl.formId];
+  const usados = new Set<string>();
+  for (const id of ids) { const f = await lerFormFrete(id); if (f?.auto?.msgId) usados.add(f.auto.msgId); }
+  for (const m of msgs) {
+    if (m.de !== "cliente" || !m.id || usados.has(m.id)) continue;
+    if ((Date.parse(m.em) || 0) < fl.inicio - 60000) continue;
+    if (!/image|document/i.test(String(m.tipo || "")) && !/\.(png|jpe?g|webp|pdf)$/i.test(String(m.texto || "").trim())) continue;
+    const r = await ligarImagem(fl, m.id);
+    if (r) usados.add(m.id); else break;
   }
-  if (/atendimento (encerrado|finalizado)/i.test(texto)) {
-    if (fl.passo !== "enviado") await marcar(fl.formId, { auto: { status: "erro", em: new Date().toISOString(), obs: "atendimento encerrado antes do envio" } });
-    await redis(["DEL", FLUXO]);
-    return proximo();
-  }
-  if (fl.passo !== "enviado" && !/selecione uma das op/i.test(texto)) return salvarFluxo(fl);
+}
+
+/** Grava à mão o resultado de uma cotação (valor informado ou imagem já recebida no WhatsApp). */
+export async function informarCotacao(id: string, d: { valor?: number; prazo?: string; numero?: string; obs?: string; msgId?: string }) {
+  const f = await lerFormFrete(id);
+  if (!f) return { ok: false, motivo: "formulário não encontrado" };
+  let lido: any = null;
+  if (d.msgId) { lido = await lerCotacao(d.msgId).catch(() => null); if (lido) { delete lido.destinatario; delete lido.cidade; delete lido.valorNF; } }
+  const extra: any = { ...(lido || {}) };
+  for (const k of ["valor", "prazo", "numero", "obs"] as const) if (d[k] != null && d[k] !== "") extra[k] = d[k];
+  if (extra.valor == null) return { ok: false, motivo: d.msgId ? "não consegui ler o valor da imagem" : "informe o valor" };
+  await salvarFormFrete({ ...f, status: "enviado", enviadoEm: f.enviadoEm || new Date().toISOString(), auto: { ...(f.auto || {}), status: "respondida", em: new Date().toISOString(), ...(d.msgId ? { msgId: d.msgId } : {}), ...extra } as any });
+  return { ok: true, id, ...extra };
 }
 
 /** Lê a imagem/PDF da cotação (valor do frete, prazo, nº da cotação) com o Claude. */
