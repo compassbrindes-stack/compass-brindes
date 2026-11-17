@@ -5,7 +5,7 @@
 // Uma cotação por vez (fila em Redis). Nada é enviado se o formulário estiver incompleto.
 import { redis, redisGetJSON } from "@/lib/redis";
 import { enviarTexto, baixarMidia } from "@/lib/uazapi";
-import { registrarMensagem } from "@/lib/conversas";
+import { registrarMensagem, historico } from "@/lib/conversas";
 import { lerFormFrete, salvarFormFrete, textoCotacaoSaoMiguel, completo, type FormFrete } from "@/lib/frete";
 
 export const NUM_SAO_MIGUEL = process.env.SAO_MIGUEL_WHATS || "554933616666";
@@ -146,8 +146,66 @@ async function proximo() {
   if (!id) return;
   const fl: Fluxo = { formId: id, passo: "oi", inicio: Date.now(), ultimo: Date.now() };
   await redis(["SET", FLUXO, JSON.stringify(fl), "EX", 60 * 60 * 6]);
+  const pessoa = await atendenteAberto();
+  if (pessoa) return enviarCotacoes({ ...fl, passo: "atendente", atendente: pessoa }, pessoa);
   await marcar(id, { auto: { status: "falando_com_robo", em: new Date().toISOString() } });
   await mandar("Oi");
+}
+
+
+// frases do robô (o resto, em texto livre, é uma pessoa)
+const ROBO = /boas-vindas|selecione|escolha uma op|protocolo|aguarde enquanto|transfiro|hor[aá]rio de atendimento|atendimento (encerrado|finalizado)|pesquisa de satisfa|como voc[eê] avalia|deseja continuar|agradecemos seu contato|localizei seu cadastro|chat iniciado/i;
+
+/** Manda a cotação do fluxo e as outras da fila, numa conversa só, para a atendente. */
+async function enviarCotacoes(fl: Fluxo, atendente: string) {
+  const forms: FormFrete[] = [];
+  const f0 = await lerFormFrete(fl.formId);
+  if (f0 && f0.status !== "enviado") forms.push(f0);
+  for (let k = 0; k < 15; k++) {
+    const id = await redis<string | null>(["LPOP", FILA]);
+    if (!id) break;
+    const f = await lerFormFrete(id);
+    if (f && completo(f) && f.status !== "enviado") forms.push(f);
+  }
+  if (!forms.length) { await redis(["DEL", FLUXO]); return proximo(); }
+  await salvarFluxo({ ...fl, passo: "enviado", atendente, lote: forms.map((f) => f.id) });
+  await new Promise((r) => setTimeout(r, 2000));
+  const h = (new Date().getUTCHours() + 21) % 24;
+  await mandar(`*Compass Brindes Corporativos:*\n${h < 12 ? "Bom dia" : "Boa tarde"}, ${forms.length > 1 ? `seguem ${forms.length} cotações:` : "segue cotação:"}`);
+  for (let i = 0; i < forms.length; i++) {
+    const f = forms[i];
+    const t = textoCotacaoSaoMiguel(f);
+    await mandar(forms.length > 1 ? `*Cotação ${i + 1} de ${forms.length}*\n` + t : t);
+    if (forms.length > 1) await new Promise((r) => setTimeout(r, 1200));
+    await salvarFormFrete({ ...f, status: "enviado", enviadoEm: new Date().toISOString(), auto: { status: "aguardando_valor", em: new Date().toISOString(), protocolo: fl.protocolo, atendente, ...(forms.length > 1 ? { obs: `cotação ${i + 1} de ${forms.length}` } : {}) } });
+  }
+}
+
+/** Conversa com atendente ainda aberta? (último "Chat iniciado" depois do último "encerrado", nas últimas 10 h) */
+async function atendenteAberto(): Promise<string | null> {
+  const msgs: any[] = await historico(NUM_SAO_MIGUEL, 60).catch(() => []);
+  let aberto: string | null = null, quando = 0;
+  for (const m of msgs) {
+    if (m.de !== "cliente") continue;
+    const t = String(m.texto || "");
+    const c = /Chat iniciado com (.+?) em /i.exec(t);
+    if (c) { aberto = c[1].trim(); quando = Date.parse(m.em) || 0; }
+    else if (/atendimento (encerrado|finalizado)|agradecemos seu contato/i.test(t)) aberto = null;
+  }
+  return aberto && Date.now() - quando < 10 * 3600 * 1000 ? aberto : null;
+}
+
+/** Já há uma pessoa na conversa: manda as cotações agora, sem passar pelo robô. */
+export async function forcarEnvioSaoMiguel() {
+  let fl = await redisGetJSON<Fluxo>(FLUXO);
+  if (!fl) {
+    const id = await redis<string | null>(["LPOP", FILA]);
+    if (!id) return { ok: false, motivo: "nada na fila" };
+    fl = { formId: id, passo: "atendente", inicio: Date.now(), ultimo: Date.now() };
+  }
+  if (fl.passo === "enviado") return { ok: false, motivo: "já enviado" };
+  await enviarCotacoes(fl, fl.atendente || "atendente");
+  return { ok: true };
 }
 
 const salvarFluxo = (fl: Fluxo) => redis(["SET", FLUXO, JSON.stringify({ ...fl, ultimo: Date.now() }), "EX", 60 * 60 * 6]);
@@ -183,30 +241,9 @@ export async function mensagemSaoMiguel(msg: any) {
   const prot = /protocolo[^0-9]*(\d{8,})/i.exec(texto);
   if (prot) { return salvarFluxo({ ...fl, protocolo: prot[1], passo: fl.passo === "enviado" ? "enviado" : "atendente" }); }
   const chat = /Chat iniciado com (.+?) em /i.exec(texto);
-  if (chat && fl.passo !== "enviado") {
-    // manda esta cotação e aproveita a mesma conversa para as outras que estiverem na fila
-    const forms: FormFrete[] = [];
-    const f0 = await lerFormFrete(fl.formId);
-    if (f0) forms.push(f0);
-    for (let k = 0; k < 15; k++) {
-      const id = await redis<string | null>(["LPOP", FILA]);
-      if (!id) break;
-      const f = await lerFormFrete(id);
-      if (f && completo(f) && f.status !== "enviado") forms.push(f);
-    }
-    if (!forms.length) { await redis(["DEL", FLUXO]); return proximo(); }
-    await new Promise((r) => setTimeout(r, 2500));
-    const h = (new Date().getUTCHours() + 21) % 24;
-    await mandar(`*Compass Brindes Corporativos:*\n${h < 12 ? "Bom dia" : "Boa tarde"}, ${forms.length > 1 ? `seguem ${forms.length} cotações:` : "segue cotação:"}`);
-    for (let i = 0; i < forms.length; i++) {
-      const f = forms[i];
-      const t = textoCotacaoSaoMiguel(f);
-      await mandar(forms.length > 1 ? `*Cotação ${i + 1} de ${forms.length}*\n` + t : t);
-      if (forms.length > 1) await new Promise((r) => setTimeout(r, 1200));
-      await salvarFormFrete({ ...f, status: "enviado", enviadoEm: new Date().toISOString(), auto: { status: "aguardando_valor", em: new Date().toISOString(), protocolo: fl.protocolo, atendente: chat[1].trim(), ...(forms.length > 1 ? { obs: `cotação ${i + 1} de ${forms.length}` } : {}) } });
-    }
-    return salvarFluxo({ ...fl, passo: "enviado", atendente: chat[1].trim(), lote: forms.map((f) => f.id) });
-  }
+  if (chat && fl.passo !== "enviado") return enviarCotacoes(fl, chat[1].trim());
+  // já falando com uma pessoa (conversa anterior ainda aberta): ela responde em texto livre, sem menu do robô
+  if (["oi", "cnpj", "local", "opcao", "atendente"].includes(fl.passo) && !botoes.length && !linhas.length && texto.trim() && !ROBO.test(texto) && !/image|document|audio|sticker/i.test(tipo)) return enviarCotacoes(fl, fl.atendente || "atendente");
   // resposta da atendente: imagem com o valor
   if (fl.passo === "enviado" && /image|document/i.test(tipo)) {
     const lido = await lerCotacao(msg.messageid || msg.id).catch(() => null);
