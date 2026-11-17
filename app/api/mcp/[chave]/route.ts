@@ -1,6 +1,6 @@
 import { NextResponse } from "next/server";
 import { conversasDesde, historico, registrarMensagem } from "@/lib/conversas";
-import { enviarTexto, enviarMidia, baixarMidia } from "@/lib/uazapi";
+import { enviarTexto, enviarMidia, baixarMidia, verificarNumeros } from "@/lib/uazapi";
 import { registrarCompras, todasCompras } from "@/lib/compras";
 import { listarDocumentos } from "@/lib/recibos";
 import catalogo from "@/data/catalogo-app.json";
@@ -216,6 +216,12 @@ const FERRAMENTAS = [
     annotations: { readOnlyHint: false, destructiveHint: false, openWorldHint: true },
   },
   {
+    name: "verificar_whatsapp",
+    description: "Confere quais números têm WhatsApp ativo (até 100 por vez), sem mandar mensagem. Devolve para cada número se está no WhatsApp e o nome comercial verificado, quando houver.",
+    inputSchema: { type: "object", properties: { numeros: { type: "array", items: { type: "string" }, description: "Números com DDI e DDD, só dígitos (ex.: 5549999990000)." } }, required: ["numeros"] },
+    annotations: { readOnlyHint: true, openWorldHint: true },
+  },
+  {
     name: "menu_whatsapp",
     description: "Mensagens de robô (botões e listas de opções) recebidas de um número no WhatsApp da Compass, com o conteúdo completo das opções — usado para entender o atendimento automático da transportadora.",
     inputSchema: { type: "object", properties: { numero: { type: "string", description: "Número com DDI e DDD, só dígitos." }, limite: { type: "integer", minimum: 1, maximum: 50 } }, required: ["numero"] },
@@ -327,6 +333,10 @@ export async function POST(request: Request, { params }: { params: { chave: stri
       }
       else if (nome === "enviar_sao_miguel") {
         dados = a.id ? { ...(await enfileirarSaoMiguel(String(a.id))), ...(await situacaoSaoMiguel()) } : await situacaoSaoMiguel();
+      }
+      else if (nome === "verificar_whatsapp") {
+        const nums = (Array.isArray(a.numeros) ? a.numeros : []).map((x: any) => String(x).replace(/\D/g, "")).filter((x: string) => x.length >= 10).slice(0, 100).map((x: string) => (x.length <= 11 ? "55" + x : x));
+        dados = { resultado: await verificarNumeros(nums) };
       }
       else if (nome === "menu_whatsapp") {
         const num = String(a.numero || "").replace(/\D/g, "");

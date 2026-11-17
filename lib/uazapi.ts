@@ -46,3 +46,16 @@ export async function baixarMidia(messageid: string): Promise<{ fileURL?: string
   if (!res.ok) throw new Error(`uazapi /message/download ${res.status}`);
   return res.json();
 }
+
+/** Confere quais números têm WhatsApp (uazapi /chat/check). */
+export async function verificarNumeros(numeros: string[]): Promise<any[]> {
+  const { url, token } = cfg();
+  const res = await fetch(`${url}/chat/check`, {
+    method: "POST",
+    headers: { token, "Content-Type": "application/json" },
+    body: JSON.stringify({ numbers: numeros }),
+    cache: "no-store",
+  });
+  if (!res.ok) throw new Error(`uazapi /chat/check ${res.status} ${(await res.text().catch(() => "")).slice(0, 200)}`);
+  return res.json();
+}
