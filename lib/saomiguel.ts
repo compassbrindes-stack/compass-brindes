@@ -14,11 +14,12 @@ const LOCAL = "IRAI";
 const OPCAO = "Cotações";
 const FLUXO = "compass:sm:fluxo";
 const FILA = "compass:sm:fila";
+const LOTE = "compass:sm:lote"; // cotações separadas pela Compass para mandar juntas numa conversa só
 const LIMITE_ROBO_MS = 15 * 60 * 1000; // sem resposta do robô em 15 min → erro
 const LIMITE_ATENDENTE_MS = 4 * 60 * 60 * 1000; // aguardando atendente/valor até 4 h
 
 type Passo = "oi" | "cnpj" | "local" | "opcao" | "atendente" | "enviado";
-interface Fluxo { formId: string; passo: Passo; inicio: number; ultimo: number; protocolo?: string; atendente?: string; pausado?: boolean }
+interface Fluxo { formId: string; passo: Passo; inicio: number; ultimo: number; protocolo?: string; atendente?: string; pausado?: boolean; lote?: string[] }
 
 /** Horário da São Miguel: seg–sex 08:00–12:00 e 13:30–18:00; sáb 08:00–11:30 (Brasília).
  *  Começa um envio só com folga de 15 min antes de fechar. */
@@ -66,10 +67,19 @@ async function marcar(id: string, campos: Partial<FormFrete>) {
 }
 
 /** Coloca a cotação na fila e começa se não houver outra em andamento. */
-export async function enfileirarSaoMiguel(formId: string) {
+export async function enfileirarSaoMiguel(formId: string, opts: { segurar?: boolean } = {}) {
   const f = await lerFormFrete(formId);
   if (!f || !completo(f)) return { ok: false, motivo: "incompleto" };
-  if (f.status === "enviado" || (f.auto && !["erro", "sem_resposta"].includes(f.auto.status))) return { ok: false, motivo: "já enviada ou em andamento" };
+  if (f.status === "enviado" || (f.auto && !["erro", "sem_resposta", "no_lote"].includes(f.auto.status))) return { ok: false, motivo: "já enviada ou em andamento" };
+  if (opts.segurar) {
+    // separa para o lote: não começa ainda, espera "Enviar lote"
+    await redis(["LREM", LOTE, 0, formId]);
+    await redis(["RPUSH", LOTE, formId]);
+    await marcar(formId, { auto: { status: "no_lote", em: new Date().toISOString() } });
+    const n = await redis<number>(["LLEN", LOTE]);
+    return { ok: true, noLote: n };
+  }
+  await redis(["LREM", LOTE, 0, formId]);
   await redis(["LREM", FILA, 0, formId]);
   await redis(["RPUSH", FILA, formId]);
   const aberto = abertoSaoMiguel();
@@ -89,6 +99,30 @@ export async function enfileirarSaoMiguel(formId: string) {
   return { ok: true, aberto, previsao };
 }
 
+/** Manda à São Miguel todas as cotações separadas no lote, numa conversa só. */
+export async function iniciarLoteSaoMiguel() {
+  const ids = (await redis<string[]>(["LRANGE", LOTE, 0, -1])) || [];
+  await redis(["DEL", LOTE]);
+  const aberto = abertoSaoMiguel();
+  const previsao = aberto ? "" : proximaAbertura();
+  let n = 0;
+  for (const id of ids) {
+    const f = await lerFormFrete(id);
+    if (!f || !completo(f) || f.status === "enviado") continue;
+    await redis(["LREM", FILA, 0, id]);
+    await redis(["RPUSH", FILA, id]);
+    await marcar(id, { auto: aberto ? { status: "na_fila", em: new Date().toISOString(), obs: "lote" } : { status: "aguardando_horario", em: new Date().toISOString(), obs: "lote · envio previsto " + previsao } });
+    n++;
+  }
+  await proximo();
+  return { ok: n > 0, enviadas: n, aberto, previsao };
+}
+export async function tirarDoLote(formId: string) {
+  await redis(["LREM", LOTE, 0, formId]);
+  await marcar(formId, { auto: undefined as any });
+  return { ok: true };
+}
+
 async function proximo() {
   const atual = await redisGetJSON<Fluxo>(FLUXO);
   if (atual) {
@@ -96,7 +130,10 @@ async function proximo() {
     const parado = Date.now() - atual.ultimo;
     const limite = atual.passo === "atendente" || atual.passo === "enviado" ? LIMITE_ATENDENTE_MS : LIMITE_ROBO_MS;
     if (parado < limite) return; // ainda em andamento
-    await marcar(atual.formId, { auto: { status: atual.passo === "enviado" ? "sem_resposta" : "erro", em: new Date().toISOString(), obs: `parou no passo "${atual.passo}"` } });
+    for (const id of atual.lote && atual.lote.length ? atual.lote : [atual.formId]) {
+      const f = await lerFormFrete(id);
+      if (f && f.auto?.status !== "respondida") await salvarFormFrete({ ...f, auto: { ...(f.auto || {}), status: atual.passo === "enviado" ? "sem_resposta" : "erro", em: new Date().toISOString(), obs: `parou no passo "${atual.passo}"` } });
+    }
     await redis(["DEL", FLUXO]);
   }
   if (!abertoSaoMiguel()) {
@@ -147,19 +184,54 @@ export async function mensagemSaoMiguel(msg: any) {
   if (prot) { return salvarFluxo({ ...fl, protocolo: prot[1], passo: fl.passo === "enviado" ? "enviado" : "atendente" }); }
   const chat = /Chat iniciado com (.+?) em /i.exec(texto);
   if (chat && fl.passo !== "enviado") {
-    const f = await lerFormFrete(fl.formId);
-    if (!f) { await redis(["DEL", FLUXO]); return proximo(); }
+    // manda esta cotação e aproveita a mesma conversa para as outras que estiverem na fila
+    const forms: FormFrete[] = [];
+    const f0 = await lerFormFrete(fl.formId);
+    if (f0) forms.push(f0);
+    for (let k = 0; k < 15; k++) {
+      const id = await redis<string | null>(["LPOP", FILA]);
+      if (!id) break;
+      const f = await lerFormFrete(id);
+      if (f && completo(f) && f.status !== "enviado") forms.push(f);
+    }
+    if (!forms.length) { await redis(["DEL", FLUXO]); return proximo(); }
     await new Promise((r) => setTimeout(r, 2500));
     const h = (new Date().getUTCHours() + 21) % 24;
-    await mandar(`*Compass Brindes Corporativos:*\n${h < 12 ? "Bom dia" : "Boa tarde"}, segue cotação:`);
-    await mandar(textoCotacaoSaoMiguel(f));
-    await salvarFormFrete({ ...f, status: "enviado", enviadoEm: new Date().toISOString(), auto: { status: "aguardando_valor", em: new Date().toISOString(), protocolo: fl.protocolo, atendente: chat[1].trim() } });
-    return salvarFluxo({ ...fl, passo: "enviado", atendente: chat[1].trim() });
+    await mandar(`*Compass Brindes Corporativos:*\n${h < 12 ? "Bom dia" : "Boa tarde"}, ${forms.length > 1 ? `seguem ${forms.length} cotações:` : "segue cotação:"}`);
+    for (let i = 0; i < forms.length; i++) {
+      const f = forms[i];
+      const t = textoCotacaoSaoMiguel(f);
+      await mandar(forms.length > 1 ? `*Cotação ${i + 1} de ${forms.length}*\n` + t : t);
+      if (forms.length > 1) await new Promise((r) => setTimeout(r, 1200));
+      await salvarFormFrete({ ...f, status: "enviado", enviadoEm: new Date().toISOString(), auto: { status: "aguardando_valor", em: new Date().toISOString(), protocolo: fl.protocolo, atendente: chat[1].trim(), ...(forms.length > 1 ? { obs: `cotação ${i + 1} de ${forms.length}` } : {}) } });
+    }
+    return salvarFluxo({ ...fl, passo: "enviado", atendente: chat[1].trim(), lote: forms.map((f) => f.id) });
   }
   // resposta da atendente: imagem com o valor
   if (fl.passo === "enviado" && /image|document/i.test(tipo)) {
     const lido = await lerCotacao(msg.messageid || msg.id).catch(() => null);
-    await marcar(fl.formId, { auto: { status: "respondida", em: new Date().toISOString(), protocolo: fl.protocolo, atendente: fl.atendente, msgId: msg.messageid || msg.id, ...(lido || {}) } });
+    const ids = fl.lote && fl.lote.length ? fl.lote : [fl.formId];
+    const pend: FormFrete[] = [];
+    for (const id of ids) { const f = await lerFormFrete(id); if (f && f.auto?.status !== "respondida") pend.push(f); }
+    if (!pend.length) return salvarFluxo(fl);
+    // com várias cotações, acha de qual é a imagem pelo destinatário, cidade ou valor da NF
+    const semA = (x: string) => String(x || "").normalize("NFD").replace(/[\u0300-\u036f]/g, "").toLowerCase();
+    const pontos = (f: FormFrete) => {
+      if (!lido) return 0;
+      let p = 0;
+      const nome = semA(f.dest?.nome || ""), dn = semA(lido.destinatario || "");
+      if (dn && nome) p += nome.split(/\W+/).filter((w) => w.length > 3 && dn.includes(w)).length * 2;
+      const cid = semA(f.dest?.cidade || ""), lc = semA(lido.cidade || "");
+      if (cid && lc && (lc.includes(cid) || cid.includes(lc))) p += 3;
+      const nf = parseFloat(String(f.valorNF || "").replace(/\./g, "").replace(",", "."));
+      if (lido.valorNF && nf && Math.abs(lido.valorNF - nf) < 1) p += 4;
+      return p;
+    };
+    const ord = pend.map((f) => ({ f, p: pontos(f) })).sort((a, b) => b.p - a.p);
+    const alvo = ord[0].p > 0 || pend.length === 1 ? ord[0].f : pend[0];
+    const incerto = pend.length > 1 && ord[0].p === 0;
+    const { destinatario, cidade, valorNF, ...valores } = lido || ({} as any);
+    await salvarFormFrete({ ...alvo, auto: { ...(alvo.auto || {}), status: "respondida", em: new Date().toISOString(), protocolo: fl.protocolo, atendente: fl.atendente, msgId: msg.messageid || msg.id, ...valores, ...(incerto ? { obs: "conferir: imagem ligada pela ordem de chegada" } : {}) } });
     return salvarFluxo(fl);
   }
   if (/atendimento (encerrado|finalizado)/i.test(texto)) {
@@ -171,7 +243,7 @@ export async function mensagemSaoMiguel(msg: any) {
 }
 
 /** Lê a imagem/PDF da cotação (valor do frete, prazo, nº da cotação) com o Claude. */
-async function lerCotacao(messageid: string): Promise<{ valor?: number; prazo?: string; numero?: string; obs?: string } | null> {
+async function lerCotacao(messageid: string): Promise<{ valor?: number; prazo?: string; numero?: string; obs?: string; destinatario?: string; cidade?: string; valorNF?: number } | null> {
   const key = process.env.ANTHROPIC_API_KEY;
   if (!key || !messageid) return null;
   const arq = await baixarMidia(messageid);
@@ -189,7 +261,7 @@ async function lerCotacao(messageid: string): Promise<{ valor?: number; prazo?: 
     body: JSON.stringify({
       model: process.env.ANTHROPIC_MODEL || "claude-haiku-4-5-20251001",
       max_tokens: 400,
-      messages: [{ role: "user", content: [bloco, { type: "text", text: 'Esta é uma cotação de frete de transportadora. Responda só com JSON: {"valor": valor total do frete em reais (número), "prazo": "prazo de entrega como aparece", "numero": "número da cotação", "obs": "observação curta relevante (ex.: validade)"}. Use null no que não aparecer.' }] }],
+      messages: [{ role: "user", content: [bloco, { type: "text", text: 'Esta é uma cotação de frete de transportadora. Responda só com JSON: {"valor": valor total do frete em reais (número), "prazo": "prazo de entrega como aparece", "numero": "número da cotação", "obs": "observação curta relevante (ex.: validade)", "destinatario": "nome do destinatário", "cidade": "cidade de destino", "valorNF": valor da nota fiscal em reais (número)}. Use null no que não aparecer.' }] }],
     }),
   });
   if (!res.ok) return null;
@@ -200,7 +272,8 @@ async function lerCotacao(messageid: string): Promise<{ valor?: number; prazo?: 
   try {
     const j = JSON.parse(m[0]);
     const v = typeof j.valor === "number" ? j.valor : j.valor ? Number(String(j.valor).replace(/\./g, "").replace(",", ".")) : undefined;
-    return { valor: isFinite(v as number) ? v : undefined, prazo: j.prazo || undefined, numero: j.numero ? String(j.numero) : undefined, obs: j.obs || undefined };
+    const vnf = typeof j.valorNF === "number" ? j.valorNF : j.valorNF ? Number(String(j.valorNF).replace(/\./g, "").replace(",", ".")) : undefined;
+    return { valor: isFinite(v as number) ? v : undefined, prazo: j.prazo || undefined, numero: j.numero ? String(j.numero) : undefined, obs: j.obs || undefined, destinatario: j.destinatario || undefined, cidade: j.cidade || undefined, valorNF: isFinite(vnf as number) ? vnf : undefined };
   } catch {
     return null;
   }
@@ -209,7 +282,8 @@ async function lerCotacao(messageid: string): Promise<{ valor?: number; prazo?: 
 export async function situacaoSaoMiguel() {
   const fl = await redisGetJSON<Fluxo>(FLUXO);
   const fila = await redis<string[]>(["LRANGE", FILA, 0, -1]);
-  return { emAndamento: fl, fila };
+  const lote = await redis<string[]>(["LRANGE", LOTE, 0, -1]);
+  return { emAndamento: fl, fila, lote };
 }
 
 /** Chamado em qualquer movimento (webhook, painel): começa a fila quando a São Miguel abrir. */

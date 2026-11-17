@@ -6,7 +6,7 @@ import { listarDocumentos } from "@/lib/recibos";
 import catalogo from "@/data/catalogo-app.json";
 import { criarFormFrete, listarFormFrete, lerFormFrete, salvarFormFrete, textoCotacaoSaoMiguel, apagarFormFrete } from "@/lib/frete";
 import { redis } from "@/lib/redis";
-import { enfileirarSaoMiguel, situacaoSaoMiguel, tickSaoMiguel } from "@/lib/saomiguel";
+import { enfileirarSaoMiguel, situacaoSaoMiguel, tickSaoMiguel, iniciarLoteSaoMiguel, tirarDoLote } from "@/lib/saomiguel";
 
 export const dynamic = "force-dynamic";
 
@@ -212,7 +212,7 @@ const FERRAMENTAS = [
   {
     name: "enviar_sao_miguel",
     description: "Manda a cotação de um formulário de frete preenchido para a Expresso São Miguel pelo WhatsApp da Compass, passando sozinho pelo robô (CNPJ, IRAI, Cotações) e lendo a imagem com o valor quando a atendente responder. Só envia se o formulário estiver completo. Sem id, devolve a situação da fila.",
-    inputSchema: { type: "object", properties: { id: { type: "string", description: "Id do formulário de frete." } } },
+    inputSchema: { type: "object", properties: { id: { type: "string", description: "Id do formulário de frete." }, segurar: { type: "boolean", description: "true = separa no lote (não envia ainda) para mandar várias juntas." }, iniciarLote: { type: "boolean", description: "true = manda agora todas as cotações separadas no lote, numa conversa só." }, tirarDoLote: { type: "boolean", description: "true = tira o formulário (id) do lote." } } },
     annotations: { readOnlyHint: false, destructiveHint: false, openWorldHint: true },
   },
   {
@@ -332,7 +332,9 @@ export async function POST(request: Request, { params }: { params: { chave: stri
         dados = { id: f.id, status: st };
       }
       else if (nome === "enviar_sao_miguel") {
-        dados = a.id ? { ...(await enfileirarSaoMiguel(String(a.id))), ...(await situacaoSaoMiguel()) } : await situacaoSaoMiguel();
+        if (a.iniciarLote) dados = { ...(await iniciarLoteSaoMiguel()), ...(await situacaoSaoMiguel()) };
+        else if (a.id && a.tirarDoLote) dados = { ...(await tirarDoLote(String(a.id))), ...(await situacaoSaoMiguel()) };
+        else dados = a.id ? { ...(await enfileirarSaoMiguel(String(a.id), { segurar: !!a.segurar })), ...(await situacaoSaoMiguel()) } : await situacaoSaoMiguel();
       }
       else if (nome === "verificar_whatsapp") {
         const nums = (Array.isArray(a.numeros) ? a.numeros : []).map((x: any) => String(x).replace(/\D/g, "")).filter((x: string) => x.length >= 10).slice(0, 100).map((x: string) => (x.length <= 11 ? "55" + x : x));
