@@ -2993,7 +2993,7 @@
     "name": "Sacochila em Poliéster CB519",
     "title": "Sacochila em Poliéster",
     "category": "Mochilas",
-    "description": "Mochila saco multifuncional em poliéster resistente a respingos d'água, com cordões de nylon que servem de fechamento e alças. Altura: 40,5 cm. Largura: 33,8 cm.",
+    "description": "Mochila saco multifuncional em poliéster resistente a respingos d'água, com cordões de nylon que servem de fechamento e alças. Altura: 40,5 cm. Largura: 33,8 cm. Área de gravação aprox.: 35 x 30 cm.",
     "images": [
       "/produtos/cb519.jpg",
       "https://www.xbzbrindes.com.br/img/produtos/3/Mochila-Saco-em-Nylon-BRANCO-11117-1573502087.jpg",
@@ -3322,5 +3322,37 @@
     "sku": "cb724-caneta-metal-colorida-clique",
     "supplierCode": "CB724",
     "title": "Caneta Metal Colorida Clique"
+  },
+  {
+    "sku": "cb521-sacola-de-algodao",
+    "name": "Sacola de Algodão 37,5 x 30,5 cm CB521",
+    "title": "Sacola de Algodão 37,5 x 30,5 cm",
+    "category": "Bolsas",
+    "description": "Sacola de algodão cru com alças costuradas na parte interna. Altura: 37,5 cm. Largura: 30,5 cm. Alça: 29 cm. Área de gravação aprox.: 30 x 30 cm.",
+    "images": [
+      "https://www.xbzbrindes.com.br/img/produtos/3/Sacola-de-Algodao-6718-1506952082.jpg",
+      "https://www.xbzbrindes.com.br/img/produtos/3/Sacola-de-Algodao-6718d1-1506952101.jpg"
+    ],
+    "colors": [
+      "Bege"
+    ],
+    "supplierCode": "CB521",
+  },
+  {
+    "sku": "cb726-corda-de-pular-pvc",
+    "name": "Corda de Pular PVC 2,5m com Cabo de Madeira CB726",
+    "title": "Corda de Pular PVC 2,5m com Cabo de Madeira",
+    "category": "Diversos",
+    "description": "Corda de pular em PVC preto com cabos em madeira e comprimento total de aproximadamente 2,5 m. Largura: 2,4 cm. Área de gravação aprox.: 2 x 8 cm (cabo de madeira).",
+    "images": [
+      "https://www.xbzbrindes.com.br/img/produtos/3/Corda-de-Pular-PVC-2-5m-28020-1775497611.jpg",
+      "https://www.xbzbrindes.com.br/img/produtos/3/Corda-de-Pular-PVC-2-5m-28020-1775497644.jpg",
+      "https://www.xbzbrindes.com.br/img/produtos/3/Corda-de-Pular-PVC-2-5m-28020d1-1775497651.jpg",
+      "https://www.xbzbrindes.com.br/img/produtos/3/Corda-de-Pular-PVC-2-5m-28020d2-1779369402.jpg"
+    ],
+    "colors": [
+      "Preto"
+    ],
+    "supplierCode": "CB726"
   }
 ]
