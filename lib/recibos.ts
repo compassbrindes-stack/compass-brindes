@@ -385,6 +385,9 @@ async function recibosRepetido(valor: number, data: string, lido: LidoComprovant
 }
 
 /** Pontua o quanto a conta combina com o comprovante/legenda (nome do fornecedor, histórico, documento). */
+/** Fornecedores pagos no ato do pedido (o pagamento entra pela compra; a conta da NF não recebe comprovante de outro fornecedor). */
+export const PAGO_NO_PEDIDO = /\bx\s?b\s?z\b/i;
+
 export function pontuar(textoConta: string, pistas: string): number {
   const a = new Set(palavras(textoConta));
   return palavras(pistas).filter((w) => a.has(w) || [...a].some((x) => x.startsWith(w) || w.startsWith(x))).length;
@@ -419,6 +422,8 @@ async function processarPagamento(m: MsgRecibo, leg: Legenda, lido: LidoComprova
       cands.sort((a, b) => b.pontos - a.pontos || a.c.vencimento.localeCompare(b.c.vencimento));
       // 19/11: pagamento da BRS (1.572,75) baixou uma conta da XBZ de 1.440 por "vencida + juros" — agora o fornecedor precisa bater
       if (aproximado) for (let i = cands.length - 1; i >= 0; i--) if (cands[i].pontos <= 0) cands.splice(i, 1);
+      // XBZ é sempre paga no ato do pedido (a conta da NF pode ter outro valor): conta da XBZ só recebe comprovante que seja da XBZ
+      for (let i = cands.length - 1; i >= 0; i--) if (PAGO_NO_PEDIDO.test(cands[i].texto) && cands[i].pontos <= 0) cands.splice(i, 1);
       const melhor = cands[0];
       const unico = cands.length === 1 || (melhor && melhor.pontos > 0 && melhor.pontos > cands[1].pontos);
       const hist = ["Pago — comprovante WhatsApp (grupo Compass Recibos)", lido?.favorecido && `favorecido: ${lido.favorecido}`, lido?.banco && `banco: ${lido.banco}`].filter(Boolean).join(" · ");
