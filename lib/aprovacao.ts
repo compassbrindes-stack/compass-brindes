@@ -30,6 +30,14 @@ const IMG = (id: string, n = 0) => (n > 0 ? `compass:aprov:img:${id}:${n}` : `co
 const LISTA = "compass:aprovs";
 const POR_NUM = (num: string) => `compass:aprov:num:${num}`;
 const VALIDADE = 60 * 60 * 24 * 60; // 60 dias
+// celular BR chega no WhatsApp às vezes sem o 9 (5555 99252081) e no cadastro com o 9 (5555 999252081): vale para os dois
+export function variantesNum(num: string): string[] {
+  const n = String(num || "").replace(/\D/g, "");
+  if (!n.startsWith("55")) return [n];
+  if (n.length === 13 && n[4] === "9") return [n, n.slice(0, 4) + n.slice(5)];
+  if (n.length === 12 && /[6-9]/.test(n[4])) return [n, n.slice(0, 4) + "9" + n.slice(4)];
+  return [n];
+}
 
 export async function criarAprovacao(d: Partial<Aprovacao>, imagemB64: string, imagemMime: string, opcoes?: { layoutId: string; versao: number; imagem: string; mime: string }[]): Promise<Aprovacao> {
   const id = randomBytes(6).toString("base64url");
@@ -52,7 +60,7 @@ export async function criarAprovacao(d: Partial<Aprovacao>, imagemB64: string, i
   await redis(["LPUSH", LISTA, id]);
   await redis(["LTRIM", LISTA, 0, 499]);
   // a resposta "APROVO" no WhatsApp vale para a última aprovação pendente desse número
-  if (a.num) await redis(["SET", POR_NUM(a.num), id, "EX", VALIDADE]);
+  if (a.num) for (const v of variantesNum(a.num)) await redis(["SET", POR_NUM(v), id, "EX", VALIDADE]);
   return a;
 }
 
@@ -85,7 +93,7 @@ export async function responderAprovacao(id: string, status: "aprovado" | "ajust
   a.respondidoEm = new Date().toISOString();
   if (comentario) a.comentario = comentario.slice(0, 1000);
   await salvarAprovacao(a);
-  if (a.num) await redis(["DEL", POR_NUM(a.num)]).catch(() => {});
+  if (a.num) for (const v of variantesNum(a.num)) await redis(["DEL", POR_NUM(v)]).catch(() => {});
   return a;
 }
 
@@ -96,7 +104,8 @@ const OK_SOLTO = /^(ok|okay|blz|beleza|show|top|certo|sim|👍|✅)[.!]*$/i;
 export async function mensagemAprovacao(num: string, texto: string): Promise<Aprovacao | null> {
   const t = String(texto || "").trim();
   if (!t || !num) return null;
-  const id = await redis<string | null>(["GET", POR_NUM(num)]).catch(() => null);
+  let id: string | null = null;
+  for (const v of variantesNum(num)) { id = await redis<string | null>(["GET", POR_NUM(v)]).catch(() => null); if (id) break; }
   if (!id) return null;
   const a = await lerAprovacao(id);
   if (!a || a.status !== "pendente") return null;
