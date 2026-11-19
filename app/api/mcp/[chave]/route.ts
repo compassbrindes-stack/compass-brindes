@@ -249,7 +249,7 @@ const FERRAMENTAS = [
   {
     name: "atualizar_aprovacao",
     description: "Atualiza um pedido de aprovação de layout: aplicado = o painel já marcou no pedido; status aprovado/ajuste/cancelado = decisão da Compass (ex.: confirmar um \"ok\" do cliente).",
-    inputSchema: { type: "object", properties: { id: { type: "string" }, aplicado: { type: "boolean" }, status: { type: "string", enum: ["aprovado", "ajuste", "cancelado", "pendente"] } }, required: ["id"] },
+    inputSchema: { type: "object", properties: { id: { type: "string" }, aplicado: { type: "boolean" }, status: { type: "string", enum: ["aprovado", "ajuste", "cancelado", "pendente"] }, escolha: { type: "integer", description: "Nº da opção escolhida, quando o pedido tem opções numeradas." } }, required: ["id"] },
     annotations: { readOnlyHint: false, destructiveHint: false },
   },
   {
@@ -407,6 +407,8 @@ export async function POST(request: Request, { params }: { params: { chave: stri
         const ap = await lerAprovacao(String(a.id || ""));
         if (!ap) return ok(id, { content: [{ type: "text", text: "Erro: aprovação não encontrada" }], isError: true });
         if (a.aplicado) ap.aplicadoEm = new Date().toISOString();
+        const esc = Number(a.escolha) || 0;
+        if (a.status === "aprovado" && ap.opcoes && esc >= 1 && esc <= ap.opcoes.length) { ap.escolha = esc; ap.layoutId = ap.opcoes[esc - 1].layoutId; ap.versao = ap.opcoes[esc - 1].versao; ap.via = ap.via || "whatsapp"; }
         if (["aprovado", "ajuste", "cancelado", "pendente"].includes(a.status)) { ap.status = a.status; if (a.status !== "pendente") ap.respondidoEm = ap.respondidoEm || new Date().toISOString(); }
         await salvarAprovacao(ap);
         dados = ap;
