@@ -1,5 +1,5 @@
 import { NextResponse } from "next/server";
-import { conversasDesde, historico, registrarMensagem } from "@/lib/conversas";
+import { conversasDesde, historico, registrarMensagem, totalMensagens } from "@/lib/conversas";
 import { enviarTexto, enviarMidia, baixarMidia, verificarNumeros } from "@/lib/uazapi";
 import { registrarCompras, todasCompras } from "@/lib/compras";
 import { listarDocumentos } from "@/lib/recibos";
@@ -76,12 +76,13 @@ const FERRAMENTAS = [
   },
   {
     name: "historico_whatsapp",
-    description: "Últimas mensagens trocadas com um número no WhatsApp da Compass (texto resumido, data e quem enviou).",
+    description: "Mensagens trocadas com um número no WhatsApp da Compass (texto, data, quem enviou, id e tipo — fotos/arquivos podem ser baixados com midia_whatsapp). Guarda até 10 mil por número; use offset para ver as mais antigas.",
     inputSchema: {
       type: "object",
       properties: {
         numero: { type: "string", description: "Número com DDI e DDD, só dígitos (ex.: 5549999990000)." },
-        limite: { type: "integer", minimum: 1, maximum: 100, description: "Quantidade de mensagens (padrão 30)." },
+        limite: { type: "integer", minimum: 1, maximum: 500, description: "Quantidade de mensagens (padrão 30)." },
+        offset: { type: "integer", minimum: 0, description: "Quantas das mais recentes pular (para buscar as mais antigas)." },
       },
       required: ["numero"],
     },
@@ -288,7 +289,7 @@ export async function POST(request: Request, { params }: { params: { chave: stri
     try {
       let dados: unknown;
       if (nome === "conversas_whatsapp") dados = { contatos: await conversasDesde(a.desde, Number(a.limite) || 300) };
-      else if (nome === "historico_whatsapp") dados = { mensagens: await historico(String(a.numero || ""), Number(a.limite) || 30) };
+      else if (nome === "historico_whatsapp") dados = { mensagens: await historico(String(a.numero || ""), Number(a.limite) || 30, Number(a.offset) || 0), total: await totalMensagens(String(a.numero || "")) };
       else if (nome === "registrar_compras") dados = { registradas: await registrarCompras(Array.isArray(a.compras) ? a.compras.slice(0, 500) : []) };
       else if (nome === "compras_pagas")
         dados = { pagas: (await todasCompras()).filter((c) => c.pago).map((c) => ({ pedido: c.pedido, pagoEm: c.pagoEm, contaBling: c.contaBling, pagoPor: c.pagoPor })) };

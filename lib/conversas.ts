@@ -53,7 +53,7 @@ export async function registrarMensagem(o: { num: string; nome?: string; texto: 
   await redis(["ZADD", K_ATIV, Date.parse(em), o.num]);
   const completo = o.texto ? o.texto.slice(0, 4000) : resumo;
   await redis(["LPUSH", K_MSGS(o.num), JSON.stringify({ em, de: c.ultimaDe, texto: completo, id: o.id, tipo: o.tipo })]);
-  await redis(["LTRIM", K_MSGS(o.num), 0, 99]);
+  await redis(["LTRIM", K_MSGS(o.num), 0, 9999]); // guarda até 10 mil mensagens por número (ficha do cliente)
 }
 
 /** Contatos com conversa desde a data (ISO), mais recentes primeiro. */
@@ -73,9 +73,16 @@ export async function conversasDesde(desde?: string, limite = 300): Promise<Cont
     .filter((x): x is Contato => !!x);
 }
 
-export async function historico(num: string, limite = 30) {
+export async function totalMensagens(num: string): Promise<number> {
   const n = String(num || "").replace(/\D/g, "");
-  const itens = await redis<string[]>(["LRANGE", K_MSGS(n), 0, Math.max(0, Math.min(limite, 100) - 1)]);
+  return Number(await redis<number>(["LLEN", K_MSGS(n)])) || 0;
+}
+
+/** Mensagens de um número, das mais novas para trás: pula `offset` e traz `limite` (máx. 500), em ordem cronológica. */
+export async function historico(num: string, limite = 30, offset = 0) {
+  const n = String(num || "").replace(/\D/g, "");
+  const ini = Math.max(0, Math.floor(offset) || 0);
+  const itens = await redis<string[]>(["LRANGE", K_MSGS(n), ini, ini + Math.max(0, Math.min(limite, 500) - 1)]);
   return (itens || [])
     .map((x) => {
       try {
