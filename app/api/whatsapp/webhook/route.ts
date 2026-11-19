@@ -3,6 +3,7 @@ import { redis } from "@/lib/redis";
 import { processarRecibo } from "@/lib/recibos";
 import { numeroDoChat, registrarMensagem } from "@/lib/conversas";
 import { NUM_SAO_MIGUEL, mensagemSaoMiguel, tickSaoMiguel } from "@/lib/saomiguel";
+import { mensagemAprovacao } from "@/lib/aprovacao";
 
 export const dynamic = "force-dynamic";
 export const maxDuration = 60;
@@ -67,6 +68,8 @@ export async function POST(request: Request) {
       quando: Number(msg.messageTimestamp) || Date.now(),
       id: msg.messageid || msg.id || "",
     }).catch(() => {});
+    // cliente respondendo "APROVO" a um layout enviado para aprovação
+    if (!msg.fromMe && num !== NUM_SAO_MIGUEL) await mensagemAprovacao(num, msg.text || c0.text || c0.caption || "").catch(() => {});
     // robô / atendente da Expresso São Miguel: segue o envio automático da cotação
     if (num === NUM_SAO_MIGUEL && !msg.fromMe) await mensagemSaoMiguel(msg).catch(() => {});
     else await tickSaoMiguel().catch(() => {});

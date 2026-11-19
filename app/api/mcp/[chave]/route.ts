@@ -6,6 +6,7 @@ import { listarDocumentos } from "@/lib/recibos";
 import catalogo from "@/data/catalogo-app.json";
 import { criarFormFrete, listarFormFrete, lerFormFrete, salvarFormFrete, textoCotacaoSaoMiguel, apagarFormFrete } from "@/lib/frete";
 import { redis } from "@/lib/redis";
+import { criarAprovacao, listarAprovacoes, lerAprovacao, salvarAprovacao, textoPedidoAprovacao } from "@/lib/aprovacao";
 import { enfileirarSaoMiguel, situacaoSaoMiguel, tickSaoMiguel, iniciarLoteSaoMiguel, tirarDoLote, forcarEnvioSaoMiguel, informarCotacao } from "@/lib/saomiguel";
 
 export const dynamic = "force-dynamic";
@@ -222,6 +223,34 @@ const FERRAMENTAS = [
     annotations: { readOnlyHint: true, openWorldHint: true },
   },
   {
+    name: "criar_aprovacao",
+    description: "Pede ao cliente, pelo WhatsApp da Compass, a aprovação de um layout: cria o link /aprovar/<id> (o cliente aprova ou pede ajuste) e envia o layout com a mensagem. O cliente também pode responder APROVO na conversa. A pessoa clicou em \"Pedir aprovação no WhatsApp\" no painel.",
+    inputSchema: { type: "object", properties: {
+      numero: { type: "string", description: "WhatsApp do cliente com DDI e DDD, só dígitos." },
+      cliente: { type: "string" }, pedido: { type: "string", description: "Nº do pedido no Bling ou da proposta." },
+      producaoId: { type: "string", description: "Id do pedido na produção do painel." }, layoutId: { type: "string", description: "Id do layout (versão) no painel." },
+      versao: { type: "integer" }, produto: { type: "string" },
+      imagem: { type: "string", description: "Prévia do layout em JPEG/PNG base64 (até ~700 KB), mostrada na página de aprovação." },
+      mimetype: { type: "string", description: "Tipo da imagem (image/jpeg ou image/png)." },
+      pdf: { type: "string", description: "Opcional: PDF original do layout em base64 (até 3 MB), enviado na conversa." },
+      pdfNome: { type: "string" },
+      enviar: { type: "boolean", description: "false = só cria o link, sem mandar mensagem." },
+    }, required: ["numero", "imagem"] },
+    annotations: { readOnlyHint: false, destructiveHint: false, openWorldHint: true },
+  },
+  {
+    name: "aprovacoes",
+    description: "Pedidos de aprovação de layout e as respostas dos clientes (pendente, aprovado, ajuste com o comentário, dúvida = respondeu só \"ok\"). O painel usa para marcar \"Layout aprovado\" no pedido.",
+    inputSchema: { type: "object", properties: { limite: { type: "integer", minimum: 1, maximum: 300 } } },
+    annotations: { readOnlyHint: true },
+  },
+  {
+    name: "atualizar_aprovacao",
+    description: "Atualiza um pedido de aprovação de layout: aplicado = o painel já marcou no pedido; status aprovado/ajuste/cancelado = decisão da Compass (ex.: confirmar um \"ok\" do cliente).",
+    inputSchema: { type: "object", properties: { id: { type: "string" }, aplicado: { type: "boolean" }, status: { type: "string", enum: ["aprovado", "ajuste", "cancelado", "pendente"] } }, required: ["id"] },
+    annotations: { readOnlyHint: false, destructiveHint: false },
+  },
+  {
     name: "menu_whatsapp",
     description: "Mensagens de robô (botões e listas de opções) recebidas de um número no WhatsApp da Compass, com o conteúdo completo das opções — usado para entender o atendimento automático da transportadora.",
     inputSchema: { type: "object", properties: { numero: { type: "string", description: "Número com DDI e DDD, só dígitos." }, limite: { type: "integer", minimum: 1, maximum: 50 } }, required: ["numero"] },
@@ -341,6 +370,38 @@ export async function POST(request: Request, { params }: { params: { chave: stri
       else if (nome === "verificar_whatsapp") {
         const nums = (Array.isArray(a.numeros) ? a.numeros : []).map((x: any) => String(x).replace(/\D/g, "")).filter((x: string) => x.length >= 10).slice(0, 100).map((x: string) => (x.length <= 11 ? "55" + x : x));
         dados = { resultado: await verificarNumeros(nums) };
+      }
+      else if (nome === "criar_aprovacao") {
+        let num = String(a.numero || "").replace(/\D/g, "");
+        if (num.length >= 10 && num.length <= 11) num = "55" + num;
+        if (num.length < 12 || num.length > 13) return ok(id, { content: [{ type: "text", text: "Erro: número inválido" }], isError: true });
+        const img = String(a.imagem || "").replace(/^data:[^,]*,/, "");
+        if (!img || img.length > 1_000_000) return ok(id, { content: [{ type: "text", text: "Erro: prévia do layout vazia ou maior que 700 KB" }], isError: true });
+        const pdf = String(a.pdf || "").replace(/^data:[^,]*,/, "");
+        if (pdf.length > 4_300_000) return ok(id, { content: [{ type: "text", text: "Erro: PDF maior que 3 MB" }], isError: true });
+        const ap = await criarAprovacao({ num, cliente: a.cliente, pedido: a.pedido, producaoId: a.producaoId, layoutId: a.layoutId, versao: a.versao, produto: a.produto }, img, String(a.mimetype || "image/jpeg"));
+        const link = `${SITE}/aprovar/${ap.id}`;
+        const texto = textoPedidoAprovacao(ap, link);
+        let enviado = false;
+        if (a.enviar !== false) {
+          if (pdf) await enviarMidia(num, "document", pdf, texto, String(a.pdfNome || "").slice(0, 120) || `layout-${ap.pedido || ap.id}.pdf`);
+          else await enviarMidia(num, "image", img, texto);
+          const quando = Date.now();
+          await registrarMensagem({ num, texto: `[layout para aprovação] ${texto}`, tipo: "documentMessage", deCompass: true, quando, id: "aprov-" + quando });
+          enviado = true;
+        }
+        dados = { id: ap.id, link, enviado, numero: num };
+      }
+      else if (nome === "aprovacoes") {
+        dados = { aprovacoes: await listarAprovacoes(Math.min(300, Math.max(1, Number(a.limite) || 100))) };
+      }
+      else if (nome === "atualizar_aprovacao") {
+        const ap = await lerAprovacao(String(a.id || ""));
+        if (!ap) return ok(id, { content: [{ type: "text", text: "Erro: aprovação não encontrada" }], isError: true });
+        if (a.aplicado) ap.aplicadoEm = new Date().toISOString();
+        if (["aprovado", "ajuste", "cancelado", "pendente"].includes(a.status)) { ap.status = a.status; if (a.status !== "pendente") ap.respondidoEm = ap.respondidoEm || new Date().toISOString(); }
+        await salvarAprovacao(ap);
+        dados = ap;
       }
       else if (nome === "menu_whatsapp") {
         const num = String(a.numero || "").replace(/\D/g, "");
