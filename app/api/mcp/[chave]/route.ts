@@ -296,7 +296,7 @@ export async function POST(request: Request, { params }: { params: { chave: stri
         const log = ((await redis<string[]>(["LRANGE", "compass:recibos:log", 0, 299]).catch(() => [])) || []).map((x) => { try { return JSON.parse(x); } catch { return null; } }).filter(Boolean);
         const contasPagas = log
           .filter((r: any) => ["pagar", "compra"].includes(r.tipo) && r.contaId && ["pago", "lancado", "pago-sem-baixa", "lancado-sem-baixa"].includes(r.status))
-          .map((r: any) => ({ contaId: String(r.contaId), data: r.data || String(r.em || "").slice(0, 10), valor: r.valor ?? null, juros: r.juros ?? null, status: r.status, motivo: r.motivo || "", favorecido: r.comprovante?.favorecido || "", em: r.em }));
+          .map((r: any) => ({ contaId: String(r.contaId), data: r.data || String(r.em || "").slice(0, 10), valor: r.valor ?? null, juros: r.juros ?? null, valorDocumento: r.comprovante?.valorDocumento ?? null, status: r.status, motivo: r.motivo || "", favorecido: r.comprovante?.favorecido || "", legenda: String(r.legenda || "").slice(0, 120), em: r.em }));
         const recentes = log.slice(0, 15).map((r: any) => ({ em: r.em, tipo: r.tipo, status: r.status, valor: r.valor ?? null, contaId: r.contaId ?? null, motivo: r.motivo || "", favorecido: r.comprovante?.favorecido || "", dataComprovante: r.comprovante?.data || "", valorDocumento: r.comprovante?.valorDocumento ?? null, legenda: r.legenda || "" }));
         dados = { pagas: (await todasCompras()).filter((c) => c.pago).map((c) => ({ pedido: c.pedido, pagoEm: c.pagoEm, contaBling: c.contaBling, pagoPor: c.pagoPor })), contasPagas, recentes };
       }

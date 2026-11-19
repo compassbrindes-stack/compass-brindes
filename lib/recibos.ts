@@ -404,9 +404,10 @@ async function processarPagamento(m: MsgRecibo, leg: Legenda, lido: LidoComprova
       const todasAbertas = await contasPagarAbertas();
       // 1) mesmo valor; 2) valor original do boleto (pago com juros/multa); 3) conta vencida um pouco menor que o pago
       let abertas = todasAbertas.filter((c) => Math.abs(c.valor - valor) < 0.01);
+      let aproximado = false; // achou pelo valor do boleto ou por "vencida + juros": só vale se o fornecedor bater
       if (!abertas.length && lido?.valorDocumento && Math.abs(lido.valorDocumento - valor) >= 0.01)
         abertas = todasAbertas.filter((c) => Math.abs(c.valor - (lido.valorDocumento as number)) < 0.01);
-      if (!abertas.length) abertas = contasComJuros(todasAbertas, valor, data);
+      if (!abertas.length) { abertas = contasComJuros(todasAbertas, valor, data); aproximado = abertas.length > 0; }
       // detalhe (fornecedor e histórico) só das contas candidatas
       const cands: { c: ContaPagar; texto: string; nome: string; pontos: number }[] = [];
       for (const c of abertas.slice(0, 8)) {
@@ -416,6 +417,8 @@ async function processarPagamento(m: MsgRecibo, leg: Legenda, lido: LidoComprova
         cands.push({ c: { ...c, historico: d.historico }, texto, nome, pontos: pontuar(texto, pistas) });
       }
       cands.sort((a, b) => b.pontos - a.pontos || a.c.vencimento.localeCompare(b.c.vencimento));
+      // 19/11: pagamento da BRS (1.572,75) baixou uma conta da XBZ de 1.440 por "vencida + juros" — agora o fornecedor precisa bater
+      if (aproximado) for (let i = cands.length - 1; i >= 0; i--) if (cands[i].pontos <= 0) cands.splice(i, 1);
       const melhor = cands[0];
       const unico = cands.length === 1 || (melhor && melhor.pontos > 0 && melhor.pontos > cands[1].pontos);
       const hist = ["Pago — comprovante WhatsApp (grupo Compass Recibos)", lido?.favorecido && `favorecido: ${lido.favorecido}`, lido?.banco && `banco: ${lido.banco}`].filter(Boolean).join(" · ");
