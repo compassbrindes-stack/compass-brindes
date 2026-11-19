@@ -18,7 +18,10 @@ export async function POST(req: Request, ctx: { params: { id: string } }) {
   if (acao === "ajuste" && !comentario) return NextResponse.json({ error: "Conte o que precisa ajustar." }, { status: 400 });
   if (acao !== "aprovar" && acao !== "ajuste") return NextResponse.json({ error: "Ação inválida." }, { status: 400 });
   if (a.status === "aprovado" && acao === "ajuste") return NextResponse.json({ error: "Este layout já foi aprovado. Para mudar, fale com a Compass pelo WhatsApp." }, { status: 409 });
-  const r = await responderAprovacao(a.id, acao === "aprovar" ? "aprovado" : "ajuste", "link", comentario);
+  const escolha = Number(b.escolha) || 0;
+  if (acao === "aprovar" && a.opcoes && (escolha < 1 || escolha > a.opcoes.length)) return NextResponse.json({ error: "Escolha uma das opções." }, { status: 400 });
+  if (acao === "aprovar" && a.status === "aprovado" && a.opcoes) return NextResponse.json({ error: `A opção ${a.escolha} já foi escolhida. Para mudar, fale com a Compass pelo WhatsApp.` }, { status: 409 });
+  const r = await responderAprovacao(a.id, acao === "aprovar" ? "aprovado" : "ajuste", "link", comentario, escolha);
   if (!r) return NextResponse.json({ error: "Não foi possível registrar." }, { status: 500 });
   return NextResponse.json({ ok: true, status: r.status });
 }

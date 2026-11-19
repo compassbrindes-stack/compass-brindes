@@ -236,6 +236,7 @@ const FERRAMENTAS = [
       pdf: { type: "string", description: "Opcional: PDF original do layout em base64 (até 3 MB), enviado na conversa." },
       pdfNome: { type: "string" },
       enviar: { type: "boolean", description: "false = só cria o link, sem mandar mensagem." },
+      opcoes: { type: "array", description: "Opcional: 2 a 6 opções de layout numeradas para o cliente escolher uma (cada uma com layoutId, versao, imagem base64 até ~450 KB e mimetype). Nesse caso imagem = a da opção 1.", items: { type: "object", properties: { layoutId: { type: "string" }, versao: { type: "integer" }, imagem: { type: "string" }, mimetype: { type: "string" } } } },
     }, required: ["numero", "imagem"] },
     annotations: { readOnlyHint: false, destructiveHint: false, openWorldHint: true },
   },
@@ -380,12 +381,18 @@ export async function POST(request: Request, { params }: { params: { chave: stri
         if (!img || img.length > 1_000_000) return ok(id, { content: [{ type: "text", text: "Erro: prévia do layout vazia ou maior que 700 KB" }], isError: true });
         const pdf = String(a.pdf || "").replace(/^data:[^,]*,/, "");
         if (pdf.length > 4_300_000) return ok(id, { content: [{ type: "text", text: "Erro: PDF maior que 3 MB" }], isError: true });
-        const ap = await criarAprovacao({ num, cliente: a.cliente, pedido: a.pedido, producaoId: a.producaoId, layoutId: a.layoutId, versao: a.versao, produto: a.produto }, img, String(a.mimetype || "image/jpeg"));
+        const ops = (Array.isArray(a.opcoes) ? a.opcoes : []).slice(0, 6).map((o: any) => ({ layoutId: String(o.layoutId || ""), versao: Number(o.versao) || 1, imagem: String(o.imagem || "").replace(/^data:[^,]*,/, ""), mime: String(o.mimetype || "image/jpeg") }));
+        if (ops.length === 1 || ops.some((o: any) => !o.imagem || o.imagem.length > 1_000_000)) return ok(id, { content: [{ type: "text", text: "Erro: as opções precisam ser 2 ou mais, cada uma com imagem de até 700 KB" }], isError: true });
+        const ap = await criarAprovacao({ num, cliente: a.cliente, pedido: a.pedido, producaoId: a.producaoId, layoutId: a.layoutId, versao: a.versao, produto: a.produto }, img, String(a.mimetype || "image/jpeg"), ops.length > 1 ? ops : undefined);
         const link = `${SITE}/aprovar/${ap.id}`;
         const texto = textoPedidoAprovacao(ap, link);
         let enviado = false;
         if (a.enviar !== false) {
-          if (pdf) await enviarMidia(num, "document", pdf, texto, String(a.pdfNome || "").slice(0, 120) || `layout-${ap.pedido || ap.id}.pdf`);
+          if (ap.opcoes) {
+            for (let i = 0; i < ops.length; i++) await enviarMidia(num, "image", ops[i].imagem, `*Opção ${i + 1}*`);
+            await enviarTexto(num, texto);
+          }
+          else if (pdf) await enviarMidia(num, "document", pdf, texto, String(a.pdfNome || "").slice(0, 120) || `layout-${ap.pedido || ap.id}.pdf`);
           else await enviarMidia(num, "image", img, texto);
           const quando = Date.now();
           await registrarMensagem({ num, texto: `[layout para aprovação] ${texto}`, tipo: "documentMessage", deCompass: true, quando, id: "aprov-" + quando });
