@@ -426,7 +426,9 @@ async function processarPagamento(m: MsgRecibo, leg: Legenda, lido: LidoComprova
       } else if (melhor && unico) {
         const juros = Math.round((valor - melhor.c.valor) * 100) / 100;
         const histJ = juros >= 0.01 ? `${hist} · valor original ${brl(melhor.c.valor)} + juros/multa ${brl(juros)}` : hist;
-        await baixarContaPagar(melhor.c, valor, data, histJ, pistas);
+        registro.contaId = melhor.c.id; registro.data = data; if (juros >= 0.01) registro.juros = juros;
+        try { await baixarContaPagar(melhor.c, valor, data, histJ, pistas); }
+        catch (e1: any) { await new Promise((r) => setTimeout(r, 2500)); try { await baixarContaPagar(melhor.c, valor, data, histJ, pistas); } catch (e2: any) { const err: any = new Error(`a baixa no Bling falhou: ${String(e2?.message || e1?.message)}`); err.contaId = melhor.c.id; err.semBaixa = "pago-sem-baixa"; throw err; } }
         registro.status = "pago";
         registro.data = data;
         registro.contaId = melhor.c.id;
@@ -453,9 +455,17 @@ async function processarPagamento(m: MsgRecibo, leg: Legenda, lido: LidoComprova
       }
     }
   } catch (e: any) {
-    registro.status = "erro";
     registro.motivo = String(e?.message || e);
-    resposta = `⚠️ Não consegui registrar o pagamento: ${registro.motivo}`;
+    if (e?.contaId) {
+      // o pagamento é real (comprovante): o painel marca a conta como paga mesmo sem a baixa no Bling
+      registro.status = e.semBaixa || "lancado-sem-baixa";
+      registro.contaId = e.contaId;
+      registro.data = registro.data || data;
+      resposta = `⚠️ Pagamento registrado, mas ${registro.motivo}. O painel marca a conta como paga; dê baixa no Bling quando puder.`;
+    } else {
+      registro.status = "erro";
+      resposta = `⚠️ Não consegui registrar o pagamento: ${registro.motivo}`;
+    }
   }
   await redis(["LPUSH", "compass:recibos:log", JSON.stringify(registro)]);
   await redis(["LTRIM", "compass:recibos:log", 0, 499]);

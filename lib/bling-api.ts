@@ -332,6 +332,18 @@ export async function lancarDespesaPaga(o: { contatoId: number; valor: number; d
     }),
   });
   const conta: ContaPagar = { id: criada.data.id, situacao: 1, vencimento: o.data, valor: o.valor };
-  await baixarContaPagar(conta, o.valor, o.data, o.historico, o.textoCategoria, categoria || undefined);
+  try {
+    await baixarContaPagar(conta, o.valor, o.data, o.historico, o.textoCategoria, categoria || undefined);
+  } catch (e1: any) {
+    // 2ª tentativa (o Bling às vezes recusa logo após criar a conta)
+    await new Promise((r) => setTimeout(r, 2500));
+    try {
+      await baixarContaPagar(conta, o.valor, o.data, o.historico, o.textoCategoria, categoria || undefined);
+    } catch (e2: any) {
+      const err: any = new Error(`a conta foi lançada no Bling, mas a baixa falhou: ${String(e2?.message || e1?.message || e2)}`);
+      err.contaId = criada.data.id;
+      throw err;
+    }
+  }
   return criada.data.id;
 }
