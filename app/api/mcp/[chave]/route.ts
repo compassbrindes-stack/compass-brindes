@@ -22,6 +22,7 @@ export const dynamic = "force-dynamic";
  *   historico_whatsapp  — últimas mensagens de um número
  *   registrar_compras   — o painel informa as compras feitas nos fornecedores (nº do pedido e valor)
  *   compras_pagas       — quais dessas compras já foram pagas pelo grupo Compass Recibos
+ *   avisar_grupo_recibos — manda aviso interno no grupo Compass Recibos (lembrete diário)
  *   enviar_whatsapp     — envia uma mensagem de texto pelo WhatsApp da Compass (usado pelo painel, a pessoa digita e clica Enviar)
  *   enviar_arquivo_whatsapp — envia foto/PDF (base64) pelo WhatsApp da Compass, com legenda opcional
  *   foto_produto        — foto do produto (catálogo do site pelo código, ou link do Bling/fornecedor) em base64,
@@ -121,6 +122,15 @@ const FERRAMENTAS = [
     description: "Lista as compras em fornecedor que já tiveram o pagamento registrado pelo grupo Compass Recibos (pedido, data do pagamento e conta no Bling) e as contas a pagar pagas por comprovante no grupo (contasPagas: conta no Bling, data, valor, juros; inclusive quando a baixa no Bling falhou).",
     inputSchema: { type: "object", properties: {} },
     annotations: { readOnlyHint: true },
+  },
+  {
+    name: "avisar_grupo_recibos",
+    description: "Manda uma mensagem de texto no grupo de WhatsApp \"Compass Recibos\" da equipe (avisos internos, como o lembrete diário de contas e compromissos). Só para esse grupo; nunca para clientes. A mensagem não é lida como comprovante.",
+    inputSchema: {
+      type: "object",
+      properties: { texto: { type: "string", description: "Texto da mensagem (até 4000 caracteres)." } },
+      required: ["texto"],
+    },
   },
   {
     name: "enviar_whatsapp",
@@ -299,6 +309,20 @@ export async function POST(request: Request, { params }: { params: { chave: stri
           .map((r: any) => ({ contaId: String(r.contaId), data: r.data || String(r.em || "").slice(0, 10), valor: r.valor ?? null, juros: r.juros ?? null, valorDocumento: r.comprovante?.valorDocumento ?? null, status: r.status, motivo: r.motivo || "", favorecido: r.comprovante?.favorecido || "", legenda: String(r.legenda || "").slice(0, 120), em: r.em }));
         const recentes = log.slice(0, 15).map((r: any) => ({ em: r.em, tipo: r.tipo, status: r.status, valor: r.valor ?? null, contaId: r.contaId ?? null, motivo: r.motivo || "", favorecido: r.comprovante?.favorecido || "", dataComprovante: r.comprovante?.data || "", valorDocumento: r.comprovante?.valorDocumento ?? null, legenda: r.legenda || "" }));
         dados = { pagas: (await todasCompras()).filter((c) => c.pago).map((c) => ({ pedido: c.pedido, pagoEm: c.pagoEm, contaBling: c.contaBling, pagoPor: c.pagoPor })), contasPagas, recentes };
+      }
+      else if (nome === "avisar_grupo_recibos") {
+        const texto = String(a.texto || "").trim();
+        if (!texto || texto.length > 4000) return ok(id, { content: [{ type: "text", text: "Erro: mensagem vazia ou longa demais" }], isError: true });
+        let grupo = process.env.WA_GRUPO_RECIBOS || "";
+        if (!grupo) {
+          const h = (await redis<string[] | null>(["HGETALL", "compass:wa:grupos"]).catch(() => null)) || [];
+          const alvo = (process.env.WA_GRUPO_RECIBOS_NOME || "compass recibos").toLowerCase();
+          const n = (t: string) => String(t || "").normalize("NFD").replace(/[\u0300-\u036f]/g, "").toLowerCase().trim();
+          for (let i = 0; i + 1 < h.length; i += 2) if (String(h[i]).endsWith("@g.us") && n(h[i + 1]) === n(alvo)) { grupo = h[i]; break; }
+        }
+        if (!grupo) return ok(id, { content: [{ type: "text", text: "Erro: grupo Compass Recibos ainda não identificado (mande qualquer mensagem no grupo e tente de novo)" }], isError: true });
+        await enviarTexto(grupo, texto);
+        dados = { enviado: true, grupo: "Compass Recibos", em: new Date().toISOString() };
       }
       else if (nome === "enviar_whatsapp") {
         let num = String(a.numero || "").replace(/\D/g, "");
