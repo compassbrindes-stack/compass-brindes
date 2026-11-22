@@ -64,6 +64,19 @@ async function fotoProduto(codigo: string, url: string) {
 
 const FERRAMENTAS = [
   {
+    name: "enviar_catalogo_whatsapp",
+    description: "Envia o catálogo da Compass em PDF (gerado na hora pelo site, sem preços) pelo WhatsApp da Compass para um número, com uma mensagem/legenda. Grava no histórico da conversa.",
+    inputSchema: {
+      type: "object",
+      properties: {
+        numero: { type: "string", description: "Número com DDI e DDD, só dígitos (ex.: 5549999990000)." },
+        legenda: { type: "string", description: "Mensagem que acompanha o PDF (até 1000 caracteres)." },
+      },
+      required: ["numero"],
+    },
+    annotations: { readOnlyHint: false, destructiveHint: false, openWorldHint: true },
+  },
+  {
     name: "agente_config",
     description: "Atendimento automático dos leads novos do WhatsApp (agente que conversa no jeito da Katieska). Sem argumentos, mostra a configuração. Com argumentos, altera: modo 'desligado' (não responde ninguém), 'teste' (só os números da lista) ou 'novos' (todo contato novo que ainda não recebeu resposta da Compass); teste = lista completa de números de teste (substitui a anterior).",
     inputSchema: {
@@ -355,6 +368,18 @@ export async function POST(request: Request, { params }: { params: { chave: stri
         if (num.length >= 10 && num.length <= 11) num = "55" + num;
         if (a.acao === "reiniciar") { await apagarEstado(num); dados = { reiniciado: true, numero: num }; }
         else dados = { pausado: await pausarAgente(num, "pausado pelo painel"), numero: num };
+      }
+      else if (nome === "enviar_catalogo_whatsapp") {
+        let num = String(a.numero || "").replace(/\D/g, "");
+        if (num.length >= 10 && num.length <= 11) num = "55" + num;
+        if (num.length < 12 || num.length > 13) return ok(id, { content: [{ type: "text", text: "Erro: número inválido" }], isError: true });
+        const legenda = String(a.legenda || "").trim().slice(0, 1000);
+        // a uazapi baixa o PDF direto do site (gerado na hora, sem preços)
+        await enviarMidia(num, "document", `${SITE}/api/catalogo/pdf?v=${Date.now()}`, legenda, "Catalogo-Compass-Brindes.pdf");
+        await pausarAgente(num, "a equipe respondeu pelo painel").catch(() => {});
+        const quando = Date.now();
+        await registrarMensagem({ num, texto: legenda ? `[arquivo: Catalogo-Compass-Brindes.pdf] ${legenda}` : "[arquivo: Catalogo-Compass-Brindes.pdf]", tipo: "documentMessage", deCompass: true, quando, id: "painel-cat-" + quando });
+        dados = { enviado: true, numero: num, em: new Date(quando).toISOString() };
       }
       else if (nome === "avisar_grupo_recibos") {
         const texto = String(a.texto || "").trim();
