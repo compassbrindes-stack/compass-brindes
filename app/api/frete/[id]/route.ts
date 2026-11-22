@@ -31,7 +31,8 @@ export async function POST(req: Request, ctx: { params: { id: string } }) {
   const end = await fetchAddressByCep(dest.cep).catch(() => null);
   if (end && end.estado && end.estado !== dest.uf) return NextResponse.json({ error: `O CEP ${dest.cep.slice(0, 5)}-${dest.cep.slice(5)} é de ${end.cidade}/${end.estado}. Confira o CEP ou a UF.` }, { status: 400 });
   const novo = { ...f, dest, obsCliente: txt(b.obs, 300), status: "preenchido" as const, preenchidoEm: new Date().toISOString() };
-  if (!completo(novo)) return NextResponse.json({ error: "Faltam dados obrigatórios." }, { status: 400 });
+  // link do atendimento automático (autoEnviar=false): volumes e valor da NF a Compass completa depois
+  if (!completo(novo) && f.autoEnviar !== false) return NextResponse.json({ error: "Faltam dados obrigatórios." }, { status: 400 });
   await salvarFormFrete(novo);
   // envio automático para a Expresso São Miguel (só se a Compass não desligou para este link)
   let previsao = "";

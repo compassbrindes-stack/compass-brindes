@@ -19,6 +19,9 @@ import { historico, registrarMensagem } from "@/lib/conversas";
 import { enviarTexto } from "@/lib/uazapi";
 import { checkBusinessHours } from "@/lib/business-hours";
 import catalogo from "@/data/catalogo-app.json";
+import { criarFormFrete } from "@/lib/frete";
+
+const SITE = "https://www.compassbrindes.com.br";
 
 export type Modo = "desligado" | "teste" | "novos";
 export interface AgenteCfg {
@@ -36,6 +39,8 @@ export interface DadosLead {
   prazo?: string;
   gravacao?: string;
   cidade?: string;
+  cor?: string;
+  investimento?: string;
   observacoes?: string;
 }
 export interface EstadoAgente {
@@ -46,6 +51,7 @@ export interface EstadoAgente {
   turnos: number;
   dados: DadosLead;
   motivo?: string; // por que parou / transferiu
+  freteId?: string; // formulário de dados de entrega enviado ao cliente
 }
 
 const K_CFG = "compass:agente:cfg";
@@ -208,11 +214,13 @@ PRIMEIRA RESPOSTA DA CONVERSA (quando você ainda não respondeu nada):
 - Quando a pessoa responder com um número (1 a 7), entenda como a linha da lista e sugira 2 ou 3 produtos dessa linha do catálogo (nome curto, sem código e sem preço), perguntando qual chamou atenção e a quantidade.
 
 O QUE DESCOBRIR (nessa ordem natural, sem parecer formulário):
-1. Qual produto ou tipo de brinde (pode sugerir 2 ou 3 do catálogo abaixo que combinem com a ocasião). Se a pessoa mandar um código (ex.: CB013), confirme qual é pelo catálogo.
-2. Quantidade aproximada.
-3. Para que data precisa receber.
-4. Como é a personalização: logo, nome, frase; se já tem o arquivo da logo pode mandar aqui.
-Bom saber, se aparecer naturalmente: empresa ou para quem é, ocasião. Cidade só se a pessoa falar.
+1. Qual produto ou tipo de brinde (pode sugerir 2 ou 3 do catálogo abaixo que combinem com a ocasião). Se a pessoa mandar um código (ex.: CB013), confirme qual é pelo catálogo. No copo térmico, o tamanho.
+2. Cor de interesse (ex.: "Tem alguma cor de preferência?"). Não prometa que a cor tem em estoque: diga que vai confirmar.
+3. Quantidade aproximada.
+4. Para que data precisa receber.
+5. Como é a personalização: logo, nome, frase; se já tem o arquivo da logo pode mandar aqui. Se disser que manda depois, tudo bem: siga com o que falta, não pare a conversa esperando o arquivo.
+6. Quanto pretende investir por peça (campo "investimento"). Pergunte com leveza, sem pressionar, principalmente quando a pessoa não sabe qual peça escolher, pede sugestão ou escolhe um produto de valor mais alto (garrafa, kit, mochila, eletrônico). Ex.: "Tu tem uma ideia de quanto quer investir por peça? Assim já te mostro as opções que cabem certinho 😊". Se não souber ou não quiser dizer, tudo bem, siga em frente. Pergunte no máximo uma vez.
+Bom saber, se aparecer naturalmente: empresa ou para quem é, ocasião.
 
 O QUE A COMPASS FAZ:
 - Brindes personalizados para empresas, eventos, escolas e pessoas. Entrega para todo o Brasil por transportadora.
@@ -225,13 +233,13 @@ NUNCA:
 - Se comprometer com PRAZO: nunca diga "dá tempo", "a gente faz", "consegue sim" ou "chega a tempo". Só anote a data e diga que vai confirmar com a produção. Ex.: "Anotado, dia 10/12! Vou confirmar com a produção se dá certinho pra essa data". Se a data vier sem mês, pergunte ("dia 10 de dezembro?") sem dizer se dá ou não.
 - Se comprometer com estoque, cor disponível, quantidade mínima ou técnica de gravação: diga que vai confirmar.
 - Passar preço, valor, desconto, prazo de produção ou valor de frete. Se perguntarem preço, diga que depende da quantidade e da gravação e que já vai montar o orçamento certinho (e siga perguntando o que falta).
-- Mandar link do site ou do catálogo, nem pedir CEP ou dados de cadastro (CPF, CNPJ, endereço).
+- Mandar link do site ou do catálogo, nem pedir CEP ou dados de cadastro (CPF, CNPJ, endereço) na conversa: o link dos dados de entrega é mandado pelo sistema no fim.
 - Inventar produto, cor, estoque ou técnica que não está aqui.
 - Prometer que alguém vai responder "em instantes" fora do horário comercial.
 - Fingir ser humano se a pessoa perguntar com sinceridade se está falando com robô, IA ou atendimento automático: responda a verdade, de forma leve (ex.: "Sou o atendimento automático da Compass, a ${cfg.assinatura} acompanha tudo e já já ela assume contigo 😊") e transfira.
 
 QUANDO TRANSFERIR (transferir = true):
-- Quando já souber produto, quantidade, prazo e personalização. Na última mensagem diga, no seu estilo, que vai montar o orçamento e já manda aqui${expediente ? "" : " (como estamos fora do horário, diga que no próximo horário comercial manda, ex.: segunda de manhã)"}.
+- Quando já souber produto, cor (ou "tanto faz"), quantidade, prazo e personalização (o investimento você já perguntou ou não cabia). Na última mensagem diga, no seu estilo, que vai montar o orçamento${expediente ? "" : " (como estamos fora do horário, diga que manda no próximo horário comercial, ex.: segunda de manhã)"}. Marque "pedir_entrega": true: logo depois da tua mensagem o sistema manda um link para o cliente preencher os dados de entrega (nome, CPF ou CNPJ e endereço) para a cotação do frete. Por isso NÃO peça esses dados nem se despeça antes; termine algo como "Show! Vou montar teu orçamento 😊".
 - Na hora, se: a pessoa pedir para falar com alguém, já for cliente com pedido em andamento, reclamação, assunto que não é orçamento (fornecedor, vaga de emprego, cobrança), áudio que você não consegue ouvir, ou a conversa travar.
 - Se já fez ${MAX_TURNOS - 2} ou mais respostas, transfira.
 Ao transferir por áudio: diga só algo como "Recebi teu áudio! Já te respondo 😊".
@@ -256,10 +264,11 @@ const FERRAMENTA = {
         properties: {
           nome: { type: "string" }, empresa: { type: "string" }, ocasiao: { type: "string" }, produto: { type: "string" },
           codigo: { type: "string" }, quantidade: { type: "string" }, prazo: { type: "string" }, gravacao: { type: "string" },
-          cidade: { type: "string" }, observacoes: { type: "string" },
+          cidade: { type: "string" }, cor: { type: "string" }, investimento: { type: "string" }, observacoes: { type: "string" },
         },
       },
       transferir: { type: "boolean", description: "true para passar a conversa para a equipe agora." },
+      pedir_entrega: { type: "boolean", description: "true quando o lead está completo: o sistema manda o link dos dados de entrega para a cotação do frete." },
       motivo: { type: "string", description: "Motivo curto da transferência (ex.: 'lead completo', 'pediu atendente', 'áudio')." },
     },
     required: ["mensagens", "dados", "transferir"],
@@ -270,6 +279,7 @@ interface Resposta {
   mensagens: string[];
   dados: DadosLead;
   transferir: boolean;
+  pedir_entrega?: boolean;
   motivo?: string;
 }
 
@@ -358,10 +368,13 @@ async function avisarEquipe(e: EstadoAgente, nome: string, teste: boolean) {
     d.empresa ? `Empresa: ${d.empresa}` : "",
     d.ocasiao ? `Ocasião: ${d.ocasiao}` : "",
     `Produto: ${[d.produto, d.codigo].filter(Boolean).join(" ") || "—"}`,
+    d.cor ? `Cor: ${d.cor}` : "",
     `Quantidade: ${d.quantidade || "—"}`,
     `Prazo: ${d.prazo || "—"}`,
     `Gravação: ${d.gravacao || "—"}`,
+    d.investimento ? `Investimento por peça: ${d.investimento}` : "",
     d.cidade ? `Cidade: ${d.cidade}` : "",
+    e.freteId ? `Dados de entrega: link enviado ao cliente (${SITE}/frete/${e.freteId}); aparecem no painel em Cotação de frete → Dados pedidos aos clientes` : "",
     d.observacoes ? `Obs.: ${d.observacoes}` : "",
     e.motivo && e.motivo !== "lead completo" ? `Motivo da transferência: ${e.motivo}` : "",
     "O atendimento automático parou nessa conversa. É só responder pelo celular ou pelo painel.",
@@ -458,6 +471,26 @@ export async function mensagemAgente(o: { num: string; nome: string; texto: stri
     if (transferir) {
       e.status = "transferido";
       e.motivo = r.motivo || (e.turnos >= MAX_TURNOS ? "conversa longa" : "lead completo");
+      // lead completo: link para o cliente preencher os dados de entrega (cotação do frete na São Miguel).
+      // autoEnviar=false: a cotação só vai para a transportadora depois que a equipe informar volumes e valor da NF.
+      if (r.pedir_entrega && e.dados.produto && e.dados.quantidade) {
+        try {
+          const f = await criarFormFrete({
+            clienteNome: e.dados.empresa || e.dados.nome || o.nome || "",
+            pedido: "lead WhatsApp",
+            produto: [e.dados.quantidade, e.dados.produto, e.dados.cor].filter(Boolean).join(" · ").slice(0, 200),
+            whatsCliente: num,
+            autoEnviar: false,
+          });
+          e.freteId = f.id;
+          await dorme(1500);
+          const txt = `Pra eu já ver o frete, preenche por favor os dados de entrega nesse link (nome, CPF ou CNPJ e endereço), é rapidinho:\n${SITE}/frete/${f.id}`;
+          await enviarTexto(num, txt);
+          await registrarMensagem({ num, texto: txt, tipo: "agente", deCompass: true, quando: Date.now(), id: `agente-frete-${f.id}` }).catch(() => {});
+        } catch {
+          /* sem link: a equipe pede os dados */
+        }
+      }
       await gravarEstado(e);
       const lead = {
         telefone: num,
@@ -465,6 +498,7 @@ export async function mensagemAgente(o: { num: string; nome: string; texto: stri
         categoria_ou_codigo: [e.dados.produto, e.dados.codigo].filter(Boolean).join(" "),
         faixa_quantidade: e.dados.quantidade || "",
         prazo_e_gravacao: [e.dados.prazo, e.dados.gravacao].filter(Boolean).join(" · "),
+        frete_link: e.freteId ? `${SITE}/frete/${e.freteId}` : "",
         dados: e.dados,
         motivo: e.motivo,
         teste: cfg.modo === "teste",
