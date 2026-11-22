@@ -85,7 +85,7 @@ export async function lerCfg(): Promise<AgenteCfg> {
   return {
     modo: (c.modo as Modo) || ((process.env.AGENTE_MODO as Modo) || "teste"),
     teste: Array.isArray(c.teste) ? c.teste.map(so).filter(Boolean) : envTeste,
-    assinatura: c.assinatura || "Katieska",
+    assinatura: process.env.AGENTE_ASSINATURA || "Katy", // nome que o agente usa ("Aqui é a Katy, da Compass Brindes")
   };
 }
 
@@ -95,7 +95,7 @@ export async function salvarCfg(novo: Partial<AgenteCfg>): Promise<AgenteCfg> {
   const teste = Array.isArray(novo.teste)
     ? Array.from(new Set(novo.teste.map((n) => { const d = so(n); return d.length >= 10 && d.length <= 11 ? "55" + d : d; }).filter((d) => d.length >= 12 && d.length <= 13)))
     : atual.teste;
-  const cfg: AgenteCfg = { modo, teste, assinatura: (novo.assinatura || atual.assinatura).slice(0, 40) };
+  const cfg: AgenteCfg = { modo, teste, assinatura: atual.assinatura };
   await redis(["SET", K_CFG, JSON.stringify(cfg)]);
   return cfg;
 }
