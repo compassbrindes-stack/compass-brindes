@@ -4,7 +4,7 @@ import { processarRecibo } from "@/lib/recibos";
 import { numeroDoChat, registrarMensagem } from "@/lib/conversas";
 import { NUM_SAO_MIGUEL, mensagemSaoMiguel, tickSaoMiguel } from "@/lib/saomiguel";
 import { mensagemAprovacao } from "@/lib/aprovacao";
-import { mensagemAgente, pausarAgente } from "@/lib/agente-leads";
+import { mensagemAgente, pausarAgente, tickAgente } from "@/lib/agente-leads";
 
 export const dynamic = "force-dynamic";
 export const maxDuration = 60;
@@ -38,6 +38,9 @@ export async function POST(request: Request) {
 
   const body: any = await request.json().catch(() => null);
   if (!body) return NextResponse.json({ ok: true });
+
+  // lembretes e avisos do atendimento automático (no máximo 1x por minuto)
+  await tickAgente().catch(() => {});
 
   const evento = norm(body.EventType || body.event || body.type);
   if (evento && !evento.includes("message")) return NextResponse.json({ ok: true, ignorado: "evento" });
@@ -80,7 +83,10 @@ export async function POST(request: Request) {
     if (num !== NUM_SAO_MIGUEL) {
       if (msg.fromMe) await pausarAgente(num).catch(() => {});
       else {
-        const r = await mensagemAgente({ num, nome: msg.senderName || body.chat?.wa_contactName || body.chat?.name || "", texto: msg.text || c0.text || c0.caption || "", id: msg.messageid || msg.id || "" }).catch((e) => ({ acao: "erro", erro: String(e?.message || e).slice(0, 300) }));
+        // contato salvo na agenda do celular da Compass (nome do contato) = já conhecido: o agente não atende no modo "novos"
+        const salvo = Boolean(String(body.chat?.wa_contactName || "").trim());
+        await redis(["SET", "compass:agente:ultchat", JSON.stringify({ num, chat: body.chat || null, senderName: msg.senderName || "" }).slice(0, 3000), "EX", 86400]).catch(() => {});
+        const r = await mensagemAgente({ num, nome: msg.senderName || body.chat?.wa_contactName || body.chat?.name || "", texto: msg.text || c0.text || c0.caption || "", id: msg.messageid || msg.id || "", salvo }).catch((e) => ({ acao: "erro", erro: String(e?.message || e).slice(0, 300) }));
         if ((r as any).acao === "erro") await redis(["LPUSH", "compass:agente:erros", JSON.stringify({ em: new Date().toISOString(), num, ...(r as any) })]).then(() => redis(["LTRIM", "compass:agente:erros", 0, 49])).catch(() => {});
         return NextResponse.json({ ok: true, registrado: "conversa", agente: (r as any).acao });
       }

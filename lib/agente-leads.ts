@@ -54,6 +54,13 @@ export interface EstadoAgente {
   motivo?: string; // por que parou / transferiu
   freteId?: string; // formulário de dados de entrega enviado ao cliente
   resumoFeito?: boolean;
+  transferidoEm?: string;
+  dadosEm?: string; // cliente preencheu o link dos dados
+  lembreteDadosEm?: string; // lembrete dos 30 min (pré-orçamento)
+  humanoEm?: string; // última mensagem da equipe (celular ou painel)
+  clienteEm?: string; // última mensagem do cliente depois de transferido
+  avisoEsperaEm?: string; // "nosso atendente entra em contato assim que possível"
+  avisoGrupoEsperaEm?: string;
 }
 
 const K_CFG = "compass:agente:cfg";
@@ -124,9 +131,12 @@ export async function apagarEstado(num: string) {
 /** Alguém da Compass escreveu na conversa (celular ou painel): o agente para nesse número. */
 export async function pausarAgente(num: string, motivo = "a equipe assumiu a conversa") {
   const e = await lerEstado(num);
-  if (!e || e.status !== "ativo") return false;
-  e.status = "humano";
-  e.motivo = motivo;
+  if (!e) return false;
+  e.humanoEm = new Date().toISOString();
+  if (e.status === "ativo") {
+    e.status = "humano";
+    e.motivo = motivo;
+  }
   await gravarEstado(e);
   return true;
 }
@@ -437,7 +447,9 @@ async function elegivel(cfg: AgenteCfg, num: string): Promise<boolean> {
   if (msgs.some((m: any) => m.de === "compass")) return false;
   const primeira = Date.parse(msgs[0].em) || 0;
   if (Date.now() - primeira > 30 * 60 * 1000) return false; // conversa começou há mais de 30 min sem resposta: deixa para a equipe
-  return msgs.length <= 8;
+  if (msgs.length > 8) return false;
+  if (await clienteBling(num)) return false; // já é cliente cadastrado no Bling
+  return true;
 }
 
 /**
@@ -445,7 +457,7 @@ async function elegivel(cfg: AgenteCfg, num: string): Promise<boolean> {
  * Espera alguns segundos para juntar mensagens seguidas, conversa e, quando
  * tiver o necessário, passa para a equipe.
  */
-export async function mensagemAgente(o: { num: string; nome: string; texto: string; id: string }) {
+export async function mensagemAgente(o: { num: string; nome: string; texto: string; id: string; salvo?: boolean }) {
   const num = so(o.num);
   if (!num) return { acao: "sem-numero" };
   // mensagem repetida do webhook
@@ -464,8 +476,14 @@ export async function mensagemAgente(o: { num: string; nome: string; texto: stri
   }
 
   let e = await lerEstado(num);
-  if (e && e.status !== "ativo") return { acao: "parado", status: e.status };
+  if (e && e.status !== "ativo") {
+    // já passou pela triagem: não refaz o processo; só marca que o cliente está esperando
+    e.clienteEm = new Date().toISOString();
+    await gravarEstado(e);
+    return { acao: "parado", status: e.status };
+  }
   if (!e) {
+    if (cfg.modo === "novos" && o.salvo) return { acao: "fora", motivo: "contato salvo no WhatsApp" };
     if (!(await elegivel(cfg, num))) return { acao: "fora" };
     e = { num, status: "ativo", inicio: new Date().toISOString(), atualizadoEm: new Date().toISOString(), turnos: 0, dados: {} };
     if (SAUDACAO_ANUNCIO.test(o.texto)) e.dados.observacoes = "veio de anúncio";
@@ -518,6 +536,7 @@ export async function mensagemAgente(o: { num: string; nome: string; texto: stri
     const transferir = r.transferir || completoLead || e.turnos >= MAX_TURNOS;
     if (transferir) {
       e.status = "transferido";
+      e.transferidoEm = new Date().toISOString();
       e.motivo = r.motivo || (e.turnos >= MAX_TURNOS ? "conversa longa" : "lead completo");
       // lead completo: link para o cliente preencher os dados de entrega (cotação do frete na São Miguel).
       // autoEnviar=false: a cotação só vai para a transportadora depois que a equipe informar volumes e valor da NF.
@@ -535,7 +554,7 @@ export async function mensagemAgente(o: { num: string; nome: string; texto: stri
           const { expediente } = contextoAgora();
           void expediente;
           const textos = [
-            `Pra dar sequência, preciso de alguns dados teus pra nota fiscal, frete e pra validar o orçamento. É rapidinho, preenche nesse link:\n${SITE}/frete/${f.id}`,
+            `Pra dar sequência, preciso de alguns dados teus pra validar o orçamento. É rapidinho, preenche nesse link:\n${SITE}/frete/${f.id}`,
           ];
           for (let k = 0; k < textos.length; k++) {
             await dorme(k === 0 ? 1500 : 1250);
@@ -582,6 +601,8 @@ export async function dadosPreenchidosAgente(f: { id: string; whatsCliente?: str
   if (!num) return false;
   const e = await lerEstado(num);
   if (!e || e.freteId !== f.id) return false;
+  e.dadosEm = new Date().toISOString();
+  await gravarEstado(e);
   const d = e.dados;
   const primeiro = String(d.nome || f.dest?.nome || "").trim().split(/\s+/)[0] || "";
   const prod = [d.quantidade ? d.quantidade + " ×" : "", d.produto, d.tamanho && !String(d.produto || "").includes(d.tamanho) ? d.tamanho : ""].filter(Boolean).join(" ");
@@ -606,4 +627,111 @@ export async function dadosPreenchidosAgente(f: { id: string; whatsCliente?: str
   const grupo = await grupoEquipe();
   if (grupo) await enviarTexto(grupo, `✅ *Dados preenchidos* por ${d.nome || f.dest?.nome || fone(num)} · ${fone(num)}\n${linhas.join("\n")}\nAparecem no painel em Cotação de frete → Dados pedidos aos clientes.`).catch(() => {});
   return true;
+}
+
+
+/* ---------------- clientes já cadastrados no Bling ---------------- */
+
+const K_BLING = "compass:agente:fonesBling";
+/** Últimos 8 dígitos (sem DDD e sem o 9 extra) de um telefone. */
+const chaveFone = (t: string) => so(t).replace(/^55/, "").slice(-8);
+
+async function carregarFonesBling(): Promise<number> {
+  const { bling } = await import("@/lib/bling-api");
+  const fones = new Set<string>();
+  for (let pagina = 1; pagina <= 40; pagina++) {
+    const r: any = await bling(`/contatos?pagina=${pagina}&limite=100`).catch(() => null);
+    const lista: any[] = r?.data || [];
+    for (const c of lista) for (const t of [c.celular, c.telefone]) { const k = chaveFone(t || ""); if (k.length === 8) fones.add(k); }
+    if (lista.length < 100) break;
+    await dorme(350); // o Bling aceita 3 req/s
+  }
+  if (!fones.size) return 0;
+  await redis(["DEL", K_BLING]);
+  const arr = Array.from(fones);
+  for (let i = 0; i < arr.length; i += 500) await redis(["SADD", K_BLING, ...arr.slice(i, i + 500)]);
+  await redis(["EXPIRE", K_BLING, DIA]);
+  return fones.size;
+}
+
+/** true se o número é de um contato do Bling (cliente já cadastrado). Lista atualizada 1x por dia. */
+export async function clienteBling(num: string): Promise<boolean> {
+  try {
+    const existe = await redis<number>(["EXISTS", K_BLING]);
+    if (!existe) await carregarFonesBling();
+    return (await redis<number>(["SISMEMBER", K_BLING, chaveFone(num)])) === 1;
+  } catch {
+    return false; // Bling fora do ar: não bloqueia
+  }
+}
+
+/* ---------------- depois da transferência: lembretes e avisos ---------------- */
+
+const MIN = 60 * 1000;
+const ms = (iso?: string) => (iso ? Date.parse(iso) || 0 : 0);
+
+/**
+ * Roda a cada mensagem do webhook e quando o painel consulta os leads (no máximo 1x por minuto):
+ * - 30 min sem preencher os dados → oferece um pré-orçamento e avisa a equipe;
+ * - cliente escreveu depois da transferência e ninguém respondeu em 10 min → "nosso atendente entra em contato assim que possível".
+ */
+export async function tickAgente() {
+  const livre = await redis<string | null>(["SET", "compass:agente:tick", "1", "NX", "EX", 60]).catch(() => null);
+  if (livre !== "OK") return { rodou: false };
+  const agora = Date.now();
+  const feitos: string[] = [];
+  const lista = await listarAgente(150);
+  for (const e of lista) {
+    if (e.status === "ativo") continue;
+    const humano = ms(e.humanoEm);
+    // 1) lembrete dos dados
+    if (e.status === "transferido" && e.freteId && !e.dadosEm && !e.lembreteDadosEm && ms(e.transferidoEm) && agora - ms(e.transferidoEm) > 30 * MIN && agora - ms(e.transferidoEm) < 3 * DIA * 1000 && humano < ms(e.transferidoEm)) {
+      const trava = await redis<string | null>(["SET", `compass:agente:lemb:${e.num}`, "1", "NX", "EX", DIA]).catch(() => null);
+      if (trava === "OK") {
+        const txt = "Ainda não recebemos teus dados de contato. Se preferir, a gente te manda um pré-orçamento pra tu validar a proposta 😊";
+        await enviarTexto(e.num, txt).catch(() => {});
+        await registrarMensagem({ num: e.num, texto: txt, tipo: "agente", deCompass: true, quando: Date.now(), id: `agente-lemb-${Date.now()}` }).catch(() => {});
+        e.lembreteDadosEm = new Date().toISOString();
+        await gravarEstado(e);
+        const g = await grupoEquipe();
+        if (g) await enviarTexto(g, `⏰ *${e.dados.nome || fone(e.num)}* (${fone(e.num)}) não preencheu os dados em 30 min. Ofereci um pré-orçamento. Fiquem atentos para chamar.`).catch(() => {});
+        feitos.push("lembrete " + e.num);
+      }
+    }
+    // 2) cliente esperando resposta depois da transferência
+    const cliente = ms(e.clienteEm);
+    if (e.status === "transferido" && cliente && cliente > humano) {
+      if (cliente > ms(e.avisoGrupoEsperaEm)) {
+        const g = await grupoEquipe();
+        if (g) await enviarTexto(g, `💬 *${e.dados.nome || fone(e.num)}* (${fone(e.num)}) mandou mensagem e está esperando resposta.`).catch(() => {});
+        e.avisoGrupoEsperaEm = new Date().toISOString();
+        await gravarEstado(e);
+      }
+      if (agora - cliente > 10 * MIN && cliente > ms(e.avisoEsperaEm) && agora - ms(e.avisoEsperaEm) > 6 * 60 * MIN && agora - cliente < DIA * 1000) {
+        const { expediente } = contextoAgora();
+        const txt = expediente
+          ? "Nosso atendente comercial entra em contato contigo assim que possível 😊"
+          : "Nosso atendente comercial entra em contato contigo assim que possível, no nosso horário de atendimento (seg a sex, das 8h às 18h) 😊";
+        await enviarTexto(e.num, txt).catch(() => {});
+        await registrarMensagem({ num: e.num, texto: txt, tipo: "agente", deCompass: true, quando: Date.now(), id: `agente-espera-${Date.now()}` }).catch(() => {});
+        e.avisoEsperaEm = new Date().toISOString();
+        await gravarEstado(e);
+        feitos.push("espera " + e.num);
+      }
+    }
+  }
+  return { rodou: true, feitos };
+}
+
+/** Situação de cada lead para o painel (o que pede atenção pisca). */
+export function situacaoLead(e: EstadoAgente): { situacao: string; atencao: boolean } {
+  const humano = ms(e.humanoEm);
+  if (e.status === "ativo") return { situacao: "Em atendimento automático", atencao: false };
+  if (ms(e.clienteEm) > humano) return { situacao: "Cliente esperando resposta", atencao: true };
+  if (e.status === "humano") return { situacao: "Com a equipe", atencao: false };
+  if (humano > ms(e.transferidoEm)) return { situacao: "Com a equipe", atencao: false };
+  if (e.dadosEm) return { situacao: "Dados preenchidos: fazer orçamento", atencao: true };
+  if (e.lembreteDadosEm) return { situacao: "Sem dados após 30 min: oferecer pré-orçamento", atencao: true };
+  if (e.freteId) return { situacao: "Aguardando o cliente preencher os dados", atencao: false };
+  return { situacao: "Transferido: " + (e.motivo || "responder"), atencao: true };
 }

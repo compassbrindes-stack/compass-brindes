@@ -7,7 +7,7 @@ import catalogo from "@/data/catalogo-app.json";
 import { criarFormFrete, listarFormFrete, lerFormFrete, salvarFormFrete, textoCotacaoSaoMiguel, apagarFormFrete } from "@/lib/frete";
 import { redis } from "@/lib/redis";
 import { criarAprovacao, listarAprovacoes, lerAprovacao, salvarAprovacao, textoPedidoAprovacao } from "@/lib/aprovacao";
-import { lerCfg, salvarCfg, listarAgente, leadsQualificados, pausarAgente, apagarEstado } from "@/lib/agente-leads";
+import { lerCfg, salvarCfg, listarAgente, leadsQualificados, pausarAgente, apagarEstado, tickAgente, situacaoLead } from "@/lib/agente-leads";
 import { enfileirarSaoMiguel, situacaoSaoMiguel, tickSaoMiguel, iniciarLoteSaoMiguel, tirarDoLote, forcarEnvioSaoMiguel, informarCotacao } from "@/lib/saomiguel";
 
 export const dynamic = "force-dynamic";
@@ -344,7 +344,10 @@ export async function POST(request: Request, { params }: { params: { chave: stri
       else if (nome === "agente_conversas") {
         const lim = Math.min(300, Math.max(1, Number(a.limite) || 50));
         const erros = ((await redis<string[]>(["LRANGE", "compass:agente:erros", 0, 19]).catch(() => [])) || []).map((x) => { try { return JSON.parse(x); } catch { return null; } }).filter(Boolean);
-        dados = { config: await lerCfg(), conversas: await listarAgente(lim), leads: await leadsQualificados(lim), erros };
+        await tickAgente().catch(() => {});
+        const conversas = (await listarAgente(lim)).map((c) => ({ ...c, ...situacaoLead(c), freteLink: c.freteId ? `${SITE}/frete/${c.freteId}` : "" }));
+        const ultchat = await redis<string | null>(["GET", "compass:agente:ultchat"]).catch(() => null);
+        dados = { config: await lerCfg(), conversas, leads: await leadsQualificados(lim), erros, ultimoChat: ultchat ? JSON.parse(ultchat) : null };
       }
       else if (nome === "agente_pausar") {
         let num = String(a.numero || "").replace(/\D/g, "");
