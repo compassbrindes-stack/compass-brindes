@@ -229,6 +229,7 @@ const FERRAMENTAS = [
         produto: { type: "string", description: "O que é e como está embalado." },
         pesoTotal: { type: "string", description: "Peso total em kg, ex.: 3." },
         whatsCliente: { type: "string", description: "WhatsApp do cliente (para avisar sobre o horário da transportadora quando ele preencher)." },
+        pedidoDados: { type: "boolean", description: "true = botão \"Pedir dados\" do painel: só os dados do cliente (nome, CPF/CNPJ, endereço) para validar o orçamento; não vai sozinho para a transportadora e avisa o grupo quando o cliente preencher." },
         texto: { type: "string", description: "Cotação já montada no painel (cliente cadastrado): texto pronto no formato da São Miguel. Com ele o formulário nasce preenchido e pode ir direto para enviar_sao_miguel." },
         dest: { type: "object", description: "Destinatário (nome, doc, cep, endereco, numero, bairro, cidade, uf…), quando a cotação vem pronta do painel." },
         volumes: { type: "array", items: { type: "object", properties: { qtd: { type: "string" }, c: { type: "string" }, l: { type: "string" }, a: { type: "string" }, peso: { type: "string" } } } },

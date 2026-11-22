@@ -746,3 +746,17 @@ export function situacaoLead(e: EstadoAgente): { situacao: string; atencao: bool
   if (e.freteId) return { situacao: "Aguardando o cliente preencher os dados", atencao: false };
   return { situacao: "Transferido: " + (e.motivo || "responder"), atencao: true };
 }
+
+
+/** Cliente preencheu o link do botão "Pedir dados" do painel: agradece e avisa a equipe. */
+export async function dadosPreenchidosPainel(f: { id: string; whatsCliente?: string; dest?: { nome?: string; doc?: string; cidade?: string; uf?: string } }) {
+  const num = so(f.whatsCliente);
+  const nome = String(f.dest?.nome || "").trim();
+  if (num) {
+    const txt = `Recebi teus dados, obrigada${primeiroNome(nome) ? " " + primeiroNome(nome) : ""}! 😊 Já seguimos com o teu orçamento e te chamo aqui.`;
+    await enviarTexto(num, txt).catch(() => {});
+    await registrarMensagem({ num, texto: txt, tipo: "conversation", deCompass: true, quando: Date.now(), id: `dados-${f.id}` }).catch(() => {});
+  }
+  const g = await grupoEquipe();
+  if (g) await enviarTexto(g, `✅ *Dados preenchidos* por ${nome || (num ? fone(num) : "cliente")}${num ? " · " + fone(num) : ""}${f.dest?.cidade ? "\nEntrega em: " + f.dest.cidade + (f.dest.uf ? "/" + f.dest.uf : "") : ""}\nAparecem no gestor na ficha do cliente e em Cotação de frete → Dados pedidos aos clientes.`).catch(() => {});
+}

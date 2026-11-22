@@ -21,6 +21,8 @@ export interface FormFrete {
   whatsCliente?: string;
   /** criado pelo atendimento automático do WhatsApp (lib/agente-leads) */
   agente?: boolean;
+  /** pedido de dados do cliente feito pelo painel (botão "Pedir dados"): não vai sozinho para a transportadora */
+  pedidoDados?: boolean;
   /** cotação montada no painel (cliente já cadastrado): texto pronto, conferido lá */
   texto?: string;
   origem?: "link" | "painel";
@@ -50,9 +52,10 @@ export async function criarFormFrete(d: Partial<FormFrete>): Promise<FormFrete> 
     produto: String(d.produto || "produto personalizado/caixa de papelão").slice(0, 200),
     volumes: (Array.isArray(d.volumes) ? d.volumes : []).slice(0, 30).map((v: any) => ({ qtd: String(v.qtd || "1"), c: String(v.c || ""), l: String(v.l || ""), a: String(v.a || ""), peso: String(v.peso || "") })),
     pesoTotal: String(d.pesoTotal || "").slice(0, 20),
-    autoEnviar: d.autoEnviar !== false,
+    autoEnviar: d.autoEnviar !== false && !d.pedidoDados && !d.agente,
     ...(d.texto ? { texto: String(d.texto).slice(0, 4000), origem: "painel" as const } : { origem: "link" as const }),
     ...(d.agente ? { agente: true } : {}),
+    ...(d.pedidoDados ? { pedidoDados: true } : {}),
     whatsCliente: String(d.whatsCliente || "").replace(/\D/g, "").replace(/^(\d{10,11})$/, "55$1").slice(0, 13),
     ...(d.dest ? { dest: d.dest } : {}),
   };
@@ -100,7 +103,7 @@ export function textoCotacaoSaoMiguel(f: FormFrete): string {
 
 /** Dados que o cliente pode ver (sem nada interno). */
 export function publico(f: FormFrete) {
-  return { id: f.id, status: f.status, clienteNome: f.clienteNome, valorNF: f.valorNF, volumes: f.volumes, pesoTotal: f.pesoTotal, produto: f.produto, dest: f.dest || null };
+  return { id: f.id, status: f.status, clienteNome: f.clienteNome, valorNF: f.valorNF, volumes: f.volumes, pesoTotal: f.pesoTotal, produto: f.produto, dest: f.dest || null, soDados: !!(f.agente || f.pedidoDados) };
 }
 
 export const UFS = ["AC","AL","AP","AM","BA","CE","DF","ES","GO","MA","MT","MS","MG","PA","PB","PR","PE","PI","RJ","RN","RS","RO","RR","SC","SP","SE","TO"];

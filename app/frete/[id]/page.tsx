@@ -4,7 +4,7 @@ import { useEffect, useState, type FormEvent } from "react";
 import { fetchAddressByCep, formatCEP, formatCpfCnpj, isValidCEP, isValidCpfCnpj, onlyDigits } from "@/lib/validators";
 
 type Vol = { qtd: string; c: string; l: string; a: string; peso: string };
-type Dados = { id: string; status: string; clienteNome: string; valorNF: string; volumes: Vol[]; pesoTotal: string; produto: string; dest: any };
+type Dados = { id: string; status: string; clienteNome: string; valorNF: string; volumes: Vol[]; pesoTotal: string; produto: string; dest: any; soDados?: boolean };
 
 const VAZIO = { nome: "", doc: "", cep: "", endereco: "", numero: "", complemento: "", bairro: "", cidade: "", uf: "", contato: "", telefone: "", obs: "" };
 
@@ -91,7 +91,7 @@ export default function FretePage({ params }: { params: { id: string } }) {
     <main className="fr">
       <style>{CSS}</style>
       <div className="fr-card">
-        <div className="fr-top"><b>Compass Brindes · Dados para entrega</b><span>{dados.clienteNome ? `${dados.clienteNome}, preencha` : "Preencha"} os dados de quem vai receber · campos com * são obrigatórios</span></div>
+        <div className="fr-top"><b>{dados.soDados ? "Compass Brindes · Seus dados para o orçamento" : "Compass Brindes · Dados para entrega"}</b><span>{dados.clienteNome ? `${dados.clienteNome}, preencha` : "Preencha"} {dados.soDados ? "teus dados e o endereço de entrega" : "os dados de quem vai receber"} · campos com * são obrigatórios</span></div>
         {(vols.length > 0 || dados.pesoTotal) && (
           <div className="fr-enc">📦 {vols.map((v) => `${v.qtd || 1} vol ${v.c}×${v.l}×${v.a} cm`).join(" · ")}{dados.pesoTotal ? ` · ${dados.pesoTotal} kg` : ""}</div>
         )}
@@ -99,7 +99,7 @@ export default function FretePage({ params }: { params: { id: string } }) {
           <div className="ok">
             <div style={{ fontSize: 34 }}>✅</div>
             <b>Recebemos seus dados!</b>
-            <p className="hn" style={{ fontSize: 14 }}>{aviso || "Vamos cotar o frete e retornamos pelo WhatsApp."}</p>
+            <p className="hn" style={{ fontSize: 14 }}>{aviso || (dados.soDados ? "Recebemos teus dados! Seguimos com o teu orçamento pelo WhatsApp." : "Vamos cotar o frete e retornamos pelo WhatsApp.")}</p>
             <button onClick={() => setOk(false)}>Corrigir dados</button>
           </div>
         ) : (
@@ -127,7 +127,7 @@ export default function FretePage({ params }: { params: { id: string } }) {
             <textarea id="obs" rows={2} value={f.obs} onChange={(e) => set("obs", e.target.value)} placeholder="Horário, portaria etc." />
             {erro && <div className="er" role="alert" style={{ marginTop: 8 }}>{erro}</div>}
             <button type="submit" className="go" disabled={enviando}>{enviando ? "Enviando…" : "Enviar dados"}</button>
-            <div className="hn" style={{ textAlign: "center", marginTop: 8 }}>Usado só para o frete e a entrega deste pedido.</div>
+            <div className="hn" style={{ textAlign: "center", marginTop: 8 }}>{dados.soDados ? "Usado só para o orçamento, a nota fiscal e a entrega deste pedido." : "Usado só para o frete e a entrega deste pedido."}</div>
           </form>
         )}
       </div>
