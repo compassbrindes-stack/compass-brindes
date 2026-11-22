@@ -1,0 +1,466 @@
+// Agente de atendimento dos leads novos do WhatsApp (22/11/2026).
+//
+// Conversa com o cliente no jeito da Katieska (mensagens curtas, várias bolhas,
+// "tu"/"a gente"), descobre produto, quantidade, prazo e gravação, e passa para a
+// equipe: grava o lead qualificado e avisa no grupo "Compass Recibos".
+//
+// Regras fixas: sem preço, sem prazo prometido, sem link do site, sem pedir CEP.
+// Se o cliente perguntar se fala com robô/IA, responde a verdade.
+// Para assim que alguém da Compass escrever na conversa (celular ou painel).
+//
+// Configuração (Redis compass:agente:cfg, ferramenta MCP agente_config):
+//   modo "desligado" | "teste" (só os números da lista) | "novos" (todo lead novo)
+// Começa em "teste" com a lista vazia: nada responde até cadastrar um número.
+//
+// Variáveis da Vercel usadas: ANTHROPIC_API_KEY (já existe), AGENTE_MODEL (opcional).
+
+import { redis } from "@/lib/redis";
+import { historico, registrarMensagem } from "@/lib/conversas";
+import { enviarTexto } from "@/lib/uazapi";
+import { checkBusinessHours } from "@/lib/business-hours";
+import catalogo from "@/data/catalogo-app.json";
+
+export type Modo = "desligado" | "teste" | "novos";
+export interface AgenteCfg {
+  modo: Modo;
+  teste: string[]; // números (só dígitos, com 55) que recebem o agente no modo teste
+  assinatura: string; // nome de quem "fala"
+}
+export interface DadosLead {
+  nome?: string;
+  empresa?: string;
+  ocasiao?: string;
+  produto?: string;
+  codigo?: string;
+  quantidade?: string;
+  prazo?: string;
+  gravacao?: string;
+  cidade?: string;
+  observacoes?: string;
+}
+export interface EstadoAgente {
+  num: string;
+  status: "ativo" | "humano" | "transferido";
+  inicio: string;
+  atualizadoEm: string;
+  turnos: number;
+  dados: DadosLead;
+  motivo?: string; // por que parou / transferiu
+}
+
+const K_CFG = "compass:agente:cfg";
+const K_EST = (n: string) => `compass:agente:s:${n}`;
+const K_ULT = (n: string) => `compass:agente:ult:${n}`;
+const K_LOCK = (n: string) => `compass:agente:lock:${n}`;
+const K_VISTO = (id: string) => `compass:agente:visto:${id}`;
+const K_LEADS = "compass:agente:leads";
+const K_ATIVOS = "compass:agente:ativos";
+
+const DIA = 86400;
+const ESPERA_MS = 9000; // espera o cliente terminar de digitar (várias mensagens seguidas)
+const MAX_TURNOS = 10; // depois disso passa para a equipe de qualquer jeito
+
+const so = (s: unknown) => String(s || "").replace(/\D/g, "");
+const dorme = (ms: number) => new Promise((r) => setTimeout(r, ms));
+
+/* ---------------- configuração e estado ---------------- */
+
+export async function lerCfg(): Promise<AgenteCfg> {
+  const raw = await redis<string | null>(["GET", K_CFG]).catch(() => null);
+  let c: Partial<AgenteCfg> = {};
+  try {
+    c = raw ? JSON.parse(raw) : {};
+  } catch {
+    /* padrão */
+  }
+  const envTeste = (process.env.AGENTE_TESTE || "").split(/[,;\s]+/).map(so).filter(Boolean);
+  return {
+    modo: (c.modo as Modo) || ((process.env.AGENTE_MODO as Modo) || "teste"),
+    teste: Array.isArray(c.teste) ? c.teste.map(so).filter(Boolean) : envTeste,
+    assinatura: c.assinatura || "Katieska",
+  };
+}
+
+export async function salvarCfg(novo: Partial<AgenteCfg>): Promise<AgenteCfg> {
+  const atual = await lerCfg();
+  const modo: Modo = novo.modo && ["desligado", "teste", "novos"].includes(novo.modo) ? novo.modo : atual.modo;
+  const teste = Array.isArray(novo.teste)
+    ? Array.from(new Set(novo.teste.map((n) => { const d = so(n); return d.length >= 10 && d.length <= 11 ? "55" + d : d; }).filter((d) => d.length >= 12 && d.length <= 13)))
+    : atual.teste;
+  const cfg: AgenteCfg = { modo, teste, assinatura: (novo.assinatura || atual.assinatura).slice(0, 40) };
+  await redis(["SET", K_CFG, JSON.stringify(cfg)]);
+  return cfg;
+}
+
+export async function lerEstado(num: string): Promise<EstadoAgente | null> {
+  const raw = await redis<string | null>(["GET", K_EST(num)]).catch(() => null);
+  try {
+    return raw ? (JSON.parse(raw) as EstadoAgente) : null;
+  } catch {
+    return null;
+  }
+}
+
+async function gravarEstado(e: EstadoAgente) {
+  e.atualizadoEm = new Date().toISOString();
+  // ativo: some depois de 7 dias parado; parado (humano/transferido): lembra por 60 dias para não recomeçar
+  await redis(["SET", K_EST(e.num), JSON.stringify(e), "EX", e.status === "ativo" ? 7 * DIA : 60 * DIA]);
+  await redis(["ZADD", K_ATIVOS, Date.now(), e.num]).catch(() => {});
+}
+
+export async function apagarEstado(num: string) {
+  await redis(["DEL", K_EST(num)]);
+  await redis(["ZREM", K_ATIVOS, num]).catch(() => {});
+}
+
+/** Alguém da Compass escreveu na conversa (celular ou painel): o agente para nesse número. */
+export async function pausarAgente(num: string, motivo = "a equipe assumiu a conversa") {
+  const e = await lerEstado(num);
+  if (!e || e.status !== "ativo") return false;
+  e.status = "humano";
+  e.motivo = motivo;
+  await gravarEstado(e);
+  return true;
+}
+
+/** Conversas em que o agente atuou (mais recentes primeiro). */
+export async function listarAgente(limite = 100) {
+  const nums = (await redis<string[]>(["ZREVRANGE", K_ATIVOS, 0, Math.min(limite, 500) - 1]).catch(() => [])) || [];
+  if (!nums.length) return [];
+  const brutos = (await redis<(string | null)[]>(["MGET", ...nums.map(K_EST)]).catch(() => [])) || [];
+  return brutos
+    .map((x) => {
+      try {
+        return x ? (JSON.parse(x) as EstadoAgente) : null;
+      } catch {
+        return null;
+      }
+    })
+    .filter((x): x is EstadoAgente => !!x);
+}
+
+export async function leadsQualificados(limite = 50) {
+  const itens = (await redis<string[]>(["LRANGE", K_LEADS, 0, Math.min(limite, 300) - 1]).catch(() => [])) || [];
+  return itens.map((x) => { try { return JSON.parse(x); } catch { return null; } }).filter(Boolean);
+}
+
+/* ---------------- catálogo resumido para o agente ---------------- */
+
+let _cat = "";
+function catalogoResumo(): string {
+  if (_cat) return _cat;
+  const porCat: Record<string, string[]> = {};
+  for (const p of catalogo as any[]) {
+    const nome = String(p.title || p.name || "").trim();
+    if (!nome) continue;
+    const cod = p.supplierCode ? ` ${p.supplierCode}` : "";
+    const min = p.minQuantity ? ` (mín. ${p.minQuantity})` : "";
+    const sub = p.subcategory ? `${p.category} / ${p.subcategory}` : String(p.category || "Diversos");
+    (porCat[sub] ||= []).push(`${nome}${cod}${min}`);
+  }
+  _cat = Object.entries(porCat)
+    .sort(([a], [b]) => a.localeCompare(b))
+    .map(([c, itens]) => `- ${c}: ${itens.join("; ")}`)
+    .join("\n");
+  return _cat;
+}
+
+function contextoAgora() {
+  const agora = new Date();
+  const quando = agora.toLocaleString("pt-BR", { timeZone: "America/Sao_Paulo", weekday: "long", day: "2-digit", month: "2-digit", year: "numeric", hour: "2-digit", minute: "2-digit" });
+  const h = checkBusinessHours(agora);
+  return { quando, expediente: h.isBusinessHours };
+}
+
+function promptSistema(cfg: AgenteCfg, nomeContato: string, dados: DadosLead, turnos: number) {
+  const { quando, expediente } = contextoAgora();
+  return `Você responde o WhatsApp da Compass Brindes Corporativos (Iraí/RS) no lugar da ${cfg.assinatura}, que é dona da empresa junto com o Galhardo. Você conversa com pessoas que acabaram de chegar, quase sempre por anúncio no Instagram/Facebook ou promoção. Seu trabalho é receber bem, entender o que a pessoa precisa e passar para a ${cfg.assinatura} montar o orçamento.
+
+AGORA: ${quando} (horário de Brasília). ${expediente ? "Estamos no horário comercial (seg a sex, 8h às 18h)." : "Estamos FORA do horário comercial (seg a sex, 8h às 18h)."}
+Nome do contato no WhatsApp: ${nomeContato || "(sem nome)"}.
+Já anotado desta conversa: ${JSON.stringify(dados)}.
+Respostas suas até agora nesta conversa: ${turnos}.
+
+JEITO DE ESCREVER (copie o estilo das conversas reais da ${cfg.assinatura}):
+- Mensagens curtas, como no celular. Prefira 1 a 3 bolhas curtas em vez de um parágrafo. Cada bolha com 1 ou 2 frases.
+- Português do Sul, informal e simpático: "tu"/"você" misturados, "a gente", "tav", "certinho", "show", "top", "Ahhh top", "Dá tempo". Pode começar frase com minúscula de vez em quando.
+- Chame pelo primeiro nome quando souber. Emoji só de vez em quando (😊 🙌), nunca vários.
+- Nada de listas com marcadores, negrito, títulos, "Prezado(a)", "Seja bem-vindo(a) à nossa empresa", textão de propaganda ou frases de robô ("Como posso ajudar hoje?", "Fico à disposição para quaisquer dúvidas").
+- Faça no máximo 1 ou 2 perguntas por vez. Não repita pergunta já respondida.
+- Responda primeiro o que a pessoa perguntou, depois pergunte o que falta.
+- Se o cliente escrever em outro idioma (ex.: espanhol), responda no idioma dele, no mesmo estilo.
+- Exemplos reais do jeito dela: "Oi Luana tudo bem?" / "Qual a quantidade que você precisa?" / "Tu já tem a arte da personalização?" / "Vocês precisam para que dia?" / "Ahhh top" / "Dá tempo" / "Nossa personalização é a laser".
+
+O QUE DESCOBRIR (nessa ordem natural, sem parecer formulário):
+1. Qual produto ou tipo de brinde (pode sugerir 2 ou 3 do catálogo abaixo que combinem com a ocasião). Se a pessoa mandar um código (ex.: CB013), confirme qual é pelo catálogo.
+2. Quantidade aproximada.
+3. Para que data precisa receber.
+4. Como é a personalização: logo, nome, frase; se já tem o arquivo da logo pode mandar aqui.
+Bom saber, se aparecer naturalmente: empresa ou para quem é, ocasião. Cidade só se a pessoa falar.
+
+O QUE A COMPASS FAZ:
+- Brindes personalizados para empresas, eventos, escolas e pessoas. Entrega para todo o Brasil por transportadora.
+- Personalização principal: gravação a LASER (no inox o laser tira a tinta e aparece o metal, fica em uma cor só). Gravação colorida não é o padrão nos copos e garrafas; se pedirem colorido ou foto, diga que vai ver com a equipe a melhor forma e anote.
+- Camisetas: silk, transfer ou bordado, mínimo 20 peças por modelo.
+- Formas de pagamento: cartão de crédito, PIX ou boleto.
+- Pedido mínimo varia por produto (veja "mín." no catálogo). Quantidade pequena: anote e diga que vai ver se dá para fazer.
+
+NUNCA:
+- Passar preço, valor, desconto, prazo de produção ou valor de frete. Se perguntarem preço, diga que depende da quantidade e da gravação e que já vai montar o orçamento certinho (e siga perguntando o que falta).
+- Mandar link do site ou do catálogo, nem pedir CEP ou dados de cadastro (CPF, CNPJ, endereço).
+- Inventar produto, cor, estoque ou técnica que não está aqui.
+- Prometer que alguém vai responder "em instantes" fora do horário comercial.
+- Fingir ser humano se a pessoa perguntar com sinceridade se está falando com robô, IA ou atendimento automático: responda a verdade, de forma leve (ex.: "Sou o atendimento automático da Compass, a ${cfg.assinatura} acompanha tudo e já já ela assume contigo 😊") e transfira.
+
+QUANDO TRANSFERIR (transferir = true):
+- Quando já souber produto, quantidade, prazo e personalização. Na última mensagem diga, no seu estilo, que vai montar o orçamento e já manda aqui${expediente ? "" : " (como estamos fora do horário, diga que no próximo horário comercial manda, ex.: segunda de manhã)"}.
+- Na hora, se: a pessoa pedir para falar com alguém, já for cliente com pedido em andamento, reclamação, assunto que não é orçamento (fornecedor, vaga de emprego, cobrança), áudio que você não consegue ouvir, ou a conversa travar.
+- Se já fez ${MAX_TURNOS - 2} ou mais respostas, transfira.
+Ao transferir por áudio: diga só algo como "Recebi teu áudio! Já te respondo 😊".
+Se a pessoa mandar foto/arquivo (ex.: logo), agradeça e anote em "gravacao".
+
+CATÁLOGO DA COMPASS (nome, código e pedido mínimo; sem preços):
+${catalogoResumo()}
+
+Responda SEMPRE chamando a ferramenta "responder".`;
+}
+
+const FERRAMENTA = {
+  name: "responder",
+  description: "Envia a resposta ao cliente e atualiza o que já se sabe do pedido.",
+  input_schema: {
+    type: "object",
+    properties: {
+      mensagens: { type: "array", items: { type: "string" }, description: "1 a 3 mensagens curtas, na ordem em que serão enviadas." },
+      dados: {
+        type: "object",
+        description: "Tudo o que já se sabe (repita o que já estava anotado e acrescente o novo).",
+        properties: {
+          nome: { type: "string" }, empresa: { type: "string" }, ocasiao: { type: "string" }, produto: { type: "string" },
+          codigo: { type: "string" }, quantidade: { type: "string" }, prazo: { type: "string" }, gravacao: { type: "string" },
+          cidade: { type: "string" }, observacoes: { type: "string" },
+        },
+      },
+      transferir: { type: "boolean", description: "true para passar a conversa para a equipe agora." },
+      motivo: { type: "string", description: "Motivo curto da transferência (ex.: 'lead completo', 'pediu atendente', 'áudio')." },
+    },
+    required: ["mensagens", "dados", "transferir"],
+  },
+};
+
+interface Resposta {
+  mensagens: string[];
+  dados: DadosLead;
+  transferir: boolean;
+  motivo?: string;
+}
+
+/** Transforma o histórico em turnos user/assistant (mesmo autor seguido = uma mensagem). */
+function montarTurnos(msgs: { de: string; texto: string; tipo?: string }[]) {
+  const turnos: { role: "user" | "assistant"; content: string }[] = [];
+  for (const m of msgs) {
+    const role = m.de === "compass" ? "assistant" : "user";
+    let t = String(m.texto || "").trim();
+    if (/^album:/i.test(t)) continue;
+    if (/audio/i.test(m.tipo || "") || t === "[audio]") t = "[o cliente mandou um ÁUDIO que você não consegue ouvir]";
+    else if (/image/i.test(m.tipo || "") || t === "[image]") t = "[o cliente mandou uma FOTO]" ;
+    else if (/document/i.test(m.tipo || "") || t === "[document]") t = "[o cliente mandou um ARQUIVO]";
+    else if (/sticker/i.test(m.tipo || "")) t = "[figurinha]";
+    else if (/video/i.test(m.tipo || "")) t = "[o cliente mandou um VÍDEO]";
+    if (role === "assistant" && /^\[/.test(t)) t = "(enviou uma foto/arquivo)";
+    if (!t) continue;
+    const ult = turnos[turnos.length - 1];
+    if (ult && ult.role === role) ult.content += "\n" + t;
+    else turnos.push({ role, content: t });
+  }
+  while (turnos.length && turnos[0].role !== "user") turnos.shift();
+  if (turnos.length && turnos[turnos.length - 1].role !== "user") turnos.push({ role: "user", content: "(sem mensagem nova)" });
+  return turnos.slice(-30);
+}
+
+async function chamarClaude(system: string, turnos: { role: string; content: string }[]): Promise<Resposta | null> {
+  const key = process.env.ANTHROPIC_API_KEY;
+  if (!key) throw new Error("ANTHROPIC_API_KEY não configurada");
+  const modelos = [process.env.AGENTE_MODEL || "claude-sonnet-5-5", "claude-haiku-4-5-20251001"];
+  let ultimoErro = "";
+  for (const model of Array.from(new Set(modelos))) {
+    const res = await fetch("https://api.anthropic.com/v1/messages", {
+      method: "POST",
+      headers: { "x-api-key": key, "anthropic-version": "2023-06-01", "content-type": "application/json" },
+      body: JSON.stringify({
+        model,
+        max_tokens: 900,
+        system: [{ type: "text", text: system, cache_control: { type: "ephemeral" } }],
+        tools: [FERRAMENTA],
+        tool_choice: { type: "tool", name: "responder" },
+        messages: turnos,
+      }),
+      cache: "no-store",
+    });
+    if (!res.ok) {
+      ultimoErro = `${model} ${res.status} ${(await res.text().catch(() => "")).slice(0, 200)}`;
+      if (res.status === 404 || res.status === 400) continue; // modelo indisponível: tenta o próximo
+      throw new Error("Anthropic " + ultimoErro);
+    }
+    const data = await res.json();
+    const uso = (data?.content || []).find((c: any) => c.type === "tool_use");
+    if (!uso?.input) return null;
+    const r = uso.input as Resposta;
+    r.mensagens = (Array.isArray(r.mensagens) ? r.mensagens : []).map((m) => String(m || "").trim()).filter(Boolean).slice(0, 4);
+    r.dados = r.dados && typeof r.dados === "object" ? r.dados : {};
+    return r;
+  }
+  throw new Error("Anthropic " + ultimoErro);
+}
+
+/* ---------------- avisos para a equipe ---------------- */
+
+async function grupoEquipe(): Promise<string> {
+  let grupo = process.env.WA_GRUPO_RECIBOS || "";
+  if (grupo) return grupo;
+  const h = (await redis<string[] | null>(["HGETALL", "compass:wa:grupos"]).catch(() => null)) || [];
+  const alvo = (process.env.WA_GRUPO_RECIBOS_NOME || "compass recibos").toLowerCase();
+  const n = (t: string) => String(t || "").normalize("NFD").replace(/[̀-ͯ]/g, "").toLowerCase().trim();
+  for (let i = 0; i + 1 < h.length; i += 2) if (String(h[i]).endsWith("@g.us") && n(h[i + 1]) === n(alvo)) return h[i];
+  return "";
+}
+
+function fone(num: string) {
+  const d = num.replace(/^55/, "");
+  return d.length === 11 ? `(${d.slice(0, 2)}) ${d.slice(2, 7)}-${d.slice(7)}` : d.length === 10 ? `(${d.slice(0, 2)}) ${d.slice(2, 6)}-${d.slice(6)}` : num;
+}
+
+async function avisarEquipe(e: EstadoAgente, nome: string, teste: boolean) {
+  const grupo = await grupoEquipe();
+  if (!grupo) return;
+  const d = e.dados;
+  const linhas = [
+    `🧭 *Lead pronto para orçamento*${teste ? " (TESTE)" : ""}`,
+    `${d.nome || nome || "Sem nome"} · ${fone(e.num)}`,
+    d.empresa ? `Empresa: ${d.empresa}` : "",
+    d.ocasiao ? `Ocasião: ${d.ocasiao}` : "",
+    `Produto: ${[d.produto, d.codigo].filter(Boolean).join(" ") || "—"}`,
+    `Quantidade: ${d.quantidade || "—"}`,
+    `Prazo: ${d.prazo || "—"}`,
+    `Gravação: ${d.gravacao || "—"}`,
+    d.cidade ? `Cidade: ${d.cidade}` : "",
+    d.observacoes ? `Obs.: ${d.observacoes}` : "",
+    e.motivo && e.motivo !== "lead completo" ? `Motivo da transferência: ${e.motivo}` : "",
+    "O atendimento automático parou nessa conversa. É só responder pelo celular ou pelo painel.",
+  ].filter(Boolean);
+  await enviarTexto(grupo, linhas.join("\n")).catch(() => {});
+}
+
+/* ---------------- quem recebe o agente ---------------- */
+
+const SAUDACAO_ANUNCIO = /posso ter mais informa|quero saber mais|tenho interesse|mais informa[cç][oõ]es|vi (o|seu|teu) an[uú]ncio|me interessei/i;
+
+async function elegivel(cfg: AgenteCfg, num: string): Promise<boolean> {
+  if (cfg.modo === "desligado") return false;
+  if (cfg.modo === "teste") return cfg.teste.includes(num);
+  // modo "novos": só quem nunca recebeu mensagem da Compass e chegou agora
+  const msgs = await historico(num, 40, 0);
+  if (!msgs.length) return false;
+  if (msgs.some((m: any) => m.de === "compass")) return false;
+  const primeira = Date.parse(msgs[0].em) || 0;
+  if (Date.now() - primeira > 30 * 60 * 1000) return false; // conversa começou há mais de 30 min sem resposta: deixa para a equipe
+  return msgs.length <= 8;
+}
+
+/**
+ * Chamado pelo webhook para cada mensagem individual recebida de cliente.
+ * Espera alguns segundos para juntar mensagens seguidas, conversa e, quando
+ * tiver o necessário, passa para a equipe.
+ */
+export async function mensagemAgente(o: { num: string; nome: string; texto: string; id: string }) {
+  const num = so(o.num);
+  if (!num) return { acao: "sem-numero" };
+  // mensagem repetida do webhook
+  if (o.id) {
+    const novo = await redis<string | null>(["SET", K_VISTO(o.id), "1", "NX", "EX", DIA]).catch(() => "OK");
+    if (novo !== "OK") return { acao: "repetida" };
+  }
+  const cfg = await lerCfg();
+  if (cfg.modo === "desligado") return { acao: "desligado" };
+
+  // comando de teste: recomeça a conversa do agente
+  if (cfg.teste.includes(num) && /^#?reiniciar$/i.test(o.texto.trim())) {
+    await apagarEstado(num);
+    await enviarTexto(num, "(teste) Conversa do atendimento automático reiniciada. Manda um \"oi\" para começar de novo.").catch(() => {});
+    return { acao: "reiniciado" };
+  }
+
+  let e = await lerEstado(num);
+  if (e && e.status !== "ativo") return { acao: "parado", status: e.status };
+  if (!e) {
+    if (!(await elegivel(cfg, num))) return { acao: "fora" };
+    e = { num, status: "ativo", inicio: new Date().toISOString(), atualizadoEm: new Date().toISOString(), turnos: 0, dados: {} };
+    if (SAUDACAO_ANUNCIO.test(o.texto)) e.dados.observacoes = "veio de anúncio";
+    await gravarEstado(e);
+  }
+
+  // junta mensagens seguidas: só a última mensagem da sequência responde
+  const marca = o.id || String(Date.now());
+  await redis(["SET", K_ULT(num), marca, "EX", 120]).catch(() => {});
+  await dorme(ESPERA_MS);
+  const ultima = await redis<string | null>(["GET", K_ULT(num)]).catch(() => marca);
+  if (ultima !== marca) return { acao: "aguardando-mais" };
+  const trava = await redis<string | null>(["SET", K_LOCK(num), marca, "NX", "EX", 50]).catch(() => "OK");
+  if (trava !== "OK") return { acao: "ocupado" };
+
+  try {
+    // alguém da equipe pode ter assumido enquanto esperava
+    e = await lerEstado(num);
+    if (!e || e.status !== "ativo") return { acao: "parado" };
+
+    // só a conversa desde que o agente começou (nos testes, depois de "#reiniciar", não mistura a conversa antiga)
+    const desde = (Date.parse(e.inicio) || 0) - 2 * 60 * 1000;
+    const msgs = ((await historico(num, 40, 0)) as any[]).filter((m) => (Date.parse(m.em) || 0) >= desde && !/^#?reiniciar$/i.test(String(m.texto || "").trim()));
+    const turnos = montarTurnos(msgs);
+    if (!turnos.length) return { acao: "sem-mensagem" };
+    const r = await chamarClaude(promptSistema(cfg, o.nome, e.dados, e.turnos), turnos);
+    if (!r) return { acao: "sem-resposta" };
+
+    // pausa entre bolhas, como alguém digitando
+    for (let i = 0; i < r.mensagens.length; i++) {
+      const m = r.mensagens[i];
+      if (i > 0) await dorme(Math.min(3500, 900 + m.length * 25));
+      // a equipe assumiu no meio? para de mandar
+      const agora = await lerEstado(num);
+      if (!agora || agora.status !== "ativo") return { acao: "parado-no-meio" };
+      await enviarTexto(num, m);
+      const quando = Date.now();
+      await registrarMensagem({ num, texto: m, tipo: "agente", deCompass: true, quando, id: `agente-${quando}-${i}` }).catch(() => {});
+    }
+
+    e.dados = { ...e.dados, ...Object.fromEntries(Object.entries(r.dados).filter(([, v]) => v && String(v).trim())) };
+    if (!e.dados.nome && o.nome) e.dados.nome = o.nome;
+    e.turnos += 1;
+    const transferir = r.transferir || e.turnos >= MAX_TURNOS;
+    if (transferir) {
+      e.status = "transferido";
+      e.motivo = r.motivo || (e.turnos >= MAX_TURNOS ? "conversa longa" : "lead completo");
+      await gravarEstado(e);
+      const lead = {
+        telefone: num,
+        nome: e.dados.nome || o.nome || "",
+        categoria_ou_codigo: [e.dados.produto, e.dados.codigo].filter(Boolean).join(" "),
+        faixa_quantidade: e.dados.quantidade || "",
+        prazo_e_gravacao: [e.dados.prazo, e.dados.gravacao].filter(Boolean).join(" · "),
+        dados: e.dados,
+        motivo: e.motivo,
+        teste: cfg.modo === "teste",
+        status: "aguardando_vendedor",
+        em: new Date().toISOString(),
+      };
+      await redis(["LPUSH", K_LEADS, JSON.stringify(lead)]).catch(() => {});
+      await redis(["LTRIM", K_LEADS, 0, 499]).catch(() => {});
+      await avisarEquipe(e, o.nome, cfg.modo === "teste");
+      return { acao: "transferido", lead };
+    }
+    await gravarEstado(e);
+    return { acao: "respondido", mensagens: r.mensagens.length };
+  } finally {
+    await redis(["DEL", K_LOCK(num)]).catch(() => {});
+  }
+}

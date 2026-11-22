@@ -4,6 +4,7 @@ import { processarRecibo } from "@/lib/recibos";
 import { numeroDoChat, registrarMensagem } from "@/lib/conversas";
 import { NUM_SAO_MIGUEL, mensagemSaoMiguel, tickSaoMiguel } from "@/lib/saomiguel";
 import { mensagemAprovacao } from "@/lib/aprovacao";
+import { mensagemAgente, pausarAgente } from "@/lib/agente-leads";
 
 export const dynamic = "force-dynamic";
 export const maxDuration = 60;
@@ -73,6 +74,17 @@ export async function POST(request: Request) {
     // robô / atendente da Expresso São Miguel: segue o envio automático da cotação
     if (num === NUM_SAO_MIGUEL && !msg.fromMe) await mensagemSaoMiguel(msg).catch(() => {});
     else await tickSaoMiguel().catch(() => {});
+    // atendimento automático dos leads novos (lib/agente-leads):
+    // alguém da Compass escreveu pelo celular → o agente para nessa conversa;
+    // mensagem do cliente → o agente responde (se o número estiver liberado)
+    if (num !== NUM_SAO_MIGUEL) {
+      if (msg.fromMe) await pausarAgente(num).catch(() => {});
+      else {
+        const r = await mensagemAgente({ num, nome: msg.senderName || body.chat?.wa_contactName || body.chat?.name || "", texto: msg.text || c0.text || c0.caption || "", id: msg.messageid || msg.id || "" }).catch((e) => ({ acao: "erro", erro: String(e?.message || e).slice(0, 300) }));
+        if ((r as any).acao === "erro") await redis(["LPUSH", "compass:agente:erros", JSON.stringify({ em: new Date().toISOString(), num, ...(r as any) })]).then(() => redis(["LTRIM", "compass:agente:erros", 0, 49])).catch(() => {});
+        return NextResponse.json({ ok: true, registrado: "conversa", agente: (r as any).acao });
+      }
+    }
     return NextResponse.json({ ok: true, registrado: "conversa" });
   }
 

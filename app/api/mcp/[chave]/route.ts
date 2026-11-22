@@ -7,6 +7,7 @@ import catalogo from "@/data/catalogo-app.json";
 import { criarFormFrete, listarFormFrete, lerFormFrete, salvarFormFrete, textoCotacaoSaoMiguel, apagarFormFrete } from "@/lib/frete";
 import { redis } from "@/lib/redis";
 import { criarAprovacao, listarAprovacoes, lerAprovacao, salvarAprovacao, textoPedidoAprovacao } from "@/lib/aprovacao";
+import { lerCfg, salvarCfg, listarAgente, leadsQualificados, pausarAgente, apagarEstado } from "@/lib/agente-leads";
 import { enfileirarSaoMiguel, situacaoSaoMiguel, tickSaoMiguel, iniciarLoteSaoMiguel, tirarDoLote, forcarEnvioSaoMiguel, informarCotacao } from "@/lib/saomiguel";
 
 export const dynamic = "force-dynamic";
@@ -62,6 +63,32 @@ async function fotoProduto(codigo: string, url: string) {
 }
 
 const FERRAMENTAS = [
+  {
+    name: "agente_config",
+    description: "Atendimento automático dos leads novos do WhatsApp (agente que conversa no jeito da Katieska). Sem argumentos, mostra a configuração. Com argumentos, altera: modo 'desligado' (não responde ninguém), 'teste' (só os números da lista) ou 'novos' (todo contato novo que ainda não recebeu resposta da Compass); teste = lista completa de números de teste (substitui a anterior).",
+    inputSchema: {
+      type: "object",
+      properties: {
+        modo: { type: "string", enum: ["desligado", "teste", "novos"] },
+        teste: { type: "array", items: { type: "string" }, description: "Números com DDD (ex.: 49999990000)." },
+      },
+    },
+  },
+  {
+    name: "agente_conversas",
+    description: "Conversas em que o atendimento automático atuou (situação ativo / humano / transferido, o que já sabe do pedido), os leads qualificados passados para a equipe e os últimos erros.",
+    inputSchema: { type: "object", properties: { limite: { type: "integer", minimum: 1, maximum: 300 } } },
+    annotations: { readOnlyHint: true },
+  },
+  {
+    name: "agente_pausar",
+    description: "Para o atendimento automático numa conversa (acao 'pausar') ou apaga o registro para ele poder recomeçar (acao 'reiniciar', útil nos testes).",
+    inputSchema: {
+      type: "object",
+      properties: { numero: { type: "string" }, acao: { type: "string", enum: ["pausar", "reiniciar"] } },
+      required: ["numero", "acao"],
+    },
+  },
   {
     name: "conversas_whatsapp",
     description:
@@ -310,6 +337,21 @@ export async function POST(request: Request, { params }: { params: { chave: stri
         const recentes = log.slice(0, 15).map((r: any) => ({ em: r.em, tipo: r.tipo, status: r.status, valor: r.valor ?? null, contaId: r.contaId ?? null, motivo: r.motivo || "", favorecido: r.comprovante?.favorecido || "", dataComprovante: r.comprovante?.data || "", valorDocumento: r.comprovante?.valorDocumento ?? null, legenda: r.legenda || "" }));
         dados = { pagas: (await todasCompras()).filter((c) => c.pago).map((c) => ({ pedido: c.pedido, pagoEm: c.pagoEm, contaBling: c.contaBling, pagoPor: c.pagoPor })), contasPagas, recentes };
       }
+      else if (nome === "agente_config") {
+        const muda = a.modo !== undefined || a.teste !== undefined;
+        dados = { config: muda ? await salvarCfg({ modo: a.modo, teste: Array.isArray(a.teste) ? a.teste.map(String) : undefined }) : await lerCfg() };
+      }
+      else if (nome === "agente_conversas") {
+        const lim = Math.min(300, Math.max(1, Number(a.limite) || 50));
+        const erros = ((await redis<string[]>(["LRANGE", "compass:agente:erros", 0, 19]).catch(() => [])) || []).map((x) => { try { return JSON.parse(x); } catch { return null; } }).filter(Boolean);
+        dados = { config: await lerCfg(), conversas: await listarAgente(lim), leads: await leadsQualificados(lim), erros };
+      }
+      else if (nome === "agente_pausar") {
+        let num = String(a.numero || "").replace(/\D/g, "");
+        if (num.length >= 10 && num.length <= 11) num = "55" + num;
+        if (a.acao === "reiniciar") { await apagarEstado(num); dados = { reiniciado: true, numero: num }; }
+        else dados = { pausado: await pausarAgente(num, "pausado pelo painel"), numero: num };
+      }
       else if (nome === "avisar_grupo_recibos") {
         const texto = String(a.texto || "").trim();
         if (!texto || texto.length > 4000) return ok(id, { content: [{ type: "text", text: "Erro: mensagem vazia ou longa demais" }], isError: true });
@@ -331,6 +373,7 @@ export async function POST(request: Request, { params }: { params: { chave: stri
         if (num.length < 12 || num.length > 13) return ok(id, { content: [{ type: "text", text: "Erro: número inválido" }], isError: true });
         if (!texto || texto.length > 4000) return ok(id, { content: [{ type: "text", text: "Erro: mensagem vazia ou longa demais" }], isError: true });
         await enviarTexto(num, texto);
+        await pausarAgente(num, "a equipe respondeu pelo painel").catch(() => {});
         const quando = Date.now();
         await registrarMensagem({ num, texto, tipo: "conversation", deCompass: true, quando, id: "painel-" + quando });
         dados = { enviado: true, numero: num, em: new Date(quando).toISOString() };
@@ -346,6 +389,7 @@ export async function POST(request: Request, { params }: { params: { chave: stri
         if (!b64 || b64.length > 4_300_000) return ok(id, { content: [{ type: "text", text: "Erro: arquivo vazio ou maior que 3 MB" }], isError: true });
         const tipo = mime.startsWith("image/") ? "image" : mime.startsWith("video/") ? "video" : mime.startsWith("audio/") ? "audio" : "document";
         await enviarMidia(num, tipo, b64, legenda, tipo === "document" ? nomeArq : undefined);
+        await pausarAgente(num, "a equipe respondeu pelo painel").catch(() => {});
         const quando = Date.now();
         const rotulo = tipo === "image" ? "[foto]" : tipo === "document" ? `[arquivo: ${nomeArq}]` : `[${tipo}]`;
         await registrarMensagem({ num, texto: legenda ? `${rotulo} ${legenda}` : rotulo, tipo: "documentMessage", deCompass: true, quando, id: "painel-" + quando });
