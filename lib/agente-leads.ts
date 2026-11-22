@@ -204,13 +204,24 @@ export function faltando(d: DadosLead, resumoFeito = true): string[] {
   return f;
 }
 
+/** Primeiro nome do contato do WhatsApp, só se parecer um nome de pessoa (sem números, emojis ou siglas). */
+export function primeiroNome(n: string): string {
+  const partes = String(n || "").trim().split(/\s+/).filter(Boolean);
+  while (partes.length && /^(dr|dra|sr|sra|prof|profa)\.?$/i.test(partes[0])) partes.shift(); // títulos
+  const p = partes[0] || "";
+  const limpo = p.replace(/[^A-Za-zÀ-ÖØ-öø-ÿ'-]/g, "");
+  if (limpo.length < 2 || limpo !== p.replace(/[.,!]+$/, "")) return "";
+  if (limpo === limpo.toUpperCase()) return ""; // tudo maiúsculo: costuma ser empresa ou sigla
+  return limpo.charAt(0).toUpperCase() + limpo.slice(1).toLowerCase();
+}
+
 function promptSistema(cfg: AgenteCfg, nomeContato: string, dados: DadosLead, turnos: number, resumoFeito: boolean) {
   const falta = faltando(dados, resumoFeito);
   const { quando, expediente } = contextoAgora();
   return `Você responde o WhatsApp da Compass Brindes Corporativos (Iraí/RS) no lugar da ${cfg.assinatura}, que é dona da empresa junto com o Galhardo. Você conversa com pessoas que acabaram de chegar, quase sempre por anúncio no Instagram/Facebook ou promoção. Seu trabalho é receber bem, entender o que a pessoa precisa e passar para a ${cfg.assinatura} montar o orçamento.
 
 AGORA: ${quando} (horário de Brasília). ${expediente ? "Estamos no horário comercial (seg a sex, 8h às 18h)." : "Estamos FORA do horário comercial (seg a sex, 8h às 18h)."}
-Nome do contato no WhatsApp: ${nomeContato || "(sem nome)"}.
+Nome do contato no WhatsApp: ${nomeContato || "(sem nome)"}. Primeiro nome para usar: ${primeiroNome(nomeContato) || "NENHUM (não invente nome; comece só com \"Oi, tudo bem?\")"}.
 Já anotado desta conversa: ${JSON.stringify(dados)}.
 Respostas suas até agora nesta conversa: ${turnos}.
 AINDA FALTA SABER (antes da mensagem nova do cliente): ${falta.length ? falta.join(", ") : "nada obrigatório"}.
@@ -242,7 +253,7 @@ JEITO DE ESCREVER (como a ${cfg.assinatura} escreve no WhatsApp):
 - Exemplos reais do jeito dela: "Oi Luana tudo bem?" / "Qual a quantidade que você precisa?" / "Tu já tem a arte da personalização?" / "Vocês precisam para que dia?" / "Ahhh top".
 
 PRIMEIRA RESPOSTA DA CONVERSA (quando você ainda não respondeu nada), 3 bolhas nesta ordem, com estes textos (só ajuste o nome e o cumprimento):
-- Bolha 1, exatamente neste formato (mesmo que o cliente tenha perguntado "tudo bem?"): "Oi${nomeContato ? " " + nomeContato.split(" ")[0] : ""}, tudo bem? 😊 Aqui é a ${cfg.assinatura}, da Compass Brindes Corporativos. A gente personaliza brindes para empresas e eventos e entrega para todo o Brasil."
+- Bolha 1, exatamente neste formato (mesmo que o cliente tenha perguntado "tudo bem?"): "Oi${primeiroNome(nomeContato) ? " " + primeiroNome(nomeContato) : ""}, tudo bem? 😊 Aqui é a ${cfg.assinatura}, da Compass Brindes Corporativos. A gente personaliza brindes para empresas e eventos e entrega para todo o Brasil."
 - Bolha 2, exatamente:
 "Vamos te ajudar a encontrar o brinde ideal para o que você precisa. Para entendermos melhor e já te indicarmos opções mais assertivas, me conta sua necessidade.
 Trabalhamos com brindes desde opções mais econômicas, a partir de R$ 1,90, até peças executivas, acima de R$ 75,00 por peça. Tu tem uma ideia de quanto quer investir por peça?"
