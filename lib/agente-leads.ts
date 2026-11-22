@@ -212,8 +212,8 @@ B) Resumo: quando A estiver completa, mande UMA bolha com o resumo do que o clie
 50 copos térmicos de 500ml
 Cor preta
 Entrega até 10/12"
-e marque "resumo": true. Na mesma resposta, numa bolha separada, pergunte se a pessoa já tem a arte pronta ou a logomarca (ex.: "Tu já tem a arte pronta ou a logo da empresa? Se tiver, pode mandar aqui em PDF ou imagem que a gente já prepara um layout 😊").
-C) Arte: se mandar o arquivo (foto/PDF), responda só "Recebido, obrigada! Vou deixar com a equipe pra desenvolver a arte 😊" e anote em "gravacao" (ex.: "logo enviada pelo WhatsApp"). Se não tiver arte, ou for só uma frase ou nome, anote em "gravacao" e diga que o nosso comercial ajuda a montar a arte. Se disser que manda depois, anote "manda a arte depois".
+e marque "resumo": true. Na mesma resposta, numa bolha separada, pergunte se a pessoa já tem a arte pronta ou a logomarca (ex.: "Tu já tem a arte pronta ou a logo da empresa? Se tiver, pode mandar aqui em PDF ou imagem que eu já deixo junto com o teu pedido 😊"). NUNCA diga que vai fazer ou preparar layout agora: o layout só é feito depois dos dados do cliente confirmados e do orçamento.
+C) Arte: se mandar o arquivo (foto/PDF), responda só "Recebido, obrigada! Já deixei junto com o teu pedido 😊" e anote em "gravacao" (ex.: "logo enviada pelo WhatsApp"). Se não tiver arte, ou for só uma frase ou nome, anote em "gravacao" e diga que, depois do orçamento, o nosso comercial ajuda a montar a arte. Se disser que manda depois, anote "manda a arte depois".
 D) Dados: com a arte resolvida, NÃO pergunte mais nada e NÃO se despeça: logo depois da tua mensagem o SISTEMA manda sozinho o link para o cliente preencher os dados (nota fiscal, frete e orçamento). Quando o cliente preencher, o sistema manda o resumo final. Marque "pedir_entrega": true.
 
 REGRA DO QUE FALTA (muito importante):
@@ -575,7 +575,7 @@ export async function mensagemAgente(o: { num: string; nome: string; texto: stri
 
 /**
  * O cliente preencheu o link dos dados (formulário criado pelo agente):
- * manda o resumo final e avisa que a Compass dá continuidade (arte, layout e cotação).
+ * manda o resumo final e avisa que a Compass dá continuidade (cotação primeiro; arte e layout depois de aprovada).
  */
 export async function dadosPreenchidosAgente(f: { id: string; whatsCliente?: string; dest?: { nome?: string; cidade?: string; uf?: string } }) {
   const num = so(f.whatsCliente);
@@ -596,7 +596,7 @@ export async function dadosPreenchidosAgente(f: { id: string; whatsCliente?: str
   const textos = [
     `Recebi teus dados, obrigada${primeiro ? " " + primeiro : ""}! 😊`,
     `Resumo do teu pedido:\n${linhas.join("\n")}`,
-    `Agora a gente dá continuidade por aqui: assim que terminarmos a arte, o layout e a cotação, te mando tudo pra tu analisar${expediente ? "" : " (nosso atendimento é de seg a sex, das 8h às 18h)"}. Qualquer coisa é só chamar!`,
+    `Agora a gente dá continuidade por aqui: primeiro a gente prepara a cotação e te manda pra tu analisar; depois de aprovada, seguimos com a arte e o layout${expediente ? "" : " (nosso atendimento é de seg a sex, das 8h às 18h)"}. Qualquer coisa é só chamar!`,
   ];
   for (let k = 0; k < textos.length; k++) {
     await dorme(k === 0 ? 750 : 1250);
