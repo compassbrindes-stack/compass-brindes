@@ -53,6 +53,7 @@ export interface EstadoAgente {
   dados: DadosLead;
   motivo?: string; // por que parou / transferiu
   freteId?: string; // formulário de dados de entrega enviado ao cliente
+  resumoFeito?: boolean;
 }
 
 const K_CFG = "compass:agente:cfg";
@@ -180,7 +181,7 @@ function contextoAgora() {
 }
 
 /** O que ainda falta perguntar, na ordem da conversa. */
-export function faltando(d: DadosLead): string[] {
+export function faltando(d: DadosLead, resumoFeito = true): string[] {
   const f: string[] = [];
   const temTam = /\d\s*(ml|l\b|litro)/i.test(`${d.produto || ""} ${d.tamanho || ""}`);
   if (!d.produto && !d.codigo) f.push("produto");
@@ -188,12 +189,13 @@ export function faltando(d: DadosLead): string[] {
   if (!d.cor) f.push("cor");
   if (!d.quantidade) f.push("quantidade");
   if (!d.prazo) f.push("data de entrega");
-  if (!d.gravacao) f.push("personalização");
+  if (!resumoFeito) f.push("resumo");
+  if (!d.gravacao) f.push("arte");
   return f;
 }
 
-function promptSistema(cfg: AgenteCfg, nomeContato: string, dados: DadosLead, turnos: number) {
-  const falta = faltando(dados);
+function promptSistema(cfg: AgenteCfg, nomeContato: string, dados: DadosLead, turnos: number, resumoFeito: boolean) {
+  const falta = faltando(dados, resumoFeito);
   const { quando, expediente } = contextoAgora();
   return `Você responde o WhatsApp da Compass Brindes Corporativos (Iraí/RS) no lugar da ${cfg.assinatura}, que é dona da empresa junto com o Galhardo. Você conversa com pessoas que acabaram de chegar, quase sempre por anúncio no Instagram/Facebook ou promoção. Seu trabalho é receber bem, entender o que a pessoa precisa e passar para a ${cfg.assinatura} montar o orçamento.
 
@@ -203,8 +205,19 @@ Já anotado desta conversa: ${JSON.stringify(dados)}.
 Respostas suas até agora nesta conversa: ${turnos}.
 AINDA FALTA SABER (antes da mensagem nova do cliente): ${falta.length ? falta.join(", ") : "nada obrigatório"}.
 
+ETAPAS DO ATENDIMENTO (siga nessa ordem):
+A) Perguntas: produto → tamanho (copos, canecas e garrafas) → cor → quantidade → data de entrega. (Investimento por peça entra aqui quando couber, ver abaixo.)
+B) Resumo: quando A estiver completa, mande UMA bolha com o resumo do que o cliente informou, curto e natural, uma informação por linha, por exemplo:
+"Deixa eu ver se anotei certinho:
+50 copos térmicos de 500ml
+Cor preta
+Entrega até 10/12"
+e marque "resumo": true. Na mesma resposta, numa bolha separada, pergunte se a pessoa já tem a arte pronta ou a logomarca (ex.: "Tu já tem a arte pronta ou a logo da empresa? Se tiver, pode mandar aqui em PDF ou imagem que a gente já prepara um layout 😊").
+C) Arte: se mandar o arquivo (foto/PDF), agradeça ("Recebido, obrigada!") e anote em "gravacao" (ex.: "arte enviada pelo WhatsApp"). Se não tiver arte, ou for só uma frase ou nome, anote a frase em "gravacao" e diga que o nosso comercial ajuda a montar a arte depois. Se disser que manda depois, anote "manda a arte depois" e siga.
+D) Fim: com a arte resolvida, marque transferir = true e "pedir_entrega": true. Tua última mensagem é só um agradecimento curto pelo que ele acabou de mandar (ex.: "Perfeito, anotado!"). NÃO se despeça e NÃO peça dados: o sistema manda em seguida o link dos dados para nota fiscal, frete e orçamento, e a mensagem de que o comercial vai conferir tudo e chamar.
+
 REGRA DO QUE FALTA (muito importante):
-- Leia a mensagem nova do cliente, risque o que ele acabou de responder e SEMPRE termine tua resposta perguntando o próximo item que ainda falta, na ordem: produto → tamanho (copos, canecas e garrafas) → cor → quantidade → data de entrega → personalização. Pode juntar 2 itens numa pergunta (ex.: "Qual tamanho e qual cor tu prefere?").
+- Leia a mensagem nova do cliente, risque o que ele acabou de responder e SEMPRE termine tua resposta perguntando o próximo item que ainda falta, na ordem das etapas. Pode juntar 2 itens numa pergunta (ex.: "Qual tamanho e qual cor tu prefere?").
 - Se o cliente respondeu só parte do que você perguntou, agradeça curto e pergunte de novo só o que ficou faltando. Ex.: você perguntou tamanho e quantidade e ele disse "10 peças" → "Show, 10 peças! E qual tamanho tu prefere?". Se ele disse só "500ml" → "Perfeito, 500ml! E de qual cor e quantas peças tu precisa?".
 - Só considere o lead completo quando não faltar nenhum item acima.
 
@@ -239,7 +252,7 @@ O QUE DESCOBRIR (nessa ordem natural, sem parecer formulário):
 2. Cor de interesse (ex.: "Tem alguma cor de preferência?"). Não prometa que a cor tem em estoque: diga que vai confirmar.
 3. Quantidade aproximada.
 4. Para que data precisa receber.
-5. Como é a personalização: logo, nome, frase; se já tem o arquivo da logo pode mandar aqui. Se disser que manda depois, tudo bem: siga com o que falta, não pare a conversa esperando o arquivo.
+5. (Arte/personalização vem depois do resumo: ver ETAPAS.)
 6. Quanto pretende investir por peça (campo "investimento"). Pergunte com leveza, sem pressionar, principalmente quando a pessoa não sabe qual peça escolher, pede sugestão ou escolhe um produto de valor mais alto (garrafa, kit, mochila, eletrônico). Ex.: "Tu tem uma ideia de quanto quer investir por peça? Assim já te mostro as opções que cabem certinho 😊". Se não souber ou não quiser dizer, tudo bem, siga em frente. Pergunte no máximo uma vez.
 Bom saber, se aparecer naturalmente: empresa ou para quem é, ocasião.
 
@@ -260,11 +273,11 @@ NUNCA:
 - Fingir ser humano se a pessoa perguntar com sinceridade se está falando com robô, IA ou atendimento automático: responda a verdade, de forma leve (ex.: "Sou o atendimento automático da Compass, a ${cfg.assinatura} acompanha tudo e já já ela assume contigo 😊") e transfira.
 
 QUANDO TRANSFERIR (transferir = true):
-- Quando já souber produto, cor (ou "tanto faz"), quantidade, prazo e personalização (o investimento você já perguntou ou não cabia). Na última mensagem diga, no seu estilo, que vai montar o orçamento${expediente ? "" : " (como estamos fora do horário, diga que manda no próximo horário comercial, ex.: segunda de manhã)"}. Marque "pedir_entrega": true: logo depois da tua mensagem o sistema manda um link para o cliente preencher os dados de entrega (nome, CPF ou CNPJ e endereço) para a cotação do frete. Por isso NÃO peça esses dados nem se despeça antes; termine algo como "Show! Vou montar teu orçamento 😊".
+- No fim da etapa D (ver ETAPAS).
 - Na hora, se: a pessoa pedir para falar com alguém, já for cliente com pedido em andamento, reclamação, assunto que não é orçamento (fornecedor, vaga de emprego, cobrança), áudio que você não consegue ouvir, ou a conversa travar.
 - Se já fez ${MAX_TURNOS - 2} ou mais respostas, transfira.
 Ao transferir por áudio: diga só algo como "Recebi teu áudio! Já te respondo 😊".
-Se a pessoa mandar foto/arquivo (ex.: logo), agradeça e anote em "gravacao".
+Se a pessoa mandar foto/arquivo (ex.: logo) em qualquer momento, agradeça e anote em "gravacao".
 
 CATÁLOGO DA COMPASS (nome, código e pedido mínimo; sem preços):
 ${catalogoResumo()}
@@ -289,6 +302,7 @@ const FERRAMENTA = {
         },
       },
       transferir: { type: "boolean", description: "true para passar a conversa para a equipe agora." },
+      resumo: { type: "boolean", description: "true quando esta resposta traz o resumo do que o cliente informou (etapa B)." },
       pedir_entrega: { type: "boolean", description: "true quando o lead está completo: o sistema manda o link dos dados de entrega para a cotação do frete." },
       motivo: { type: "string", description: "Motivo curto da transferência (ex.: 'lead completo', 'pediu atendente', 'áudio')." },
     },
@@ -301,6 +315,7 @@ interface Resposta {
   dados: DadosLead;
   transferir: boolean;
   pedir_entrega?: boolean;
+  resumo?: boolean;
   motivo?: string;
 }
 
@@ -392,7 +407,8 @@ async function avisarEquipe(e: EstadoAgente, nome: string, teste: boolean) {
     d.cor ? `Cor: ${d.cor}` : "",
     `Quantidade: ${d.quantidade || "—"}`,
     `Prazo: ${d.prazo || "—"}`,
-    `Gravação: ${d.gravacao || "—"}`,
+    `Arte/gravação: ${d.gravacao || "—"}`,
+    d.tamanho ? `Tamanho: ${d.tamanho}` : "",
     d.investimento ? `Investimento por peça: ${d.investimento}` : "",
     d.cidade ? `Cidade: ${d.cidade}` : "",
     e.freteId ? `Dados de entrega: link enviado ao cliente (${SITE}/frete/${e.freteId}); aparecem no painel em Cotação de frete → Dados pedidos aos clientes` : "",
@@ -470,13 +486,15 @@ export async function mensagemAgente(o: { num: string; nome: string; texto: stri
     const msgs = ((await historico(num, 40, 0)) as any[]).filter((m) => (Date.parse(m.em) || 0) >= desde && !/^#?reiniciar$/i.test(String(m.texto || "").trim()));
     const turnos = montarTurnos(msgs);
     if (!turnos.length) return { acao: "sem-mensagem" };
-    const r = await chamarClaude(promptSistema(cfg, o.nome, e.dados, e.turnos), turnos);
+    const r = await chamarClaude(promptSistema(cfg, o.nome, e.dados, e.turnos, !!e.resumoFeito), turnos);
     if (!r) return { acao: "sem-resposta" };
 
     // pausa entre bolhas, como alguém digitando
     for (let i = 0; i < r.mensagens.length; i++) {
       const m = r.mensagens[i];
-      if (i > 0) await dorme(Math.min(3500, 900 + m.length * 25));
+      // antes da 1ª bolha: alguns segundos "digitando"; antes do resumo, mais tempo (parece que conferiu)
+      if (i === 0) await dorme(r.resumo ? 8000 : 2500);
+      else await dorme(Math.min(3500, 900 + m.length * 25));
       // a equipe assumiu no meio? para de mandar
       const agora = await lerEstado(num);
       if (!agora || agora.status !== "ativo") return { acao: "parado-no-meio" };
@@ -487,6 +505,7 @@ export async function mensagemAgente(o: { num: string; nome: string; texto: stri
 
     e.dados = { ...e.dados, ...Object.fromEntries(Object.entries(r.dados).filter(([, v]) => v && String(v).trim())) };
     if (!e.dados.nome && o.nome) e.dados.nome = o.nome;
+    if (r.resumo) e.resumoFeito = true;
     e.turnos += 1;
     const transferir = r.transferir || e.turnos >= MAX_TURNOS;
     if (transferir) {
@@ -494,7 +513,7 @@ export async function mensagemAgente(o: { num: string; nome: string; texto: stri
       e.motivo = r.motivo || (e.turnos >= MAX_TURNOS ? "conversa longa" : "lead completo");
       // lead completo: link para o cliente preencher os dados de entrega (cotação do frete na São Miguel).
       // autoEnviar=false: a cotação só vai para a transportadora depois que a equipe informar volumes e valor da NF.
-      if (r.pedir_entrega && faltando(e.dados).length === 0) {
+      if (r.pedir_entrega && faltando(e.dados, true).filter((x) => x !== "arte").length === 0) {
         try {
           const f = await criarFormFrete({
             clienteNome: e.dados.empresa || e.dados.nome || o.nome || "",
@@ -504,10 +523,18 @@ export async function mensagemAgente(o: { num: string; nome: string; texto: stri
             autoEnviar: false,
           });
           e.freteId = f.id;
-          await dorme(1500);
-          const txt = `Pra eu já ver o frete, preenche por favor os dados de entrega nesse link (nome, CPF ou CNPJ e endereço), é rapidinho:\n${SITE}/frete/${f.id}`;
-          await enviarTexto(num, txt);
-          await registrarMensagem({ num, texto: txt, tipo: "agente", deCompass: true, quando: Date.now(), id: `agente-frete-${f.id}` }).catch(() => {});
+          const { expediente } = contextoAgora();
+          const textos = [
+            `Pra dar sequência no teu atendimento, preciso de alguns dados pra nota fiscal, frete e pra validar o orçamento. É rapidinho, preenche nesse link:\n${SITE}/frete/${f.id}`,
+            expediente
+              ? "Assim que preencher, o nosso comercial confere tudo e já te chama aqui pra seguir 😊 Qualquer coisa é só chamar!"
+              : "Assim que preencher, o nosso comercial confere tudo no próximo horário de atendimento (seg a sex, das 8h às 18h) e te chama aqui pra seguir 😊 Qualquer coisa é só chamar!",
+          ];
+          for (let k = 0; k < textos.length; k++) {
+            await dorme(k === 0 ? 3000 : 2500);
+            await enviarTexto(num, textos[k]);
+            await registrarMensagem({ num, texto: textos[k], tipo: "agente", deCompass: true, quando: Date.now(), id: `agente-frete-${f.id}-${k}` }).catch(() => {});
+          }
         } catch {
           /* sem link: a equipe pede os dados */
         }
