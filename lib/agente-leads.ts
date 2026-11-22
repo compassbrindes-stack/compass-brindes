@@ -65,7 +65,7 @@ const K_LEADS = "compass:agente:leads";
 const K_ATIVOS = "compass:agente:ativos";
 
 const DIA = 86400;
-const ESPERA_MS = 9000; // espera o cliente terminar de digitar (várias mensagens seguidas)
+const ESPERA_MS = 4500; // espera o cliente terminar de digitar (várias mensagens seguidas)
 const MAX_TURNOS = 18; // depois disso passa para a equipe de qualquer jeito
 
 const so = (s: unknown) => String(s || "").replace(/\D/g, "");
@@ -497,8 +497,8 @@ export async function mensagemAgente(o: { num: string; nome: string; texto: stri
     for (let i = 0; i < r.mensagens.length; i++) {
       const m = r.mensagens[i];
       // antes da 1ª bolha: alguns segundos "digitando"; antes do resumo, mais tempo (parece que conferiu)
-      if (i === 0) await dorme(r.resumo ? 8000 : 2500);
-      else await dorme(Math.min(3500, 900 + m.length * 25));
+      if (i === 0) await dorme(r.resumo ? 4000 : 1250);
+      else await dorme(Math.min(1750, 450 + m.length * 12));
       // a equipe assumiu no meio? para de mandar
       const agora = await lerEstado(num);
       if (!agora || agora.status !== "ativo") return { acao: "parado-no-meio" };
@@ -537,7 +537,7 @@ export async function mensagemAgente(o: { num: string; nome: string; texto: stri
             `Pra dar sequência, preciso de alguns dados teus pra nota fiscal, frete e pra validar o orçamento. É rapidinho, preenche nesse link:\n${SITE}/frete/${f.id}`,
           ];
           for (let k = 0; k < textos.length; k++) {
-            await dorme(k === 0 ? 3000 : 2500);
+            await dorme(k === 0 ? 1500 : 1250);
             await enviarTexto(num, textos[k]);
             await registrarMensagem({ num, texto: textos[k], tipo: "agente", deCompass: true, quando: Date.now(), id: `agente-frete-${f.id}-${k}` }).catch(() => {});
           }
@@ -598,7 +598,7 @@ export async function dadosPreenchidosAgente(f: { id: string; whatsCliente?: str
     `Agora a gente dá continuidade por aqui: assim que terminarmos a arte, o layout e a cotação, te mando tudo pra tu analisar${expediente ? "" : " (nosso atendimento é de seg a sex, das 8h às 18h)"}. Qualquer coisa é só chamar!`,
   ];
   for (let k = 0; k < textos.length; k++) {
-    await dorme(k === 0 ? 1500 : 2500);
+    await dorme(k === 0 ? 750 : 1250);
     await enviarTexto(num, textos[k]);
     await registrarMensagem({ num, texto: textos[k], tipo: "agente", deCompass: true, quando: Date.now(), id: `agente-fim-${f.id}-${k}` }).catch(() => {});
   }
