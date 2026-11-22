@@ -2,6 +2,7 @@ import { NextResponse } from "next/server";
 import { lerFormFrete, salvarFormFrete, publico, UFS, completo } from "@/lib/frete";
 import { enfileirarSaoMiguel, HORARIO_SM } from "@/lib/saomiguel";
 import { fetchAddressByCep } from "@/lib/validators";
+import { dadosPreenchidosAgente } from "@/lib/agente-leads";
 import { isValidCpfCnpj, isValidCEP, onlyDigits } from "@/lib/validators";
 
 export const dynamic = "force-dynamic";
@@ -37,5 +38,7 @@ export async function POST(req: Request, ctx: { params: { id: string } }) {
   // envio automático para a Expresso São Miguel (só se a Compass não desligou para este link)
   let previsao = "";
   if (process.env.SAO_MIGUEL_AUTO !== "0" && f.autoEnviar !== false) { const r: any = await enfileirarSaoMiguel(novo.id).catch(() => null); previsao = (r && r.previsao) || ""; }
+  // link do atendimento automático: resumo final para o cliente no WhatsApp + aviso no grupo
+  if (f.agente && f.status !== "preenchido") await dadosPreenchidosAgente(novo).catch(() => {});
   return NextResponse.json({ ok: true, previsao, horario: HORARIO_SM });
 }

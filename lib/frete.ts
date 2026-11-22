@@ -19,6 +19,8 @@ export interface FormFrete {
   pesoTotal: string;
   autoEnviar?: boolean;
   whatsCliente?: string;
+  /** criado pelo atendimento automático do WhatsApp (lib/agente-leads) */
+  agente?: boolean;
   /** cotação montada no painel (cliente já cadastrado): texto pronto, conferido lá */
   texto?: string;
   origem?: "link" | "painel";
@@ -50,6 +52,7 @@ export async function criarFormFrete(d: Partial<FormFrete>): Promise<FormFrete> 
     pesoTotal: String(d.pesoTotal || "").slice(0, 20),
     autoEnviar: d.autoEnviar !== false,
     ...(d.texto ? { texto: String(d.texto).slice(0, 4000), origem: "painel" as const } : { origem: "link" as const }),
+    ...(d.agente ? { agente: true } : {}),
     whatsCliente: String(d.whatsCliente || "").replace(/\D/g, "").replace(/^(\d{10,11})$/, "55$1").slice(0, 13),
     ...(d.dest ? { dest: d.dest } : {}),
   };

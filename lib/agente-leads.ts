@@ -66,7 +66,7 @@ const K_ATIVOS = "compass:agente:ativos";
 
 const DIA = 86400;
 const ESPERA_MS = 9000; // espera o cliente terminar de digitar (várias mensagens seguidas)
-const MAX_TURNOS = 10; // depois disso passa para a equipe de qualquer jeito
+const MAX_TURNOS = 18; // depois disso passa para a equipe de qualquer jeito
 
 const so = (s: unknown) => String(s || "").replace(/\D/g, "");
 const dorme = (ms: number) => new Promise((r) => setTimeout(r, ms));
@@ -206,15 +206,15 @@ Respostas suas até agora nesta conversa: ${turnos}.
 AINDA FALTA SABER (antes da mensagem nova do cliente): ${falta.length ? falta.join(", ") : "nada obrigatório"}.
 
 ETAPAS DO ATENDIMENTO (siga nessa ordem):
-A) Perguntas: produto → tamanho (copos, canecas e garrafas) → cor → quantidade → data de entrega. (Investimento por peça entra aqui quando couber, ver abaixo.)
+A) Perguntas: produto/linha → investimento por peça (uma vez, logo depois de saber a linha ou o produto; ver item 6) → tamanho (copos, canecas e garrafas) → cor → quantidade → data de entrega.
 B) Resumo: quando A estiver completa, mande UMA bolha com o resumo do que o cliente informou, curto e natural, uma informação por linha, por exemplo:
 "Deixa eu ver se anotei certinho:
 50 copos térmicos de 500ml
 Cor preta
 Entrega até 10/12"
 e marque "resumo": true. Na mesma resposta, numa bolha separada, pergunte se a pessoa já tem a arte pronta ou a logomarca (ex.: "Tu já tem a arte pronta ou a logo da empresa? Se tiver, pode mandar aqui em PDF ou imagem que a gente já prepara um layout 😊").
-C) Arte: se mandar o arquivo (foto/PDF), agradeça ("Recebido, obrigada!") e anote em "gravacao" (ex.: "arte enviada pelo WhatsApp"). Se não tiver arte, ou for só uma frase ou nome, anote a frase em "gravacao" e diga que o nosso comercial ajuda a montar a arte depois. Se disser que manda depois, anote "manda a arte depois" e siga.
-D) Fim: com a arte resolvida, marque transferir = true e "pedir_entrega": true. Tua última mensagem é só um agradecimento curto pelo que ele acabou de mandar (ex.: "Perfeito, anotado!"). NÃO se despeça e NÃO peça dados: o sistema manda em seguida o link dos dados para nota fiscal, frete e orçamento, e a mensagem de que o comercial vai conferir tudo e chamar.
+C) Arte: se mandar o arquivo (foto/PDF), responda só "Recebido, obrigada! Vou deixar com a equipe pra desenvolver a arte 😊" e anote em "gravacao" (ex.: "logo enviada pelo WhatsApp"). Se não tiver arte, ou for só uma frase ou nome, anote em "gravacao" e diga que o nosso comercial ajuda a montar a arte. Se disser que manda depois, anote "manda a arte depois".
+D) Dados: com a arte resolvida, NÃO pergunte mais nada e NÃO se despeça: logo depois da tua mensagem o SISTEMA manda sozinho o link para o cliente preencher os dados (nota fiscal, frete e orçamento). Quando o cliente preencher, o sistema manda o resumo final. Marque "pedir_entrega": true.
 
 REGRA DO QUE FALTA (muito importante):
 - Leia a mensagem nova do cliente, risque o que ele acabou de responder e SEMPRE termine tua resposta perguntando o próximo item que ainda falta, na ordem das etapas. Pode juntar 2 itens numa pergunta (ex.: "Qual tamanho e qual cor tu prefere?").
@@ -253,7 +253,7 @@ O QUE DESCOBRIR (nessa ordem natural, sem parecer formulário):
 3. Quantidade aproximada.
 4. Para que data precisa receber.
 5. (Arte/personalização vem depois do resumo: ver ETAPAS.)
-6. Quanto pretende investir por peça (campo "investimento"). Pergunte com leveza, sem pressionar, principalmente quando a pessoa não sabe qual peça escolher, pede sugestão ou escolhe um produto de valor mais alto (garrafa, kit, mochila, eletrônico). Ex.: "Tu tem uma ideia de quanto quer investir por peça? Assim já te mostro as opções que cabem certinho 😊". Se não souber ou não quiser dizer, tudo bem, siga em frente. Pergunte no máximo uma vez.
+6. Quanto pretende investir por peça (campo "investimento"). Pergunte UMA vez, cedo (logo depois de saber a linha ou o produto), sem pressão e sem ser intrusivo, mostrando que existem faixas, e deixe claro que é para filtrar as melhores opções. Modelo (adapte ao teu jeito, curto): "Pra eu já te mostrar o que faz mais sentido: tu tem uma ideia de quanto quer investir por peça? A gente tem desde opções mais econômicas até peças mais executivas, aí já filtro as melhores ideias pra ti 😊". Não cite valores em reais. Se a pessoa não souber ou não quiser dizer, responda "Sem problema!" e siga. Se a faixa dela não combina com o produto escolhido, não diga nada sobre preço: só anote, a equipe vê no orçamento.
 Bom saber, se aparecer naturalmente: empresa ou para quem é, ocasião.
 
 O QUE A COMPASS FAZ:
@@ -390,7 +390,8 @@ async function grupoEquipe(): Promise<string> {
 }
 
 function fone(num: string) {
-  const d = num.replace(/^55/, "");
+  let d = num.replace(/^55/, "");
+  if (d.length === 10 && /[6-9]/.test(d[2])) d = d.slice(0, 2) + "9" + d.slice(2); // celular salvo sem o 9
   return d.length === 11 ? `(${d.slice(0, 2)}) ${d.slice(2, 7)}-${d.slice(7)}` : d.length === 10 ? `(${d.slice(0, 2)}) ${d.slice(2, 6)}-${d.slice(6)}` : num;
 }
 
@@ -507,7 +508,10 @@ export async function mensagemAgente(o: { num: string; nome: string; texto: stri
     if (!e.dados.nome && o.nome) e.dados.nome = o.nome;
     if (r.resumo) e.resumoFeito = true;
     e.turnos += 1;
-    const transferir = r.transferir || e.turnos >= MAX_TURNOS;
+    // etapa D automática: resumo feito + arte resolvida → link dos dados (não depende da IA marcar)
+    const completoLead = !!e.resumoFeito && faltando(e.dados, true).length === 0;
+    if (completoLead) r.pedir_entrega = true;
+    const transferir = r.transferir || completoLead || e.turnos >= MAX_TURNOS;
     if (transferir) {
       e.status = "transferido";
       e.motivo = r.motivo || (e.turnos >= MAX_TURNOS ? "conversa longa" : "lead completo");
@@ -521,14 +525,13 @@ export async function mensagemAgente(o: { num: string; nome: string; texto: stri
             produto: [e.dados.quantidade, e.dados.produto, e.dados.cor].filter(Boolean).join(" · ").slice(0, 200),
             whatsCliente: num,
             autoEnviar: false,
+            agente: true,
           });
           e.freteId = f.id;
           const { expediente } = contextoAgora();
+          void expediente;
           const textos = [
-            `Pra dar sequência no teu atendimento, preciso de alguns dados pra nota fiscal, frete e pra validar o orçamento. É rapidinho, preenche nesse link:\n${SITE}/frete/${f.id}`,
-            expediente
-              ? "Assim que preencher, o nosso comercial confere tudo e já te chama aqui pra seguir 😊 Qualquer coisa é só chamar!"
-              : "Assim que preencher, o nosso comercial confere tudo no próximo horário de atendimento (seg a sex, das 8h às 18h) e te chama aqui pra seguir 😊 Qualquer coisa é só chamar!",
+            `Pra dar sequência, preciso de alguns dados teus pra nota fiscal, frete e pra validar o orçamento. É rapidinho, preenche nesse link:\n${SITE}/frete/${f.id}`,
           ];
           for (let k = 0; k < textos.length; k++) {
             await dorme(k === 0 ? 3000 : 2500);
@@ -563,4 +566,40 @@ export async function mensagemAgente(o: { num: string; nome: string; texto: stri
   } finally {
     await redis(["DEL", K_LOCK(num)]).catch(() => {});
   }
+}
+
+
+/**
+ * O cliente preencheu o link dos dados (formulário criado pelo agente):
+ * manda o resumo final e avisa que a Compass dá continuidade (arte, layout e cotação).
+ */
+export async function dadosPreenchidosAgente(f: { id: string; whatsCliente?: string; dest?: { nome?: string; cidade?: string; uf?: string } }) {
+  const num = so(f.whatsCliente);
+  if (!num) return false;
+  const e = await lerEstado(num);
+  if (!e || e.freteId !== f.id) return false;
+  const d = e.dados;
+  const primeiro = String(d.nome || f.dest?.nome || "").trim().split(/\s+/)[0] || "";
+  const prod = [d.quantidade ? d.quantidade + " ×" : "", d.produto, d.tamanho && !String(d.produto || "").includes(d.tamanho) ? d.tamanho : ""].filter(Boolean).join(" ");
+  const linhas = [
+    prod,
+    d.cor ? `Cor: ${d.cor}` : "",
+    d.prazo ? `Entrega até: ${d.prazo}` : "",
+    d.gravacao ? `Arte: ${d.gravacao}` : "",
+    f.dest?.cidade ? `Entrega em: ${f.dest.cidade}${f.dest.uf ? "/" + f.dest.uf : ""}` : "",
+  ].filter(Boolean);
+  const { expediente } = contextoAgora();
+  const textos = [
+    `Recebi teus dados, obrigada${primeiro ? " " + primeiro : ""}! 😊`,
+    `Resumo do teu pedido:\n${linhas.join("\n")}`,
+    `Agora a gente dá continuidade por aqui: assim que terminarmos a arte, o layout e a cotação, te mando tudo pra tu analisar${expediente ? "" : " (nosso atendimento é de seg a sex, das 8h às 18h)"}. Qualquer coisa é só chamar!`,
+  ];
+  for (let k = 0; k < textos.length; k++) {
+    await dorme(k === 0 ? 1500 : 2500);
+    await enviarTexto(num, textos[k]);
+    await registrarMensagem({ num, texto: textos[k], tipo: "agente", deCompass: true, quando: Date.now(), id: `agente-fim-${f.id}-${k}` }).catch(() => {});
+  }
+  const grupo = await grupoEquipe();
+  if (grupo) await enviarTexto(grupo, `✅ *Dados preenchidos* por ${d.nome || f.dest?.nome || fone(num)} · ${fone(num)}\n${linhas.join("\n")}\nAparecem no painel em Cotação de frete → Dados pedidos aos clientes.`).catch(() => {});
+  return true;
 }
