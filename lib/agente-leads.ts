@@ -39,6 +39,7 @@ export interface DadosLead {
   prazo?: string;
   gravacao?: string;
   cidade?: string;
+  tamanho?: string;
   cor?: string;
   investimento?: string;
   observacoes?: string;
@@ -178,7 +179,21 @@ function contextoAgora() {
   return { quando, expediente: h.isBusinessHours };
 }
 
+/** O que ainda falta perguntar, na ordem da conversa. */
+export function faltando(d: DadosLead): string[] {
+  const f: string[] = [];
+  const temTam = /\d\s*(ml|l\b|litro)/i.test(`${d.produto || ""} ${d.tamanho || ""}`);
+  if (!d.produto && !d.codigo) f.push("produto");
+  else if (/copo|caneca|garrafa|squeeze|coqueteleira/i.test(d.produto || "") && !temTam) f.push("tamanho");
+  if (!d.cor) f.push("cor");
+  if (!d.quantidade) f.push("quantidade");
+  if (!d.prazo) f.push("data de entrega");
+  if (!d.gravacao) f.push("personalização");
+  return f;
+}
+
 function promptSistema(cfg: AgenteCfg, nomeContato: string, dados: DadosLead, turnos: number) {
+  const falta = faltando(dados);
   const { quando, expediente } = contextoAgora();
   return `Você responde o WhatsApp da Compass Brindes Corporativos (Iraí/RS) no lugar da ${cfg.assinatura}, que é dona da empresa junto com o Galhardo. Você conversa com pessoas que acabaram de chegar, quase sempre por anúncio no Instagram/Facebook ou promoção. Seu trabalho é receber bem, entender o que a pessoa precisa e passar para a ${cfg.assinatura} montar o orçamento.
 
@@ -186,6 +201,12 @@ AGORA: ${quando} (horário de Brasília). ${expediente ? "Estamos no horário co
 Nome do contato no WhatsApp: ${nomeContato || "(sem nome)"}.
 Já anotado desta conversa: ${JSON.stringify(dados)}.
 Respostas suas até agora nesta conversa: ${turnos}.
+AINDA FALTA SABER (antes da mensagem nova do cliente): ${falta.length ? falta.join(", ") : "nada obrigatório"}.
+
+REGRA DO QUE FALTA (muito importante):
+- Leia a mensagem nova do cliente, risque o que ele acabou de responder e SEMPRE termine tua resposta perguntando o próximo item que ainda falta, na ordem: produto → tamanho (copos, canecas e garrafas) → cor → quantidade → data de entrega → personalização. Pode juntar 2 itens numa pergunta (ex.: "Qual tamanho e qual cor tu prefere?").
+- Se o cliente respondeu só parte do que você perguntou, agradeça curto e pergunte de novo só o que ficou faltando. Ex.: você perguntou tamanho e quantidade e ele disse "10 peças" → "Show, 10 peças! E qual tamanho tu prefere?". Se ele disse só "500ml" → "Perfeito, 500ml! E de qual cor e quantas peças tu precisa?".
+- Só considere o lead completo quando não faltar nenhum item acima.
 
 JEITO DE ESCREVER (como a ${cfg.assinatura} escreve no WhatsApp):
 - Mensagens curtas, como no celular: 1 a 3 bolhas, cada uma com 1 ou 2 frases.
@@ -264,7 +285,7 @@ const FERRAMENTA = {
         properties: {
           nome: { type: "string" }, empresa: { type: "string" }, ocasiao: { type: "string" }, produto: { type: "string" },
           codigo: { type: "string" }, quantidade: { type: "string" }, prazo: { type: "string" }, gravacao: { type: "string" },
-          cidade: { type: "string" }, cor: { type: "string" }, investimento: { type: "string" }, observacoes: { type: "string" },
+          cidade: { type: "string" }, tamanho: { type: "string" }, cor: { type: "string" }, investimento: { type: "string" }, observacoes: { type: "string" },
         },
       },
       transferir: { type: "boolean", description: "true para passar a conversa para a equipe agora." },
@@ -473,7 +494,7 @@ export async function mensagemAgente(o: { num: string; nome: string; texto: stri
       e.motivo = r.motivo || (e.turnos >= MAX_TURNOS ? "conversa longa" : "lead completo");
       // lead completo: link para o cliente preencher os dados de entrega (cotação do frete na São Miguel).
       // autoEnviar=false: a cotação só vai para a transportadora depois que a equipe informar volumes e valor da NF.
-      if (r.pedir_entrega && e.dados.produto && e.dados.quantidade) {
+      if (r.pedir_entrega && faltando(e.dados).length === 0) {
         try {
           const f = await criarFormFrete({
             clienteNome: e.dados.empresa || e.dados.nome || o.nome || "",
