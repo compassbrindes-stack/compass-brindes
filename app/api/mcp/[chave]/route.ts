@@ -1,6 +1,6 @@
 import { NextResponse } from "next/server";
 import { conversasDesde, historico, registrarMensagem, totalMensagens } from "@/lib/conversas";
-import { enviarTexto, enviarMidia, baixarMidia, verificarNumeros } from "@/lib/uazapi";
+import { enviarTexto, enviarMidia, baixarMidia, verificarNumeros, trocarFotoPerfil } from "@/lib/uazapi";
 import { registrarCompras, todasCompras } from "@/lib/compras";
 import { listarDocumentos } from "@/lib/recibos";
 import catalogo from "@/data/catalogo-app.json";
@@ -63,6 +63,15 @@ async function fotoProduto(codigo: string, url: string) {
 }
 
 const FERRAMENTAS = [
+  {
+    name: "foto_perfil_whatsapp",
+    description: "Troca a foto de perfil do WhatsApp da Compass pela imagem oficial da marca (símbolo Rede de pontos, gerado em /api/marca?tipo=whatsapp) ou por outra imagem da marca. Só com pedido da Compass.",
+    inputSchema: {
+      type: "object",
+      properties: { tipo: { type: "string", enum: ["whatsapp", "instagram", "bling", "escura"], description: "Qual imagem da marca usar (padrão whatsapp: só o símbolo)." } },
+    },
+    annotations: { readOnlyHint: false, destructiveHint: false, openWorldHint: true },
+  },
   {
     name: "enviar_catalogo_whatsapp",
     description: "Envia o catálogo da Compass em PDF (gerado na hora pelo site, sem preços) pelo WhatsApp da Compass para um número, com uma mensagem/legenda. Grava no histórico da conversa.",
@@ -380,6 +389,11 @@ export async function POST(request: Request, { params }: { params: { chave: stri
         const quando = Date.now();
         await registrarMensagem({ num, texto: legenda ? `[arquivo: Catalogo-Compass-Brindes.pdf] ${legenda}` : "[arquivo: Catalogo-Compass-Brindes.pdf]", tipo: "documentMessage", deCompass: true, quando, id: "painel-cat-" + quando });
         dados = { enviado: true, numero: num, em: new Date(quando).toISOString() };
+      }
+      else if (nome === "foto_perfil_whatsapp") {
+        const tipo = ["whatsapp", "instagram", "bling", "escura"].includes(a.tipo) ? a.tipo : "whatsapp";
+        const resp = await trocarFotoPerfil(`${SITE}/api/marca?tipo=${tipo}&v=${Date.now()}`);
+        dados = { trocada: true, tipo, resposta: resp };
       }
       else if (nome === "avisar_grupo_recibos") {
         const texto = String(a.texto || "").trim();

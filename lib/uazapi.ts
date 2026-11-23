@@ -59,3 +59,17 @@ export async function verificarNumeros(numeros: string[]): Promise<any[]> {
   if (!res.ok) throw new Error(`uazapi /chat/check ${res.status} ${(await res.text().catch(() => "")).slice(0, 200)}`);
   return res.json();
 }
+
+/** Troca a foto de perfil do WhatsApp da Compass (uazapi /profile/image; image = URL, base64 ou "remove"). */
+export async function trocarFotoPerfil(image: string) {
+  const { url, token } = cfg();
+  const res = await fetch(`${url}/profile/image`, {
+    method: "POST",
+    headers: { token, "Content-Type": "application/json" },
+    body: JSON.stringify({ image }),
+    cache: "no-store",
+  });
+  const corpo = await res.text().catch(() => "");
+  if (!res.ok) throw new Error(`uazapi /profile/image ${res.status} ${corpo.slice(0, 200)}`);
+  return corpo.slice(0, 300);
+}
