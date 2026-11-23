@@ -1,5 +1,6 @@
 import Link from "next/link";
-import { LOGO_DATA_URI } from "@/lib/logo";
+// Logo nova (Rede de pontos, 22/11/2026): gerada em /api/marca com as fontes da marca.
+const LOGO_SRC = "/api/marca?tipo=site&v=1";
 
 const WHATSAPP_NUMBER = process.env.NEXT_PUBLIC_WHATSAPP_NUMBER ?? "";
 const whatsappUrl = WHATSAPP_NUMBER
@@ -15,7 +16,7 @@ export function SiteFooter() {
     <footer className="site-footer">
       <div className="container site-footer__top">
         <div className="logo">
-          <img src={LOGO_DATA_URI} alt="Compass Brindes Corporativos" className="logo-img" />
+          <img src={LOGO_SRC} alt="Compass Brindes Corporativos" className="logo-img" />
         </div>
 
         <div style={{ maxWidth: 280, fontSize: "0.85rem" }}>

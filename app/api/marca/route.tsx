@@ -5,6 +5,7 @@
 //   /api/marca?tipo=instagram  → 1080×1080, logo empilhada, fundo branco
 //   /api/marca?tipo=bling      → 1200×400, logo completa, fundo branco
 //   /api/marca?tipo=escura     → 1200×400, logo completa, fundo azul-noite
+//   /api/marca?tipo=site       → 1100×330, logo completa, fundo transparente (cabeçalho e rodapé do site)
 import { ImageResponse } from "next/og";
 
 export const runtime = "edge";
@@ -84,9 +85,10 @@ export async function GET(req: Request) {
   }
   const escuro = tipo === "escura";
   // bling: logo justa (pouca margem), para aparecer grande nos PDFs de proposta, pedido e NF
-  const justa = tipo === "bling";
+  const transparente = tipo === "site";
+  const justa = tipo === "bling" || transparente;
   return new ImageResponse(
-    <div style={{ width: "100%", height: "100%", display: "flex", alignItems: "center", justifyContent: "center", background: escuro ? AZUL_NOITE : "#FFFFFF" }}>
+    <div style={{ width: "100%", height: "100%", display: "flex", alignItems: "center", justifyContent: "center", background: transparente ? "transparent" : escuro ? AZUL_NOITE : "#FFFFFF" }}>
       <Horizontal esc={justa ? 1.5 : 1} escuro={escuro} />
     </div>,
     justa ? { width: 1100, height: 330, fonts, headers } : { width: 1200, height: 400, fonts, headers },

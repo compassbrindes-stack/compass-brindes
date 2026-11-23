@@ -1,5 +1,6 @@
 import Link from "next/link";
-import { LOGO_DATA_URI } from "@/lib/logo";
+// Logo nova (Rede de pontos, 22/11/2026): gerada em /api/marca com as fontes da marca.
+const LOGO_SRC = "/api/marca?tipo=site&v=1";
 import { MobileMenuCloser } from "@/components/mobile-menu-closer";
 import { QuoteBadge } from "@/components/quote-badge";
 import { AccountLink } from "@/components/account-link";
@@ -24,7 +25,7 @@ export function SiteHeader() {
       <div className="hd__top">
         <div className="hd__row">
           <Link className="hd__logo" href="/" aria-label="Compass Brindes Corporativos — página inicial">
-            <img src={LOGO_DATA_URI} alt="Compass Brindes Corporativos" />
+            <img src={LOGO_SRC} alt="Compass Brindes Corporativos" />
           </Link>
 
           <form className="hd__search" action="/produtos" method="GET" role="search">

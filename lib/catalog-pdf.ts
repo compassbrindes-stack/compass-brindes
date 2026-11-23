@@ -5,7 +5,6 @@
 
 import { PDFDocument, PDFFont, PDFImage, PDFPage, StandardFonts, rgb } from "pdf-lib";
 import type { Product } from "@/lib/types";
-import { LOGO_DATA_URI } from "@/lib/logo";
 
 const PAGE_WIDTH = 595.28; // A4 em pontos
 const PAGE_HEIGHT = 841.89;
@@ -20,8 +19,8 @@ const PRODUCT_COL_WIDTH = (CONTENT_WIDTH - PRODUCT_COL_GAP * (PRODUCT_COLS - 1))
 const CARD_IMAGE_MAX = 120; // lado máximo (quadrado) da foto, no topo do card
 const ROW_GAP = 14; // espaço vertical entre uma linha de produtos e a próxima
 
-const COLOR_PRIMARY_DARK = rgb(0x0b / 255, 0x44 / 255, 0x36 / 255); // verde escuro da marca
-const COLOR_PRIMARY = rgb(0x16 / 255, 0xa3 / 255, 0x4a / 255); // verde da marca
+const COLOR_PRIMARY_DARK = rgb(0x0b / 255, 0x10 / 255, 0x20 / 255); // azul-noite da marca nova (Rede de pontos)
+const COLOR_PRIMARY = rgb(0x3b / 255, 0x4c / 255, 0xca / 255); // azul elétrico da marca nova
 const COLOR_TEXT = rgb(0.13, 0.15, 0.15);
 const COLOR_MUTED = rgb(0.44, 0.46, 0.44);
 const COLOR_LINE = rgb(0.85, 0.86, 0.82);
@@ -48,11 +47,6 @@ function wrapText(text: string, font: PDFFont, size: number, maxWidth: number): 
   }
   if (current) lines.push(current);
   return lines;
-}
-
-function base64ToBytes(dataUri: string): Uint8Array {
-  const base64 = dataUri.includes(",") ? dataUri.split(",")[1] : dataUri;
-  return new Uint8Array(Buffer.from(base64, "base64"));
 }
 
 // Transforma caminhos relativos ("/produtos/x.jpg") em endereço completo.
@@ -184,10 +178,12 @@ export async function buildCatalogPdf(products: Product[], siteUrl?: string): Pr
   const fontBold = await pdfDoc.embedFont(StandardFonts.HelveticaBold);
   const fontItalic = await pdfDoc.embedFont(StandardFonts.HelveticaOblique);
 
-  // Logo — embutida localmente, sem depender de rede.
+  // Logo nova (Rede de pontos, 22/11/2026): a mesma imagem do Bling, gerada em /api/marca.
   let logoImage: PDFImage | null = null;
   try {
-    logoImage = await pdfDoc.embedPng(base64ToBytes(LOGO_DATA_URI));
+    const base = siteUrl || process.env.NEXT_PUBLIC_SITE_URL || "https://www.compassbrindes.com.br";
+    const r = await fetch(`${base}/api/marca?tipo=bling&v=1`);
+    if (r.ok) logoImage = await pdfDoc.embedPng(new Uint8Array(await r.arrayBuffer()));
   } catch {
     logoImage = null;
   }
@@ -261,7 +257,7 @@ export async function buildCatalogPdf(products: Product[], siteUrl?: string): Pr
   });
   if (logoImage) {
     // logo num quadro branco à direita da faixa
-    const logoHeight = 40;
+    const logoHeight = 46;
     const logoWidth = (logoImage.width / logoImage.height) * logoHeight;
     const bx = PAGE_WIDTH - MARGIN_X - logoWidth - 16;
     page.drawRectangle({ x: bx, y: PAGE_HEIGHT - FAIXA / 2 - logoHeight / 2 - 8, width: logoWidth + 16, height: logoHeight + 16, color: rgb(1, 1, 1) });
