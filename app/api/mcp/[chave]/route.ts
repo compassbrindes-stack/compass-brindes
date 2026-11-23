@@ -1,3 +1,4 @@
+import { consultarCnpj } from "@/lib/cnpj";
 import { NextResponse } from "next/server";
 import { conversasDesde, historico, registrarMensagem, totalMensagens } from "@/lib/conversas";
 import { enviarTexto, enviarMidia, baixarMidia, verificarNumeros, trocarFotoPerfil } from "@/lib/uazapi";
@@ -71,6 +72,12 @@ const FERRAMENTAS = [
       properties: { tipo: { type: "string", enum: ["whatsapp", "instagram", "bling", "escura"], description: "Qual imagem da marca usar (padrão whatsapp: só o símbolo)." } },
     },
     annotations: { readOnlyHint: false, destructiveHint: false, openWorldHint: true },
+  },
+  {
+    name: "consultar_cnpj",
+    description: "Consulta um CNPJ nos dados públicos (Receita Federal + cadastro de contribuintes): razão social, fantasia, situação, endereço, e-mail/telefone e inscrições estaduais (IE) com a situação de cada uma. Usado para conferir e completar o cadastro do cliente no Bling.",
+    inputSchema: { type: "object", properties: { cnpj: { type: "string", description: "CNPJ (com ou sem pontuação)." } }, required: ["cnpj"] },
+    annotations: { readOnlyHint: true, openWorldHint: true },
   },
   {
     name: "enviar_catalogo_whatsapp",
@@ -377,6 +384,10 @@ export async function POST(request: Request, { params }: { params: { chave: stri
         if (num.length >= 10 && num.length <= 11) num = "55" + num;
         if (a.acao === "reiniciar") { await apagarEstado(num); dados = { reiniciado: true, numero: num }; }
         else dados = { pausado: await pausarAgente(num, "pausado pelo painel"), numero: num };
+      }
+      else if (nome === "consultar_cnpj") {
+        try { dados = await consultarCnpj(String(a.cnpj || "")); }
+        catch (e: any) { return ok(id, { content: [{ type: "text", text: "Erro: " + (e?.message || "consulta falhou") }], isError: true }); }
       }
       else if (nome === "enviar_catalogo_whatsapp") {
         let num = String(a.numero || "").replace(/\D/g, "");
