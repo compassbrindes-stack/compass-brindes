@@ -3373,5 +3373,80 @@
       "Preto"
     ],
     "supplierCode": "CB726"
+  },
+  {
+    "sku": "sumexr-yt1023-garrafa-termica-sport-800ml-infusor",
+    "name": "Garrafa Térmica Sport 800ml com Infusor",
+    "title": "Garrafa Térmica Sport 800ml com Infusor",
+    "category": "Térmicos",
+    "subcategory": "Garrafas",
+    "description": "Descrição: Garrafa térmica de 800ml em aço inox com parede dupla a vácuo, acabamento preto, tampa com alça de transporte e boca larga. Acompanha infusor/filtro em inox para chá, frutas ou ervas. Mantém bebidas quentes ou geladas por mais tempo. Vem em caixa individual.",
+    "images": [
+      "/produtos/garrafa-termica-sport-800ml-infusor-preta.jpg"
+    ],
+    "colors": [
+      "Preto"
+    ],
+    "supplierCode": "CB142"
+  },
+  {
+    "sku": "sumexr-yt1045-garrafa-termica-bottle-inox-500ml",
+    "name": "Garrafa Térmica Bottle Inox 500ml",
+    "title": "Garrafa Térmica Bottle Inox 500ml",
+    "category": "Térmicos",
+    "subcategory": "Garrafas",
+    "description": "Descrição: Garrafa térmica de 500ml em aço inox, formato slim inspirado em garrafa de vinho, acabamento preto fosco e tampa rosqueável inox em formato de cúpula. Isolamento térmico para bebidas quentes ou geladas. Compacta e leve: cabe na bolsa, mochila e porta-copos do carro.",
+    "images": [
+      "/produtos/garrafa-termica-bottle-inox-500ml-preta.jpg"
+    ],
+    "colors": [
+      "Preto"
+    ],
+    "supplierCode": "CB143"
+  },
+  {
+    "sku": "sumexr-yt1057-garrafa-termica-sport-400ml",
+    "name": "Garrafa Térmica Sport 400ml",
+    "title": "Garrafa Térmica Sport 400ml",
+    "category": "Térmicos",
+    "subcategory": "Garrafas",
+    "description": "Descrição: Garrafa térmica de 400ml com corpo cilíndrico, acabamento fosco, tampa sport com bico para beber e alça de transporte integrada. Isolamento térmico para bebidas quentes ou geladas. Leve e compacta, ideal para academia, escritório e viagem. Vem em caixa individual.",
+    "images": [
+      "/produtos/garrafa-termica-sport-400ml-preta.jpg"
+    ],
+    "colors": [
+      "Preto"
+    ],
+    "supplierCode": "CB144"
+  },
+  {
+    "sku": "sumexr-yt1058-garrafa-termica-sport-600ml",
+    "name": "Garrafa Térmica Sport 600ml",
+    "title": "Garrafa Térmica Sport 600ml",
+    "category": "Térmicos",
+    "subcategory": "Garrafas",
+    "description": "Descrição: Garrafa térmica de 600ml com corpo cilíndrico, acabamento fosco, tampa sport com bico para beber e alça de transporte integrada. Isolamento térmico para bebidas quentes ou geladas, mais hidratação para o dia todo. Vem em caixa individual.",
+    "images": [
+      "/produtos/garrafa-termica-sport-600ml-preta.jpg"
+    ],
+    "colors": [
+      "Preto"
+    ],
+    "supplierCode": "CB145"
+  },
+  {
+    "sku": "sumexr-yt1056-copo-termico-tumbler-alca-canudo-600ml",
+    "name": "Copo Térmico Tumbler com Alça e Canudo 600ml",
+    "title": "Copo Térmico Tumbler com Alça e Canudo 600ml",
+    "category": "Térmicos",
+    "subcategory": "Copos",
+    "description": "Descrição: Copo térmico tumbler de 600ml com alça ergonômica integrada, tampa com trava deslizante e canudo reutilizável. Acabamento fosco, anel de aço inox na parte superior e base antiderrapante. Mantém a temperatura das bebidas por mais tempo. Vem em caixa individual.",
+    "images": [
+      "/produtos/copo-termico-tumbler-alca-canudo-600ml-preto.jpg"
+    ],
+    "colors": [
+      "Preto"
+    ],
+    "supplierCode": "CB027"
   }
 ]
