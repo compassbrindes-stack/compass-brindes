@@ -35,7 +35,7 @@ function Simbolo({ tam, linha }: { tam: number; linha: string }) {
 function Tagline({ tam, cor, folga }: { tam: number; cor: string; folga: number }) {
   const letras = "BRINDES CORPORATIVOS".split("");
   return (
-    <div style={{ display: "flex", justifyContent: "space-between", width: "100%", paddingRight: folga, fontFamily: "JetBrains Mono", fontSize: tam, fontWeight: 700, color: cor }}>
+    <div style={{ display: "flex", justifyContent: "space-between", alignSelf: "stretch", width: "100%", paddingRight: folga, fontFamily: "JetBrains Mono", fontSize: tam, fontWeight: 700, color: cor }}>
       {letras.map((l, i) => (l === " " ? <div key={i} style={{ width: tam * 0.6, display: "flex" }} /> : <div key={i} style={{ display: "flex" }}>{l}</div>))}
     </div>
   );
@@ -74,7 +74,7 @@ export async function GET(req: Request) {
     return new ImageResponse(
       <div style={{ width: "100%", height: "100%", display: "flex", flexDirection: "column", alignItems: "center", justifyContent: "center", gap: 34, background: "#FFFFFF" }}>
         <Simbolo tam={290} linha={AZUL} />
-        <div style={{ display: "flex", flexDirection: "column", gap: 30 }}>
+        <div style={{ display: "flex", flexDirection: "column", alignItems: "stretch", gap: 30 }}>
           <div style={{ display: "flex", fontFamily: "Sora", fontSize: 146, fontWeight: 800, letterSpacing: -0.06 * 146, lineHeight: 0.8, color: AZUL_NOITE }}>compass</div>
           <Tagline tam={33} cor={AZUL} folga={0} />
         </div>
