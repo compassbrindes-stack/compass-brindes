@@ -14,6 +14,7 @@
 //
 // Variáveis da Vercel usadas: ANTHROPIC_API_KEY (já existe), AGENTE_MODEL (opcional).
 
+import { textoRefs } from "@/lib/codigos-antigos";
 import { redis } from "@/lib/redis";
 import { historico, registrarMensagem } from "@/lib/conversas";
 import { enviarTexto } from "@/lib/uazapi";
@@ -447,6 +448,7 @@ async function avisarEquipe(e: EstadoAgente, nome: string, teste: boolean) {
 
 /* ---------------- quem recebe o agente ---------------- */
 
+const VEIO_CATALOGO = /vim pelo (cat[aá]logo|site)|quero um or[cç]amento de:|\bRef:\s*[A-Z0-9-]{4,}/i;
 const SAUDACAO_ANUNCIO = /posso ter mais informa|quero saber mais|tenho interesse|mais informa[cç][oõ]es|vi (o|seu|teu) an[uú]ncio|me interessei/i;
 
 async function elegivel(cfg: AgenteCfg, num: string): Promise<boolean> {
@@ -494,7 +496,24 @@ export async function mensagemAgente(o: { num: string; nome: string; texto: stri
     return { acao: "parado", status: e.status };
   }
   if (!e) {
-    if (cfg.modo === "novos" && o.salvo) return { acao: "fora", motivo: "contato salvo no WhatsApp" };
+    if (cfg.modo === "novos" && o.salvo) {
+      // contato salvo que pede orçamento pelo catálogo ou pelo site: sem resposta automática (é com a equipe),
+      // mas entra nos leads do painel piscando e avisa o grupo, para não passar despercebido
+      if (VEIO_CATALOGO.test(o.texto)) {
+        const agora = new Date().toISOString();
+        const refs = textoRefs(o.texto);
+        const prod = /📦\s*\*?([^*\n]+)/.exec(o.texto);
+        const novo: EstadoAgente = {
+          num, status: "transferido", inicio: agora, atualizadoEm: agora, turnos: 0,
+          dados: { nome: o.nome || "", produto: prod ? prod[1].trim() : "", observacoes: ["pedido pelo catálogo/site (contato salvo)", refs ? "Ref.: " + refs : ""].filter(Boolean).join(" · ") },
+          motivo: "pedido pelo catálogo (contato salvo)", transferidoEm: agora, clienteEm: agora, avisoGrupoEsperaEm: agora,
+        };
+        await gravarEstado(novo);
+        await avisarEquipe(novo, o.nome, cfg.teste.includes(num)).catch(() => {});
+        return { acao: "catalogo-salvo" };
+      }
+      return { acao: "fora", motivo: "contato salvo no WhatsApp" };
+    }
     if (!(await elegivel(cfg, num))) return { acao: "fora" };
     e = { num, status: "ativo", inicio: new Date().toISOString(), atualizadoEm: new Date().toISOString(), turnos: 0, dados: {} };
     if (SAUDACAO_ANUNCIO.test(o.texto)) e.dados.observacoes = "veio de anúncio";
@@ -520,7 +539,9 @@ export async function mensagemAgente(o: { num: string; nome: string; texto: stri
     const msgs = ((await historico(num, 40, 0)) as any[]).filter((m) => (Date.parse(m.em) || 0) >= desde && !/^#?reiniciar$/i.test(String(m.texto || "").trim()));
     const turnos = montarTurnos(msgs);
     if (!turnos.length) return { acao: "sem-mensagem" };
-    const r = await chamarClaude(promptSistema(cfg, o.nome, e.dados, e.turnos, !!e.resumoFeito), turnos);
+    const refs = textoRefs(msgs.filter((m: any) => m.de !== "compass").map((m: any) => m.texto || "").join("\n"));
+    const extraRefs = refs ? `\n\nCÓDIGOS ANTIGOS citados pelo cliente (catálogo antigo): ${refs}. Use sempre o código CB e o nome atual. Se o nome que o cliente escreveu não bater com o produto do código (ex.: pediu "kit" e o código é da garrafa sozinha), pergunte com gentileza qual dos dois ele quer. Guarde o código CB em dados.codigo.` : "";
+    const r = await chamarClaude(promptSistema(cfg, o.nome, e.dados, e.turnos, !!e.resumoFeito) + extraRefs, turnos);
     if (!r) return { acao: "sem-resposta" };
 
     // pausa entre bolhas, como alguém digitando
@@ -718,7 +739,8 @@ export async function tickAgente() {
         e.avisoGrupoEsperaEm = new Date().toISOString();
         await gravarEstado(e);
       }
-      if (agora - cliente > 10 * MIN && cliente > ms(e.avisoEsperaEm) && agora - ms(e.avisoEsperaEm) > 6 * 60 * MIN && agora - cliente < DIA * 1000) {
+      // contato salvo (pedido pelo catálogo): nada automático para o cliente, só o aviso da equipe
+      if (!/contato salvo/.test(e.motivo || "") && agora - cliente > 10 * MIN && cliente > ms(e.avisoEsperaEm) && agora - ms(e.avisoEsperaEm) > 6 * 60 * MIN && agora - cliente < DIA * 1000) {
         const { expediente } = contextoAgora();
         const txt = expediente
           ? "Nosso atendente comercial entra em contato contigo assim que possível 😊"
