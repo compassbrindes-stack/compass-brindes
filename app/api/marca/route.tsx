@@ -83,10 +83,12 @@ export async function GET(req: Request) {
     );
   }
   const escuro = tipo === "escura";
+  // bling: logo justa (pouca margem), para aparecer grande nos PDFs de proposta, pedido e NF
+  const justa = tipo === "bling";
   return new ImageResponse(
     <div style={{ width: "100%", height: "100%", display: "flex", alignItems: "center", justifyContent: "center", background: escuro ? AZUL_NOITE : "#FFFFFF" }}>
-      <Horizontal esc={1} escuro={escuro} />
+      <Horizontal esc={justa ? 1.5 : 1} escuro={escuro} />
     </div>,
-    { width: 1200, height: 400, fonts, headers },
+    justa ? { width: 1100, height: 330, fonts, headers } : { width: 1200, height: 400, fonts, headers },
   );
 }
