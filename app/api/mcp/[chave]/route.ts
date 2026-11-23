@@ -268,7 +268,7 @@ const FERRAMENTAS = [
   {
     name: "atualizar_frete",
     description: "Muda o status de um formulário de frete (enviado = cotação mandada à transportadora; cancelado = link desativado; apagado = apaga de vez um formulário já cancelado; respondida = grava o resultado da transportadora: valor/prazo/numero informados, ou msgId da imagem recebida no WhatsApp para ler o valor).",
-    inputSchema: { type: "object", properties: { id: { type: "string" }, status: { type: "string", enum: ["aguardando_cliente", "preenchido", "enviado", "cancelado", "apagado", "respondida"] }, valor: { type: "number", description: "Valor do frete em reais (com status respondida)." }, prazo: { type: "string", description: "Prazo/entrega prevista." }, numero: { type: "string", description: "Número da cotação da transportadora." }, obs: { type: "string" }, msgId: { type: "string", description: "Id da imagem da cotação no WhatsApp: lê o valor dela." } }, required: ["id", "status"] },
+    inputSchema: { type: "object", properties: { id: { type: "string" }, status: { type: "string", enum: ["aguardando_cliente", "preenchido", "enviado", "cancelado", "apagado", "respondida"] }, valor: { type: "number", description: "Valor do frete em reais (com status respondida)." }, prazo: { type: "string", description: "Prazo/entrega prevista." }, numero: { type: "string", description: "Número da cotação da transportadora." }, obs: { type: "string" }, msgId: { type: "string", description: "Id da imagem da cotação no WhatsApp: lê o valor dela." }, valorNF: { type: "string", description: "Valor da NF informado pela equipe (completa o link que o cliente preencheu)." }, volumes: { type: "array", items: { type: "object", properties: { qtd: { type: "string" }, c: { type: "string" }, l: { type: "string" }, a: { type: "string" }, peso: { type: "string" } } } }, pesoTotal: { type: "string" }, produto: { type: "string" }, tomador: { type: "string", enum: ["remetente", "destinatario"] } }, required: ["id", "status"] },
     annotations: { readOnlyHint: false, destructiveHint: false },
   },
   {
@@ -477,7 +477,14 @@ export async function POST(request: Request, { params }: { params: { chave: stri
         const f = await lerFormFrete(String(a.id || ""));
         if (!f) return ok(id, { content: [{ type: "text", text: "Erro: formulário não encontrado" }], isError: true });
         const st = ["aguardando_cliente", "preenchido", "enviado", "cancelado"].includes(a.status) ? a.status : f.status;
-        await salvarFormFrete({ ...f, status: st, ...(st === "enviado" ? { enviadoEm: new Date().toISOString() } : {}) });
+        // a equipe completa o que o cliente não informa (valor da NF, caixas, produto) antes de mandar à São Miguel
+        const extra: any = {};
+        if (a.valorNF != null && String(a.valorNF).trim()) extra.valorNF = String(a.valorNF).trim().slice(0, 40);
+        if (Array.isArray(a.volumes) && a.volumes.length) extra.volumes = a.volumes.slice(0, 20).map((v: any) => ({ qtd: String(v.qtd || "1"), c: String(v.c || ""), l: String(v.l || ""), a: String(v.a || ""), peso: String(v.peso || "") }));
+        if (a.pesoTotal != null) extra.pesoTotal = String(a.pesoTotal).slice(0, 20);
+        if (a.produto && String(a.produto).trim()) extra.produto = String(a.produto).trim().slice(0, 300);
+        if (a.tomador === "remetente" || a.tomador === "destinatario") extra.tomador = a.tomador;
+        await salvarFormFrete({ ...f, ...extra, status: st, ...(st === "enviado" ? { enviadoEm: new Date().toISOString() } : {}) });
         dados = { id: f.id, status: st };
       }
       else if (nome === "enviar_sao_miguel") {
