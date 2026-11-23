@@ -657,7 +657,7 @@ export async function dadosPreenchidosAgente(f: { id: string; whatsCliente?: str
     await registrarMensagem({ num, texto: textos[k], tipo: "agente", deCompass: true, quando: Date.now(), id: `agente-fim-${f.id}-${k}` }).catch(() => {});
   }
   const grupo = await grupoEquipe();
-  if (grupo) await enviarTexto(grupo, `✅ *Dados preenchidos* por ${d.nome || f.dest?.nome || fone(num)} · ${fone(num)}\n${linhas.join("\n")}\nAparecem no painel em Cotação de frete → Dados pedidos aos clientes.`).catch(() => {});
+  if (grupo) await enviarTexto(grupo, `✅ *Dados preenchidos* por ${d.nome || f.dest?.nome || fone(num)} · ${fone(num)}\n${linhas.join("\n")}\nPara cotar na São Miguel: gestor → Cotação de frete → "Usar na cotação" → informar valor da NF e caixas (medidas e peso) → botão verde.`).catch(() => {});
   return true;
 }
 
