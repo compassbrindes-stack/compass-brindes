@@ -256,7 +256,9 @@ export async function listarCampanhas() {
 
 /** true se o número recebeu (ou vai receber) campanha: o atendimento automático fica de fora, a equipe responde. */
 export async function numeroEmCampanha(num: string) {
-  return (await redis<number>(["SISMEMBER", K_NUMS, so(num)]).catch(() => 0)) === 1;
+  if ((await redis<number>(["SISMEMBER", K_NUMS, so(num)]).catch(() => 0)) === 1) return true;
+  // números de teste ficam fora do atendimento automático só por 3 dias (depois voltam a testar o agente)
+  return Boolean(await redis<string | null>(["GET", `compass:campanha:teste:${so(num)}`]).catch(() => null));
 }
 
 /** Envio de teste imediato (fora da fila e do horário), para conferir texto e imagem. */
@@ -265,7 +267,7 @@ export async function testeCampanha(id: string, numeros: string[], cidade = "Tes
   if (!c) throw new Error("campanha não encontrada");
   const out = [];
   for (const n of numeros.map(so).filter((x) => x.length >= 10)) {
-    await redis(["SADD", K_NUMS, n]).catch(() => {});
+    await redis(["SET", `compass:campanha:teste:${n}`, "1", "EX", 3 * 86400]).catch(() => {});
     const i: ItemCampanha = { num: n, unidade: "Teste", cidade, cliente, status: "pendente" };
     const texto = textoPara(c, i);
     try {
