@@ -240,7 +240,7 @@ export async function statusCampanha(id: string) {
       saiu: conta((i) => optout.has(i.num)),
     },
     config: { limiteDia: c.limiteDia, intervalo: [c.intervaloMin, c.intervaloMax], faixas: c.faixas, inicioEm: c.inicioEm, imagemUrl: c.imagemUrl, textoNovo: c.textoNovo, textoCliente: c.textoCliente },
-    itens: c.itens,
+    itens: c.itens.map((i) => ({ ...i, saiu: optout.has(i.num) })),
   };
 }
 
