@@ -733,7 +733,10 @@ export async function tickAgente() {
     // 2) cliente esperando resposta depois da transferência
     const cliente = ms(e.clienteEm);
     if (e.status === "transferido" && cliente && cliente > humano) {
-      if (cliente > ms(e.avisoGrupoEsperaEm)) {
+      // aviso no grupo só enquanto ninguém da equipe respondeu depois da transferência;
+      // depois que a Compass respondeu, a espera aparece só no gestor ("Cliente esperando resposta")
+      const equipeJaRespondeu = humano > 0 && humano >= ms(e.transferidoEm);
+      if (!equipeJaRespondeu && cliente > ms(e.avisoGrupoEsperaEm)) {
         const g = await grupoEquipe();
         if (g) await enviarTexto(g, `💬 *${e.dados.nome || fone(e.num)}* (${fone(e.num)}) mandou mensagem e está esperando resposta.`).catch(() => {});
         e.avisoGrupoEsperaEm = new Date().toISOString();
