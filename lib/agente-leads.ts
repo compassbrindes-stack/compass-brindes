@@ -405,7 +405,7 @@ async function chamarClaude(system: string, turnos: { role: string; content: str
 
 /* ---------------- avisos para a equipe ---------------- */
 
-async function grupoEquipe(): Promise<string> {
+export async function grupoEquipe(): Promise<string> {
   let grupo = process.env.WA_GRUPO_RECIBOS || "";
   if (grupo) return grupo;
   const h = (await redis<string[] | null>(["HGETALL", "compass:wa:grupos"]).catch(() => null)) || [];

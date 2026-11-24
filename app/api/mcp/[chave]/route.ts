@@ -1,3 +1,4 @@
+import { alterarCampanha, criarCampanha, listarCampanhas, statusCampanha, testeCampanha, tickCampanhas } from "@/lib/campanha";
 import { consultarCnpj } from "@/lib/cnpj";
 import { NextResponse } from "next/server";
 import { conversasDesde, historico, registrarMensagem, totalMensagens } from "@/lib/conversas";
@@ -218,6 +219,35 @@ const FERRAMENTAS = [
     annotations: { readOnlyHint: false, destructiveHint: false, openWorldHint: true },
   },
   {
+    name: "campanha_whatsapp",
+    description:
+      "Campanhas de WhatsApp em fila (uma mensagem por vez, só seg–sex nas faixas de horário, intervalo aleatório e limite por dia). Ações: listar; criar (id, nome, textoNovo com {cidade}, textoCliente opcional, imagemUrl, itens [{num, unidade, cidade, cliente}], limiteDia, intervaloMin/Max em minutos, faixas, inicioEm ISO, ativa); alterar (id + campos, ex.: ativa true/false); status (id: totais e por número enviado/lido/respondeu); teste (id, numeros, cidade, cliente: envia na hora, fora da fila); tick (envia o próximo se estiver no horário). Números da campanha ficam fora do atendimento automático; quem responde SAIR sai da lista; respostas avisam o grupo.",
+    inputSchema: {
+      type: "object",
+      properties: {
+        acao: { type: "string", enum: ["listar", "criar", "alterar", "status", "teste", "tick"] },
+        id: { type: "string" },
+        nome: { type: "string" },
+        textoNovo: { type: "string" },
+        textoCliente: { type: "string" },
+        imagemUrl: { type: "string" },
+        itens: { type: "array", items: { type: "object", properties: { num: { type: "string" }, unidade: { type: "string" }, cidade: { type: "string" }, cliente: { type: "boolean" } } } },
+        limiteDia: { type: "integer" },
+        intervaloMin: { type: "number" },
+        intervaloMax: { type: "number" },
+        faixas: { type: "array", items: { type: "array", items: { type: "string" } } },
+        inicioEm: { type: "string" },
+        ativa: { type: "boolean" },
+        avisarGrupo: { type: "boolean" },
+        numeros: { type: "array", items: { type: "string" } },
+        cidade: { type: "string" },
+        cliente: { type: "boolean" },
+      },
+      required: ["acao"],
+    },
+    annotations: { readOnlyHint: false, destructiveHint: false, openWorldHint: true },
+  },
+  {
     name: "documentos_whatsapp",
     description: "Lista os documentos (NF de entrada, CT-e, fatura, boleto) que chegaram no grupo Compass Recibos do WhatsApp e foram lidos pelo sistema: id da mensagem (para abrir o arquivo com midia_whatsapp), tipo, número, emitente, CNPJ, valor, datas, NFs e CT-es citados. Mais novos primeiro.",
     inputSchema: { type: "object", properties: { limite: { type: "integer", minimum: 1, maximum: 500, description: "Máximo de documentos (padrão 200)." } } },
@@ -366,6 +396,16 @@ export async function POST(request: Request, { params }: { params: { chave: stri
           .map((r: any) => ({ contaId: String(r.contaId), data: r.data || String(r.em || "").slice(0, 10), valor: r.valor ?? null, juros: r.juros ?? null, valorDocumento: r.comprovante?.valorDocumento ?? null, status: r.status, motivo: r.motivo || "", favorecido: r.comprovante?.favorecido || "", legenda: String(r.legenda || "").slice(0, 120), em: r.em }));
         const recentes = log.slice(0, 15).map((r: any) => ({ em: r.em, tipo: r.tipo, status: r.status, valor: r.valor ?? null, contaId: r.contaId ?? null, motivo: r.motivo || "", favorecido: r.comprovante?.favorecido || "", dataComprovante: r.comprovante?.data || "", valorDocumento: r.comprovante?.valorDocumento ?? null, legenda: r.legenda || "" }));
         dados = { pagas: (await todasCompras()).filter((c) => c.pago).map((c) => ({ pedido: c.pedido, pagoEm: c.pagoEm, contaBling: c.contaBling, pagoPor: c.pagoPor })), contasPagas, recentes };
+      }
+      else if (nome === "campanha_whatsapp") {
+        const ac = String(a.acao || "");
+        if (ac === "listar") dados = { campanhas: await listarCampanhas() };
+        else if (ac === "criar") dados = { campanha: await statusCampanha((await criarCampanha(a)).id) };
+        else if (ac === "alterar") { await alterarCampanha(String(a.id || ""), a); dados = await statusCampanha(String(a.id || "")); }
+        else if (ac === "status") dados = await statusCampanha(String(a.id || ""));
+        else if (ac === "teste") dados = { envios: await testeCampanha(String(a.id || ""), Array.isArray(a.numeros) ? a.numeros.map(String) : [], a.cidade ? String(a.cidade) : "Teste", Boolean(a.cliente)) };
+        else if (ac === "tick") dados = await tickCampanhas();
+        else throw new Error("ação inválida");
       }
       else if (nome === "agente_config") {
         const muda = a.modo !== undefined || a.teste !== undefined;

@@ -17,6 +17,7 @@ export async function enviarTexto(chat: string, text: string, replyid?: string) 
     cache: "no-store",
   });
   if (!res.ok) throw new Error(`uazapi /send/text ${res.status}`);
+  return res.json().catch(() => ({}));
 }
 
 /** Envia foto, PDF ou outro arquivo (file = URL ou base64). type: image | video | document | audio. */
@@ -32,6 +33,7 @@ export async function enviarMidia(chat: string, type: string, file: string, lege
     const corpo = await res.text().catch(() => "");
     throw new Error(`uazapi /send/media ${res.status} ${corpo.slice(0, 200)}`);
   }
+  return res.json().catch(() => ({}));
 }
 
 /** Link público (válido por 2 dias) e tipo do arquivo de uma mensagem com mídia. */

@@ -4,7 +4,9 @@ import { processarRecibo } from "@/lib/recibos";
 import { numeroDoChat, registrarMensagem } from "@/lib/conversas";
 import { NUM_SAO_MIGUEL, mensagemSaoMiguel, tickSaoMiguel } from "@/lib/saomiguel";
 import { mensagemAprovacao } from "@/lib/aprovacao";
-import { mensagemAgente, pausarAgente, tickAgente } from "@/lib/agente-leads";
+import { grupoEquipe, mensagemAgente, pausarAgente, tickAgente } from "@/lib/agente-leads";
+import { numeroEmCampanha, registrarLeitura, respostaCampanha, tickCampanhas } from "@/lib/campanha";
+import { enviarTexto } from "@/lib/uazapi";
 
 export const dynamic = "force-dynamic";
 export const maxDuration = 60;
@@ -41,8 +43,23 @@ export async function POST(request: Request) {
 
   // lembretes e avisos do atendimento automático (no máximo 1x por minuto)
   await tickAgente().catch(() => {});
+  // campanhas de WhatsApp: envia o próximo da fila, se estiver no horário (lib/campanha)
+  await tickCampanhas().catch(() => {});
 
   const evento = norm(body.EventType || body.event || body.type);
+  // confirmação de leitura (evento messages_update, ligar na uazapi): marca campanhas como lidas
+  if (evento.includes("update") || evento.includes("ack") || evento.includes("receipt")) {
+    await redis(["LPUSH", "compass:wa:updates", JSON.stringify(body).slice(0, 4000)]).then(() => redis(["LTRIM", "compass:wa:updates", 0, 29])).catch(() => {});
+    const ev = body.event || body.data || body.message || {};
+    const estado = norm(ev.Type || ev.type || ev.state || ev.status || body.state || body.status || "");
+    if (/read|lid|played|viewed/.test(estado)) {
+      const ids: string[] = [].concat(ev.MessageIDs || ev.messageIds || ev.ids || ev.messageid || ev.id || body.messageid || []).map(String);
+      const chatId = String(ev.Chat || ev.chat || ev.chatid || body.chat?.wa_chatid || "");
+      const num = chatId && !chatId.endsWith("@g.us") ? numeroDoChat(chatId, body.chat?.wa_chatid) : null;
+      await registrarLeitura(ids, num).catch(() => {});
+    }
+    return NextResponse.json({ ok: true, registrado: "leitura" });
+  }
   if (evento && !evento.includes("message")) return NextResponse.json({ ok: true, ignorado: "evento" });
 
   const msg = body.message || body.data?.message || body.data || {};
@@ -82,7 +99,14 @@ export async function POST(request: Request) {
     // mensagem do cliente → o agente responde (se o número estiver liberado)
     if (num !== NUM_SAO_MIGUEL) {
       if (msg.fromMe) await pausarAgente(num).catch(() => {});
-      else {
+      else if (await numeroEmCampanha(num)) {
+        // número de campanha: o atendimento automático não entra, a equipe responde; "SAIR" tira da lista
+        const r = await respostaCampanha(num, msg.text || c0.text || c0.caption || "", async (t) => {
+          const g = await grupoEquipe();
+          if (g) await enviarTexto(g, t);
+        }).catch(() => ({ optout: false }));
+        return NextResponse.json({ ok: true, registrado: "conversa", campanha: r });
+      } else {
         // contato salvo na agenda do celular da Compass (nome do contato) = já conhecido: o agente não atende no modo "novos"
         const salvo = Boolean(String(body.chat?.wa_contactName || "").trim());
         await redis(["SET", "compass:agente:ultchat", JSON.stringify({ num, chat: body.chat || null, senderName: msg.senderName || "" }).slice(0, 3000), "EX", 86400]).catch(() => {});
