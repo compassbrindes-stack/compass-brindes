@@ -1,0 +1,12 @@
+name: Fila de campanhas WhatsApp
+# Faz a fila de campanhas andar (lib/campanha.ts). O próprio site só envia dentro do horário
+# comercial, com intervalo entre mensagens e limite por dia.
+on:
+  schedule:
+    - cron: "*/10 11-20 * * 1-5" # 08h–17h50 de Brasília, seg–sex
+  workflow_dispatch:
+jobs:
+  tick:
+    runs-on: ubuntu-latest
+    steps:
+      - run: curl -fsS -m 55 https://www.compassbrindes.com.br/api/campanha/tick || true
