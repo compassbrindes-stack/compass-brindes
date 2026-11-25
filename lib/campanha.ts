@@ -44,6 +44,7 @@ const K_NUMS = "compass:campanha:nums"; // números que receberam campanha: o at
 const K_LIDO_MSG = (id: string) => `compass:wa:lido:${id}`;
 const K_LIDO_CHAT = (num: string) => `compass:wa:lidochat:${num}`;
 const so = (s: unknown) => String(s || "").replace(/\D/g, "");
+const AUTO_MS = 20000; // até 20 s depois do envio = resposta automática (boas-vindas do WhatsApp Business)
 
 export async function lerCampanha(id: string): Promise<Campanha | null> {
   const raw = await redis<string | null>(["GET", K(id)]).catch(() => null);
@@ -195,6 +196,8 @@ export async function respostaCampanha(num: string, texto: string, avisar: (t: s
     const c = await lerCampanha(id);
     const i = c?.itens.find((x) => x.num === n && x.status === "enviado" && !x.respondeuEm);
     if (!c || !i) continue;
+    // resposta automática da clínica (chega segundos depois do envio): não conta como resposta nem avisa o grupo
+    if (i.enviadoEm && Date.now() - Date.parse(i.enviadoEm) < AUTO_MS) continue;
     i.respondeuEm = new Date().toISOString();
     await gravar(c);
     if (c.avisarGrupo) await avisar(`📣 *${i.unidade}* respondeu a campanha "${c.nome}": ${String(texto || "[mídia]").slice(0, 200)}`).catch(() => {});
@@ -217,7 +220,8 @@ export async function statusCampanha(id: string) {
     }
     if (!i.respondeuEm) {
       const h = await historico(i.num, 40, 0).catch(() => []);
-      const r = (h as any[]).find((m) => m.de === "cliente" && String(m.em) > String(i.enviadoEm));
+      const limite = new Date(Date.parse(i.enviadoEm) + AUTO_MS).toISOString();
+      const r = (h as any[]).find((m) => m.de === "cliente" && String(m.em) > limite);
       if (r) i.respondeuEm = r.em;
     }
   }
