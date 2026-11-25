@@ -415,7 +415,8 @@ export async function POST(request: Request, { params }: { params: { chave: stri
         const lim = Math.min(300, Math.max(1, Number(a.limite) || 50));
         const erros = ((await redis<string[]>(["LRANGE", "compass:agente:erros", 0, 19]).catch(() => [])) || []).map((x) => { try { return JSON.parse(x); } catch { return null; } }).filter(Boolean);
         await tickAgente().catch(() => {});
-        const conversas = (await listarAgente(lim)).map((c) => ({ ...c, ...situacaoLead(c), freteLink: c.freteId ? `${SITE}/frete/${c.freteId}` : "" }));
+        const tst = (await lerCfg().catch(() => null))?.teste || [];
+        const conversas = (await listarAgente(lim)).map((c) => ({ ...c, ...situacaoLead(c, tst), freteLink: c.freteId ? `${SITE}/frete/${c.freteId}` : "" }));
         const ultchat = await redis<string | null>(["GET", "compass:agente:ultchat"]).catch(() => null);
         dados = { config: await lerCfg(), conversas, leads: await leadsQualificados(lim), erros, ultimoChat: ultchat ? JSON.parse(ultchat) : null };
       }

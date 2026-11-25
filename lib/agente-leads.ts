@@ -736,7 +736,7 @@ export async function tickAgente() {
       // aviso no grupo só enquanto ninguém da equipe respondeu depois da transferência;
       // depois que a Compass respondeu, a espera aparece só no gestor ("Cliente esperando resposta")
       const equipeJaRespondeu = humano > 0 && humano >= ms(e.transferidoEm);
-      if (!equipeJaRespondeu && cliente > ms(e.avisoGrupoEsperaEm)) {
+      if (!equipeJaRespondeu && !eDaEquipe(e.num) && cliente > ms(e.avisoGrupoEsperaEm)) {
         const g = await grupoEquipe();
         if (g) await enviarTexto(g, `💬 *${e.dados.nome || fone(e.num)}* (${fone(e.num)}) mandou mensagem e está esperando resposta.`).catch(() => {});
         e.avisoGrupoEsperaEm = new Date().toISOString();
@@ -759,8 +759,13 @@ export async function tickAgente() {
   return { rodou: true, feitos };
 }
 
-/** Situação de cada lead para o painel (o que pede atenção pisca). */
-export function situacaoLead(e: EstadoAgente): { situacao: string; atencao: boolean } {
+/** Números da própria equipe (Katy, Gali): conversas de teste não viram lead esperando resposta. */
+export const NUMS_EQUIPE = Array.from(new Set(["5562985914340", "5562985939980", ...(process.env.WA_NUMS_EQUIPE || "").split(/[,;\s]+/).map(so).filter(Boolean)]));
+export const eDaEquipe = (num: string, teste: string[] = []) => NUMS_EQUIPE.includes(so(num)) || teste.includes(so(num));
+
+/** Situação de cada lead para o painel (o que pede atenção pisca). Números da equipe/teste nunca piscam. */
+export function situacaoLead(e: EstadoAgente, teste: string[] = []): { situacao: string; atencao: boolean; daEquipe?: boolean } {
+  if (eDaEquipe(e.num, teste)) return { situacao: "Teste da equipe", atencao: false, daEquipe: true };
   const humano = ms(e.humanoEm);
   if (e.status === "ativo") return { situacao: "Em atendimento automático", atencao: false };
   if (ms(e.clienteEm) > humano) return { situacao: "Cliente esperando resposta", atencao: true };
