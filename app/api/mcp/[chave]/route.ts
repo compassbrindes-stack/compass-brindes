@@ -543,7 +543,7 @@ export async function POST(request: Request, { params }: { params: { chave: stri
         if (a.forcarEnvio) dados = { ...(await forcarEnvioSaoMiguel()), ...(await situacaoSaoMiguel()) };
         else if (a.iniciarLote) dados = { ...(await iniciarLoteSaoMiguel()), ...(await situacaoSaoMiguel()) };
         else if (a.id && a.tirarDoLote) dados = { ...(await tirarDoLote(String(a.id))), ...(await situacaoSaoMiguel()) };
-        else dados = a.id ? { ...(await enfileirarSaoMiguel(String(a.id), { segurar: !!a.segurar })), ...(await situacaoSaoMiguel()) } : await situacaoSaoMiguel();
+        else dados = a.id ? { ...(await enfileirarSaoMiguel(String(a.id), { segurar: !!a.segurar })), ...(await situacaoSaoMiguel()) } : (await tickSaoMiguel().catch(() => {}), await situacaoSaoMiguel());
       }
       else if (nome === "verificar_whatsapp") {
         const nums = (Array.isArray(a.numeros) ? a.numeros : []).map((x: any) => String(x).replace(/\D/g, "")).filter((x: string) => x.length >= 10).slice(0, 100).map((x: string) => (x.length <= 11 ? "55" + x : x));
