@@ -760,7 +760,7 @@ export async function tickAgente() {
 }
 
 /** Números da própria equipe (Katy, Gali): conversas de teste não viram lead esperando resposta. */
-export const NUMS_EQUIPE = Array.from(new Set(["5562985914340", "5562985939980", ...(process.env.WA_NUMS_EQUIPE || "").split(/[,;\s]+/).map(so).filter(Boolean)]));
+export const NUMS_EQUIPE = Array.from(new Set(["5562985914340", "556285914340", "5562985939980", "556285939980", ...(process.env.WA_NUMS_EQUIPE || "").split(/[,;\s]+/).map(so).filter(Boolean)]));
 export const eDaEquipe = (num: string, teste: string[] = []) => NUMS_EQUIPE.includes(so(num)) || teste.includes(so(num));
 
 /** Situação de cada lead para o painel (o que pede atenção pisca). Números da equipe/teste nunca piscam. */
