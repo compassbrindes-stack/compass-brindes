@@ -123,6 +123,15 @@ export async function tirarDoLote(formId: string) {
   return { ok: true };
 }
 
+/** Todas as cotações do fluxo já têm o valor (respondidas)? */
+async function todasRespondidas(fl: Fluxo): Promise<boolean> {
+  for (const id of fl.lote && fl.lote.length ? fl.lote : [fl.formId]) {
+    const f = await lerFormFrete(id);
+    if (f && f.status !== "cancelado" && f.auto?.status !== "respondida") return false;
+  }
+  return true;
+}
+
 async function proximo(): Promise<void> {
   const atual = await redisGetJSON<Fluxo>(FLUXO);
   if (atual) {
@@ -130,12 +139,16 @@ async function proximo(): Promise<void> {
     const parado = Date.now() - atual.ultimo;
     const limite = atual.passo === "atendente" || atual.passo === "enviado" ? LIMITE_ATENDENTE_MS : LIMITE_ROBO_MS;
     if (atual.passo === "enviado") await recuperarImagens(atual);
-    if (parado < limite) return; // ainda em andamento
+    // tudo respondido: libera a fila na hora (antes ficava travada até 4 h esperando, 25/11)
+    if (atual.passo === "enviado" && (await todasRespondidas(atual))) { await redis(["DEL", FLUXO]); }
+    else if (parado < limite) return; // ainda em andamento
+    else {
     for (const id of atual.lote && atual.lote.length ? atual.lote : [atual.formId]) {
       const f = await lerFormFrete(id);
       if (f && f.auto?.status !== "respondida") await salvarFormFrete({ ...f, auto: { ...(f.auto || {}), status: atual.passo === "enviado" ? "sem_resposta" : "erro", em: new Date().toISOString(), obs: `parou no passo "${atual.passo}"` } });
     }
     await redis(["DEL", FLUXO]);
+    }
   }
   if (!abertoSaoMiguel()) {
     // fora do horário: fica na fila e começa sozinho quando abrir (qualquer mensagem no WhatsApp ou o painel aberto dispara)
@@ -143,7 +156,14 @@ async function proximo(): Promise<void> {
     for (const i of ids || []) { const f = await lerFormFrete(i); if (f && f.auto?.status !== "aguardando_horario") await salvarFormFrete({ ...f, auto: { status: "aguardando_horario", em: new Date().toISOString(), obs: "envio previsto " + proximaAbertura() } }); }
     return;
   }
-  const id = await redis<string | null>(["LPOP", FILA]);
+  // pula cancelados, já enviados e incompletos (ex.: cliques repetidos no botão verde)
+  let id: string | null = null;
+  for (let k = 0; k < 30 && !id; k++) {
+    const x = await redis<string | null>(["LPOP", FILA]);
+    if (!x) return;
+    const f = await lerFormFrete(x);
+    if (f && completo(f) && f.status !== "enviado" && f.status !== "cancelado") id = x;
+  }
   if (!id) return;
   const fl: Fluxo = { formId: id, passo: "oi", inicio: Date.now(), ultimo: Date.now() };
   await redis(["SET", FLUXO, JSON.stringify(fl), "EX", 60 * 60 * 6]);
@@ -161,12 +181,12 @@ const ROBO = /boas-vindas|selecione|escolha uma op|protocolo|aguarde enquanto|tr
 async function enviarCotacoes(fl: Fluxo, atendente: string): Promise<void> {
   const forms: FormFrete[] = [];
   const f0 = await lerFormFrete(fl.formId);
-  if (f0 && f0.status !== "enviado") forms.push(f0);
+  if (f0 && f0.status !== "enviado" && f0.status !== "cancelado" && completo(f0)) forms.push(f0);
   for (let k = 0; k < 15; k++) {
     const id = await redis<string | null>(["LPOP", FILA]);
     if (!id) break;
     const f = await lerFormFrete(id);
-    if (f && completo(f) && f.status !== "enviado") forms.push(f);
+    if (f && completo(f) && f.status !== "enviado" && f.status !== "cancelado" && !forms.some((x) => x.id === f.id)) forms.push(f);
   }
   if (!forms.length) { await redis(["DEL", FLUXO]); return proximo(); }
   await salvarFluxo({ ...fl, passo: "enviado", atendente, lote: forms.map((f) => f.id) });
@@ -248,6 +268,8 @@ export async function mensagemSaoMiguel(msg: any) {
   // resposta da atendente: imagem com o valor
   if (fl.passo === "enviado" && /image|document/i.test(tipo)) {
     await ligarImagem(fl, msg.messageid || msg.id);
+    // todas respondidas: libera e já manda a próxima da fila (a atendente ainda está na conversa)
+    if (await todasRespondidas(fl)) { await redis(["DEL", FLUXO]); return proximo(); }
     return salvarFluxo(fl);
   }
   if (/atendimento (encerrado|finalizado)/i.test(texto)) {
