@@ -17,6 +17,9 @@ export type ItemCampanha = {
   erro?: string;
   lidoEm?: string;
   respondeuEm?: string;
+  // números que a resposta automática da clínica informa (ex.: Orçamentos, Financeiro) → para o 2º contato
+  outrosContatos?: { rotulo: string; num: string }[];
+  autoResposta?: string;
 };
 
 export type Campanha = {
@@ -182,6 +185,38 @@ export async function registrarLeitura(ids: string[], num: string | null) {
   if (num) await redis(["SET", K_LIDO_CHAT(num), em, "EX", 60 * 86400]).catch(() => {});
 }
 
+/** Tira os telefones de um texto (uma linha por número) com o rótulo da linha. Ignora o próprio número. */
+export function extrairContatos(texto: string, proprio: string) {
+  const out: { rotulo: string; num: string }[] = [];
+  const visto = new Set<string>([so(proprio)]);
+  for (const linha of String(texto || "").split(/\n+/)) {
+    const achados = linha.match(/(?:\+?55[\s.-]?)?\(?\d{2}\)?[\s.-]?9?\s?\d{4}[\s.-]?\d{4}/g) || [];
+    for (const a of achados) {
+      let d = a.replace(/\D/g, "");
+      if (d.length === 10 || d.length === 11) d = "55" + d;
+      if (!/^55\d{10,11}$/.test(d)) continue;
+      // fixo e celular do mesmo número (com/sem o 9) contam como o mesmo
+      const alt = d.length === 13 ? d.slice(0, 4) + d.slice(5) : d.slice(0, 4) + "9" + d.slice(4);
+      if (visto.has(d) || visto.has(alt)) continue;
+      visto.add(d);
+      const rotulo = linha.replace(a, " ").replace(/[*_~:|•\-–—]+/g, " ").replace(/[^\p{L}\p{N}\s/()]/gu, " ").replace(/\s+/g, " ").trim().slice(0, 60);
+      out.push({ rotulo: rotulo || "Outro número", num: d });
+    }
+  }
+  return out;
+}
+
+function juntarContatos(i: ItemCampanha, texto: string) {
+  const novos = extrairContatos(texto, i.num);
+  if (!novos.length) return false;
+  const ja = new Set((i.outrosContatos || []).map((x) => x.num));
+  const add = novos.filter((x) => !ja.has(x.num));
+  if (!add.length) return false;
+  i.outrosContatos = [...(i.outrosContatos || []), ...add].slice(0, 8);
+  if (!i.autoResposta) i.autoResposta = String(texto).slice(0, 1500);
+  return true;
+}
+
 /** Mensagem do cliente: "SAIR" tira da lista; resposta a uma campanha avisa o grupo uma vez. */
 export async function respostaCampanha(num: string, texto: string, avisar: (t: string) => Promise<void>) {
   const n = so(num);
@@ -194,10 +229,19 @@ export async function respostaCampanha(num: string, texto: string, avisar: (t: s
   const ids = (await redis<string[]>(["SMEMBERS", K_LISTA]).catch(() => [])) || [];
   for (const id of ids) {
     const c = await lerCampanha(id);
-    const i = c?.itens.find((x) => x.num === n && x.status === "enviado" && !x.respondeuEm);
+    const i = c?.itens.find((x) => x.num === n && x.status === "enviado");
     if (!c || !i) continue;
+    // guarda os outros números que a clínica informa (setor de orçamentos, financeiro...)
+    const novos = juntarContatos(i, texto);
+    if (i.respondeuEm) {
+      if (novos) await gravar(c);
+      continue;
+    }
     // resposta automática da clínica (chega segundos depois do envio): não conta como resposta nem avisa o grupo
-    if (i.enviadoEm && Date.now() - Date.parse(i.enviadoEm) < AUTO_MS) continue;
+    if (i.enviadoEm && Date.now() - Date.parse(i.enviadoEm) < AUTO_MS) {
+      if (novos) await gravar(c);
+      continue;
+    }
     i.respondeuEm = new Date().toISOString();
     await gravar(c);
     if (c.avisarGrupo) await avisar(`📣 *${i.unidade}* respondeu a campanha "${c.nome}": ${String(texto || "[mídia]").slice(0, 200)}`).catch(() => {});
@@ -218,11 +262,15 @@ export async function statusCampanha(id: string) {
       const lido = porMsg || (porChat && porChat >= i.enviadoEm ? porChat : null);
       if (lido) i.lidoEm = lido;
     }
-    if (!i.respondeuEm) {
-      const h = await historico(i.num, 40, 0).catch(() => []);
+    if (!i.respondeuEm || !i.outrosContatos) {
+      const h = (await historico(i.num, 40, 0).catch(() => [])) as any[];
       const limite = new Date(Date.parse(i.enviadoEm) + AUTO_MS).toISOString();
-      const r = (h as any[]).find((m) => m.de === "cliente" && String(m.em) > limite);
-      if (r) i.respondeuEm = r.em;
+      if (!i.respondeuEm) {
+        const r = h.find((m) => m.de === "cliente" && String(m.em) > limite);
+        if (r) i.respondeuEm = r.em;
+      }
+      // números informados nas mensagens da clínica depois do envio (resposta automática e outras)
+      if (!i.outrosContatos) for (const m of h) if (m.de === "cliente" && String(m.em) >= i.enviadoEm) juntarContatos(i, m.texto || "");
     }
   }
   await gravar(c);
