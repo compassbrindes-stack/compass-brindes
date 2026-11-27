@@ -448,7 +448,8 @@ const SAUDACAO_ANUNCIO = /posso ter mais informa|quero saber mais|tenho interess
 
 async function elegivel(cfg: AgenteCfg, num: string): Promise<boolean> {
   if (cfg.modo === "desligado") return false;
-  if (cfg.modo === "teste") return cfg.teste.includes(num);
+  if (cfg.teste.includes(num)) return true; // 27/11: números de teste sempre recebem o atendimento (também no modo "novos")
+  if (cfg.modo === "teste") return false;
   // modo "novos": só quem nunca recebeu mensagem da Compass e chegou agora
   const msgs = await historico(num, 40, 0);
   if (!msgs.length) return false;
@@ -495,7 +496,7 @@ export async function mensagemAgente(o: { num: string; nome: string; texto: stri
     return { acao: "parado", status: e.status };
   }
   if (!e) {
-    if (cfg.modo === "novos" && o.salvo) {
+    if (cfg.modo === "novos" && o.salvo && !cfg.teste.includes(num)) {
       // contato salvo que pede orçamento pelo catálogo ou pelo site: sem resposta automática (é com a equipe),
       // mas entra nos leads do painel piscando e avisa o grupo, para não passar despercebido
       if (VEIO_CATALOGO.test(o.texto)) {
