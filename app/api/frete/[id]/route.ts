@@ -23,10 +23,10 @@ export async function POST(req: Request, ctx: { params: { id: string } }) {
   if (f.status === "enviado") return NextResponse.json({ error: "Esta cotação já foi enviada para a transportadora. Fale com a Compass para alterar." }, { status: 409 });
   const b: any = await req.json().catch(() => ({}));
   const dest = {
-    nome: txt(b.nome), doc: onlyDigits(txt(b.doc, 20)), cep: onlyDigits(txt(b.cep, 12)), endereco: txt(b.endereco), numero: txt(b.numero, 20),
+    nome: txt(b.nome), doc: onlyDigits(txt(b.doc, 20)), email: txt(b.email, 120).toLowerCase(), cep: onlyDigits(txt(b.cep, 12)), endereco: txt(b.endereco), numero: txt(b.numero, 20),
     complemento: txt(b.complemento, 60), bairro: txt(b.bairro, 80), cidade: txt(b.cidade, 80), uf: txt(b.uf, 2).toUpperCase(), contato: txt(b.contato, 80), telefone: txt(b.telefone, 30),
   };
-  const faltam = [!dest.nome && "nome / razão social", !isValidCpfCnpj(dest.doc) && "CPF ou CNPJ válido", !isValidCEP(dest.cep) && "CEP", !dest.endereco && "endereço", !dest.numero && "número", !dest.bairro && "bairro", !dest.cidade && "cidade", !UFS.includes(dest.uf) && "UF"].filter(Boolean);
+  const faltam = [!dest.nome && "nome / razão social", !isValidCpfCnpj(dest.doc) && "CPF ou CNPJ válido", !/^[^\s@]+@[^\s@]+\.[^\s@]{2,}$/.test(dest.email) && "e-mail válido (vai na nota fiscal)", !isValidCEP(dest.cep) && "CEP", !dest.endereco && "endereço", !dest.numero && "número", !dest.bairro && "bairro", !dest.cidade && "cidade", !UFS.includes(dest.uf) && "UF"].filter(Boolean);
   if (faltam.length) return NextResponse.json({ error: "Confira: " + faltam.join(", ") + "." }, { status: 400 });
   // CEP precisa existir e bater com a UF informada (endereço errado = cotação devolvida)
   const end = await fetchAddressByCep(dest.cep).catch(() => null);

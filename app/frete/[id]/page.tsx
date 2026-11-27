@@ -6,7 +6,9 @@ import { fetchAddressByCep, formatCEP, formatCpfCnpj, isValidCEP, isValidCpfCnpj
 type Vol = { qtd: string; c: string; l: string; a: string; peso: string };
 type Dados = { id: string; status: string; clienteNome: string; valorNF: string; volumes: Vol[]; pesoTotal: string; produto: string; dest: any; soDados?: boolean };
 
-const VAZIO = { nome: "", doc: "", cep: "", endereco: "", numero: "", complemento: "", bairro: "", cidade: "", uf: "", contato: "", telefone: "", obs: "" };
+const EMAIL_OK = (v: string) => /^[^\s@]+@[^\s@]+\.[^\s@]{2,}$/.test(v.trim());
+
+const VAZIO = { nome: "", doc: "", email: "", cep: "", endereco: "", numero: "", complemento: "", bairro: "", cidade: "", uf: "", contato: "", telefone: "", obs: "" };
 
 export default function FretePage({ params }: { params: { id: string } }) {
   const [dados, setDados] = useState<Dados | null>(null);
@@ -37,9 +39,9 @@ export default function FretePage({ params }: { params: { id: string } }) {
 
   const enviar = async (e: FormEvent) => {
     e.preventDefault();
-    setTocado({ doc: true, cep: true, nome: true, endereco: true, numero: true, bairro: true, cidade: true, uf: true });
+    setTocado({ doc: true, email: true, cep: true, nome: true, endereco: true, numero: true, bairro: true, cidade: true, uf: true });
     setErro(null);
-    const falta = [!f.nome.trim() && "nome", !isValidCpfCnpj(f.doc) && "CPF/CNPJ", !isValidCEP(f.cep) && "CEP", !f.endereco.trim() && "rua", !f.numero.trim() && "número", !f.bairro.trim() && "bairro", !f.cidade.trim() && "cidade", !/^[A-Z]{2}$/.test(f.uf) && "UF"].filter(Boolean);
+    const falta = [!f.nome.trim() && "nome", !isValidCpfCnpj(f.doc) && "CPF/CNPJ", !EMAIL_OK(f.email) && "e-mail", !isValidCEP(f.cep) && "CEP", !f.endereco.trim() && "rua", !f.numero.trim() && "número", !f.bairro.trim() && "bairro", !f.cidade.trim() && "cidade", !/^[A-Z]{2}$/.test(f.uf) && "UF"].filter(Boolean);
     if (falta.length) { setErro("Preencha todos os campos com * (" + falta.join(", ") + "). A transportadora só cota com o endereço completo."); return; }
     setEnviando(true);
     try {
@@ -108,6 +110,9 @@ export default function FretePage({ params }: { params: { id: string } }) {
             <label htmlFor="doc">CPF ou CNPJ *</label>
             <input id="doc" inputMode="numeric" value={f.doc} onChange={(e) => set("doc", formatCpfCnpj(e.target.value))} onBlur={tocar("doc")} />
             {req("doc", isValidCpfCnpj(f.doc)) && <div className="er">CPF ou CNPJ inválido.</div>}
+            <label htmlFor="email">E-mail para a nota fiscal *</label>
+            <input id="email" type="email" inputMode="email" autoComplete="email" value={f.email} onChange={(e) => set("email", e.target.value.trim())} onBlur={tocar("email")} placeholder="financeiro@empresa.com.br" />
+            {req("email", EMAIL_OK(f.email)) && <div className="er">Informe um e-mail válido (a nota fiscal vai para ele).</div>}
             <label htmlFor="cep">CEP *</label>
             <input id="cep" inputMode="numeric" autoComplete="postal-code" value={f.cep} onChange={(e) => { const v = formatCEP(e.target.value); set("cep", v); if (onlyDigits(v).length === 8) buscarCep(v); }} onBlur={tocar("cep")} />
             {cepStatus === "loading" && <div className="hn">Buscando endereço…</div>}
