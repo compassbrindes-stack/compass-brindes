@@ -219,13 +219,9 @@ export function primeiroNome(n: string): string {
 function promptSistema(cfg: AgenteCfg, nomeContato: string, dados: DadosLead, turnos: number, resumoFeito: boolean) {
   const falta = faltando(dados, resumoFeito);
   const { quando, expediente } = contextoAgora();
-  return `Você responde o WhatsApp da Compass Brindes Corporativos (Iraí/RS) no lugar da ${cfg.assinatura}, que é dona da empresa junto com o Galhardo. Você conversa com pessoas que acabaram de chegar, quase sempre por anúncio no Instagram/Facebook ou promoção. Seu trabalho é receber bem, entender o que a pessoa precisa e passar para a ${cfg.assinatura} montar o orçamento.
+  const fixo = `Você responde o WhatsApp da Compass Brindes Corporativos (Iraí/RS) no lugar da ${cfg.assinatura}, que é dona da empresa junto com o Galhardo. Você conversa com pessoas que acabaram de chegar, quase sempre por anúncio no Instagram/Facebook ou promoção. Seu trabalho é receber bem, entender o que a pessoa precisa e passar para a ${cfg.assinatura} montar o orçamento.
 
-AGORA: ${quando} (horário de Brasília). ${expediente ? "Estamos no horário comercial (seg a sex, 8h às 18h)." : "Estamos FORA do horário comercial (seg a sex, 8h às 18h)."}
-Nome do contato no WhatsApp: ${nomeContato || "(sem nome)"}. Primeiro nome para usar: ${primeiroNome(nomeContato) || "NENHUM (não invente nome; comece só com \"Oi, tudo bem?\")"}.
-Já anotado desta conversa: ${JSON.stringify(dados)}.
-Respostas suas até agora nesta conversa: ${turnos}.
-AINDA FALTA SABER (antes da mensagem nova do cliente): ${falta.length ? falta.join(", ") : "nada obrigatório"}.
+Os dados desta conversa (hora agora, nome do contato, o que já foi anotado e o que falta) estão no fim, em CONTEXTO DESTA CONVERSA.
 
 ETAPAS DO ATENDIMENTO (siga nessa ordem):
 A) Perguntas: investimento por peça (já perguntado na primeira resposta; não repita) → produto/linha → tamanho (copos, canecas e garrafas) → cor → quantidade → data de entrega.
@@ -254,7 +250,7 @@ JEITO DE ESCREVER (como a ${cfg.assinatura} escreve no WhatsApp):
 - Exemplos reais do jeito dela: "Oi Luana tudo bem?" / "Qual a quantidade que você precisa?" / "Tu já tem a arte da personalização?" / "Vocês precisam para que dia?" / "Ahhh top".
 
 PRIMEIRA RESPOSTA DA CONVERSA (quando você ainda não respondeu nada), 3 bolhas nesta ordem, com estes textos (só ajuste o nome e o cumprimento):
-- Bolha 1, exatamente neste formato (mesmo que o cliente tenha perguntado "tudo bem?"): "Oi${primeiroNome(nomeContato) ? " " + primeiroNome(nomeContato) : ""}, tudo bem? 😊 Aqui é a ${cfg.assinatura}, da Compass Brindes Corporativos. A gente personaliza brindes para empresas e eventos e entrega para todo o Brasil."
+- Bolha 1, exatamente neste formato (mesmo que o cliente tenha perguntado "tudo bem?"), trocando [NOME] pelo primeiro nome indicado no CONTEXTO DESTA CONVERSA (se for NENHUM, escreva só "Oi, tudo bem? 😊 ..."; nunca escreva [NOME]): "Oi [NOME], tudo bem? 😊 Aqui é a ${cfg.assinatura}, da Compass Brindes Corporativos. A gente personaliza brindes para empresas e eventos e entrega para todo o Brasil."
 - Bolha 2, exatamente:
 "Vamos te ajudar a encontrar o brinde ideal para o que você precisa. Para entendermos melhor e já te indicarmos opções mais assertivas, me conta sua necessidade.
 Trabalhamos com brindes desde opções mais econômicas, a partir de R$ 1,90, até peças executivas, acima de R$ 75,00 por peça. Tu tem uma ideia de quanto quer investir por peça?"
@@ -316,6 +312,15 @@ CATÁLOGO DA COMPASS (nome, código e pedido mínimo; sem preços):
 ${catalogoResumo()}
 
 Responda SEMPRE chamando a ferramenta "responder".`;
+  // 27/11: a parte que muda a cada mensagem vai num bloco separado, DEPOIS da parte fixa,
+  // para a parte fixa (instruções + catálogo) ser reaproveitada pelo cache da Anthropic (~20x mais barata)
+  const contexto = `CONTEXTO DESTA CONVERSA:
+AGORA: ${quando} (horário de Brasília). ${expediente ? "Estamos no horário comercial (seg a sex, 8h às 18h)." : "Estamos FORA do horário comercial (seg a sex, 8h às 18h)."}
+Nome do contato no WhatsApp: ${nomeContato || "(sem nome)"}. Primeiro nome para usar: ${primeiroNome(nomeContato) || "NENHUM (não invente nome; comece só com \"Oi, tudo bem?\")"}.
+Já anotado desta conversa: ${JSON.stringify(dados)}.
+Respostas suas até agora nesta conversa: ${turnos}.
+AINDA FALTA SABER (antes da mensagem nova do cliente): ${falta.length ? falta.join(", ") : "nada obrigatório"}.`;
+  return { fixo, contexto };
 }
 
 const FERRAMENTA = {
@@ -375,7 +380,7 @@ function montarTurnos(msgs: { de: string; texto: string; tipo?: string }[]) {
   return turnos.slice(-30);
 }
 
-async function chamarClaude(system: string, turnos: { role: string; content: string }[]): Promise<Resposta | null> {
+async function chamarClaude(system: { fixo: string; contexto: string }, turnos: { role: string; content: string }[]): Promise<Resposta | null> {
   const key = process.env.ANTHROPIC_API_KEY;
   if (!key) throw new Error("ANTHROPIC_API_KEY não configurada");
   const modelos = [process.env.AGENTE_MODEL || "claude-sonnet-5-5", "claude-haiku-4-5-20251001"];
@@ -387,7 +392,7 @@ async function chamarClaude(system: string, turnos: { role: string; content: str
       body: JSON.stringify({
         model,
         max_tokens: 900,
-        system: [{ type: "text", text: system, cache_control: { type: "ephemeral" } }],
+        system: [{ type: "text", text: system.fixo, cache_control: { type: "ephemeral" } }, { type: "text", text: system.contexto }],
         tools: [FERRAMENTA],
         tool_choice: { type: "tool", name: "responder" },
         messages: turnos,
@@ -548,7 +553,8 @@ export async function mensagemAgente(o: { num: string; nome: string; texto: stri
     if (!turnos.length) return { acao: "sem-mensagem" };
     const refs = textoRefs(msgs.filter((m: any) => m.de !== "compass").map((m: any) => m.texto || "").join("\n"));
     const extraRefs = refs ? `\n\nCÓDIGOS ANTIGOS citados pelo cliente (catálogo antigo): ${refs}. Use sempre o código CB e o nome atual. Se o nome que o cliente escreveu não bater com o produto do código (ex.: pediu "kit" e o código é da garrafa sozinha), pergunte com gentileza qual dos dois ele quer. Guarde o código CB em dados.codigo.` : "";
-    const r = await chamarClaude(promptSistema(cfg, o.nome, e.dados, e.turnos, !!e.resumoFeito) + extraRefs, turnos);
+    const ps = promptSistema(cfg, o.nome, e.dados, e.turnos, !!e.resumoFeito);
+    const r = await chamarClaude({ fixo: ps.fixo, contexto: ps.contexto + extraRefs }, turnos);
     if (!r) return { acao: "sem-resposta" };
 
     // pausa entre bolhas, como alguém digitando
