@@ -194,11 +194,12 @@ function contextoAgora() {
 /** O que ainda falta perguntar, na ordem da conversa. */
 export function faltando(d: DadosLead, resumoFeito = true): string[] {
   const f: string[] = [];
-  // 27/11 (pedido da usuária): fluxo curto. Só a linha de produto e a quantidade; depois o link dos dados.
-  // Tamanho, cor, prazo e arte ficam para a equipe (anota se o cliente falar sozinho).
+  // 27/11 (pedido da usuária): fluxo curto. Linha de produto e quantidade → pede a logo → link dos dados.
+  // Tamanho, cor e prazo ficam para a equipe (anota se o cliente falar sozinho).
   if (!d.produto && !d.codigo) f.push("linha de produto");
   if (!d.quantidade) f.push("quantidade");
   if (!resumoFeito) f.push("resumo");
+  if (!d.gravacao) f.push("logomarca");
   return f;
 }
 
@@ -221,9 +222,9 @@ function promptSistema(cfg: AgenteCfg, nomeContato: string, dados: DadosLead, tu
 Os dados desta conversa (hora agora, nome do contato, o que já foi anotado e o que falta) estão no fim, em CONTEXTO DESTA CONVERSA.
 
 ETAPAS DO ATENDIMENTO (siga nessa ordem):
-A) Perguntas: investimento por peça (já perguntado na primeira resposta; não repita) → linha de produto (da lista de 1 a 7 ou o que o cliente escrever) → quantidade aproximada. SÓ ISSO. NÃO pergunte tamanho, cor, modelo, data de entrega nem arte: isso a equipe vê depois. Se o cliente contar algum desses por conta própria, só anote.
-B) Resumo e dados: quando souber a linha e a quantidade, mande UMA bolha curta confirmando (ex.: "Show! Anotei: 50 garrafas térmicas 😊") e marque "resumo": true e "pedir_entrega": true. NÃO pergunte mais nada e NÃO se despeça: logo depois da tua mensagem o SISTEMA manda sozinho o link para o cliente preencher os dados (nota fiscal, frete e orçamento). Quando o cliente preencher, o sistema manda o resumo final e a equipe assume.
-- Se mandar foto/arquivo (logo, arte) em qualquer momento: responda só "Recebido, obrigada! Já deixei junto com o teu pedido 😊" e anote em "gravacao". NUNCA diga que vai fazer layout.
+A) Perguntas: investimento por peça (já perguntado na primeira resposta; não repita) → linha de produto (da lista de 1 a 7 ou o que o cliente escrever) → quantidade aproximada. NÃO pergunte tamanho, cor, modelo nem data de entrega: isso a equipe vê depois. Se o cliente contar algum desses por conta própria, só anote.
+B) Logomarca: quando souber a linha e a quantidade, confirme curto e peça a logo numa bolha só, assim: "Show! Anotei: 50 garrafas térmicas 😊 Pra agilizar o orçamento e o layout, se tiver, me manda a logomarca que tu quer personalizar (foto, PDF ou arquivo)." e marque "resumo": true.
+C) Logo resolvida: se mandar o arquivo, anote em "gravacao" (ex.: "logo enviada pelo WhatsApp"); se disser que não tem, que é só um nome/frase, ou que manda depois, anote isso em "gravacao". Responda curto ("Recebido, obrigada! 😊" ou "Sem problema, a gente vê isso depois 😊") e marque "pedir_entrega": true. NÃO pergunte mais nada e NÃO se despeça: logo depois da tua mensagem o SISTEMA manda sozinho o pedido dos dados para o transporte e o orçamento formal, com o link. NUNCA diga que vai fazer layout agora.
 
 REGRA DO QUE FALTA (muito importante):
 - Leia a mensagem nova do cliente, risque o que ele acabou de responder e termine tua resposta perguntando o que ainda falta (linha de produto e/ou quantidade). Pode juntar as duas numa pergunta (ex.: "O que tu procura e mais ou menos quantas peças?").
@@ -557,7 +558,7 @@ export async function mensagemAgente(o: { num: string; nome: string; texto: stri
     if (!e.dados.nome && o.nome) e.dados.nome = o.nome;
     if (r.resumo) e.resumoFeito = true;
     e.turnos += 1;
-    // etapa D automática: resumo feito + arte resolvida → link dos dados (não depende da IA marcar)
+    // etapa automática: linha + quantidade + logo resolvida → link dos dados (não depende da IA marcar)
     const completoLead = !!e.resumoFeito && faltando(e.dados, true).length === 0;
     if (completoLead) r.pedir_entrega = true;
     const transferir = r.transferir || completoLead || e.turnos >= MAX_TURNOS;
@@ -567,7 +568,7 @@ export async function mensagemAgente(o: { num: string; nome: string; texto: stri
       e.motivo = r.motivo || (e.turnos >= MAX_TURNOS ? "conversa longa" : "lead completo");
       // lead completo: link para o cliente preencher os dados de entrega (cotação do frete na São Miguel).
       // autoEnviar=false: a cotação só vai para a transportadora depois que a equipe informar volumes e valor da NF.
-      if (r.pedir_entrega && faltando(e.dados, true).filter((x) => x !== "arte").length === 0) {
+      if (r.pedir_entrega && faltando(e.dados, true).filter((x) => x !== "logomarca").length === 0) {
         try {
           const f = await criarFormFrete({
             clienteNome: e.dados.empresa || e.dados.nome || o.nome || "",
@@ -581,7 +582,7 @@ export async function mensagemAgente(o: { num: string; nome: string; texto: stri
           const { expediente } = contextoAgora();
           void expediente;
           const textos = [
-            `Pra dar sequência, preciso de alguns dados teus pra validar o orçamento. É rapidinho, preenche nesse link:\n${SITE}/frete/${f.id}`,
+            `Para o transporte e o orçamento formal, preciso de alguns dados teus. É rapidinho, preenche nesse link:\n${SITE}/frete/${f.id}`,
           ];
           for (let k = 0; k < textos.length; k++) {
             await dorme(k === 0 ? 1500 : 1250);
@@ -644,7 +645,7 @@ export async function dadosPreenchidosAgente(f: { id: string; whatsCliente?: str
   const textos = [
     `Recebi teus dados, obrigada${primeiro ? " " + primeiro : ""}! 😊`,
     `Resumo do teu pedido:\n${linhas.join("\n")}`,
-    `Agora a gente dá continuidade por aqui: primeiro a gente prepara a cotação e te manda pra tu analisar; depois de aprovada, seguimos com a arte e o layout${expediente ? "" : " (nosso atendimento é de seg a sex, das 8h às 18h)"}. Qualquer coisa é só chamar!`,
+    `A partir de agora o teu atendimento segue com a ${process.env.AGENTE_ASSINATURA || "Katy"}, que fica à disposição para negociação e dúvidas${expediente ? "" : " (nosso atendimento é de seg a sex, das 8h às 18h)"}. Se tiver alguma dúvida, é só chamar por aqui! 😊`,
   ];
   for (let k = 0; k < textos.length; k++) {
     await dorme(k === 0 ? 750 : 1250);
