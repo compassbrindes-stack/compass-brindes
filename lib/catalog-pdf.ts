@@ -178,11 +178,11 @@ export async function buildCatalogPdf(products: Product[], siteUrl?: string): Pr
   const fontBold = await pdfDoc.embedFont(StandardFonts.HelveticaBold);
   const fontItalic = await pdfDoc.embedFont(StandardFonts.HelveticaOblique);
 
-  // Logo nova (Rede de pontos, 22/11/2026): a mesma imagem do Bling, gerada em /api/marca.
+  // Logo nova (Rede de pontos): versão para fundo escuro e sem fundo (27/11/2026), gerada em /api/marca.
   let logoImage: PDFImage | null = null;
   try {
     const base = siteUrl || process.env.NEXT_PUBLIC_SITE_URL || "https://www.compassbrindes.com.br";
-    const r = await fetch(`${base}/api/marca?tipo=bling&v=1`);
+    const r = await fetch(`${base}/api/marca?tipo=site-escura&v=1`);
     if (r.ok) logoImage = await pdfDoc.embedPng(new Uint8Array(await r.arrayBuffer()));
   } catch {
     logoImage = null;
@@ -256,12 +256,21 @@ export async function buildCatalogPdf(products: Product[], siteUrl?: string): Pr
     color: rgb(0.85, 0.9, 0.88),
   });
   if (logoImage) {
-    // logo num quadro branco à direita da faixa
-    const logoHeight = 46;
-    const logoWidth = (logoImage.width / logoImage.height) * logoHeight;
-    const bx = PAGE_WIDTH - MARGIN_X - logoWidth - 16;
-    page.drawRectangle({ x: bx, y: PAGE_HEIGHT - FAIXA / 2 - logoHeight / 2 - 8, width: logoWidth + 16, height: logoHeight + 16, color: rgb(1, 1, 1) });
-    page.drawImage(logoImage, { x: bx + 8, y: PAGE_HEIGHT - FAIXA / 2 - logoHeight / 2, width: logoWidth, height: logoHeight });
+    // 27/11: logo sem quadro branco (versão clara, fundo transparente) à direita da faixa,
+    // do tamanho que couber sem encostar no texto da esquerda
+    const linhaInfo = `Gerado em ${dataGeracao} · ${products.length} produtos · (49) 93618-0446 · www.compassbrindes.com.br`;
+    const fimTexto = MARGIN_X + Math.max(
+      fontBold.widthOfTextAtSize("Catálogo de Produtos", 22),
+      fontRegular.widthOfTextAtSize(linhaInfo, 8.5),
+      fontBold.widthOfTextAtSize("COMPASS BRINDES CORPORATIVOS", 10)
+    );
+    const proporcao = logoImage.width / logoImage.height;
+    const larguraLivre = PAGE_WIDTH - MARGIN_X - fimTexto - 18;
+    const logoHeight = Math.min(54, larguraLivre / proporcao);
+    if (logoHeight >= 24) {
+      const logoWidth = proporcao * logoHeight;
+      page.drawImage(logoImage, { x: PAGE_WIDTH - MARGIN_X - logoWidth, y: PAGE_HEIGHT - FAIXA / 2 - logoHeight / 2, width: logoWidth, height: logoHeight });
+    }
   }
 
   y = PAGE_HEIGHT - FAIXA - 20;

@@ -6,6 +6,7 @@
 //   /api/marca?tipo=bling      → 1200×400, logo completa, fundo branco
 //   /api/marca?tipo=escura     → 1200×400, logo completa, fundo azul-noite
 //   /api/marca?tipo=site       → 1100×330, logo completa, fundo transparente (cabeçalho e rodapé do site)
+//   /api/marca?tipo=site-escura → 1100×330, logo completa em branco/azul-claro, fundo transparente (para fundo escuro: capa do catálogo em PDF)
 import { ImageResponse } from "next/og";
 
 export const runtime = "edge";
@@ -83,9 +84,9 @@ export async function GET(req: Request) {
       { width: 1080, height: 1080, fonts, headers },
     );
   }
-  const escuro = tipo === "escura";
+  const escuro = tipo === "escura" || tipo === "site-escura";
   // bling: logo justa (pouca margem), para aparecer grande nos PDFs de proposta, pedido e NF
-  const transparente = tipo === "site";
+  const transparente = tipo === "site" || tipo === "site-escura";
   const justa = tipo === "bling" || transparente;
   return new ImageResponse(
     <div style={{ width: "100%", height: "100%", display: "flex", alignItems: "center", justifyContent: "center", background: transparente ? "transparent" : escuro ? AZUL_NOITE : "#FFFFFF" }}>
