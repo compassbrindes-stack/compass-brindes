@@ -465,6 +465,9 @@ async function elegivel(cfg: AgenteCfg, num: string): Promise<boolean> {
  * Espera alguns segundos para juntar mensagens seguidas, conversa e, quando
  * tiver o necessário, passa para a equipe.
  */
+/** Tira a assinatura "*Nome:*" que o WhatsApp Business da equipe coloca na primeira linha. */
+const semAssinatura = (t: string) => String(t || "").replace(/^\s*\*[^*\n]{1,40}:\*\s*\n/, "").trim();
+
 export async function mensagemAgente(o: { num: string; nome: string; texto: string; id: string; salvo?: boolean }) {
   const num = so(o.num);
   if (!num) return { acao: "sem-numero" };
@@ -477,7 +480,8 @@ export async function mensagemAgente(o: { num: string; nome: string; texto: stri
   if (cfg.modo === "desligado") return { acao: "desligado" };
 
   // comando de teste: recomeça a conversa do agente
-  if (cfg.teste.includes(num) && /^#?reiniciar$/i.test(o.texto.trim())) {
+  // 27/11: o WhatsApp da equipe põe a assinatura "*Galhardo:*" antes do texto; ignora essa linha
+  if (cfg.teste.includes(num) && /^#?reiniciar$/i.test(semAssinatura(o.texto))) {
     await apagarEstado(num);
     await enviarTexto(num, "(teste) Conversa do atendimento automático reiniciada. Manda um \"oi\" para começar de novo.").catch(() => {});
     return { acao: "reiniciado" };
@@ -531,7 +535,7 @@ export async function mensagemAgente(o: { num: string; nome: string; texto: stri
 
     // só a conversa desde que o agente começou (nos testes, depois de "#reiniciar", não mistura a conversa antiga)
     const desde = (Date.parse(e.inicio) || 0) - 2 * 60 * 1000;
-    const msgs = ((await historico(num, 40, 0)) as any[]).filter((m) => (Date.parse(m.em) || 0) >= desde && !/^#?reiniciar$/i.test(String(m.texto || "").trim()));
+    const msgs = ((await historico(num, 40, 0)) as any[]).filter((m) => (Date.parse(m.em) || 0) >= desde && !/^#?reiniciar$/i.test(semAssinatura(String(m.texto || ""))));
     const turnos = montarTurnos(msgs);
     if (!turnos.length) return { acao: "sem-mensagem" };
     const refs = textoRefs(msgs.filter((m: any) => m.de !== "compass").map((m: any) => m.texto || "").join("\n"));
