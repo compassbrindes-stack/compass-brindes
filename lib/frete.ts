@@ -5,7 +5,7 @@ import { randomBytes } from "crypto";
 import { redis, redisGetJSON } from "@/lib/redis";
 
 export interface Volume { qtd: string; c: string; l: string; a: string; peso: string }
-export interface Destinatario { nome: string; doc: string; cep: string; endereco: string; numero: string; complemento: string; bairro: string; cidade: string; uf: string; contato: string; telefone: string }
+export interface Destinatario { nome: string; doc: string; email?: string; cep: string; endereco: string; numero: string; complemento: string; bairro: string; cidade: string; uf: string; contato: string; telefone: string }
 export interface FormFrete {
   id: string;
   criadoEm: string;
