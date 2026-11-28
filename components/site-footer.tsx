@@ -10,6 +10,7 @@ const whatsappUrl = WHATSAPP_NUMBER
   : "/orcamento";
 
 const INSTAGRAM_URL = "https://www.instagram.com/compassbrindes/";
+const FACEBOOK_URL = "https://www.facebook.com/profile.php?id=61555851462621"; // página Compass Brindes Corporativos (27/11)
 
 export function SiteFooter() {
   return (
@@ -28,6 +29,9 @@ export function SiteFooter() {
                 <circle cx="12" cy="12" r="4.2" stroke="currentColor" strokeWidth="1.8" />
                 <circle cx="17.3" cy="6.7" r="1.1" fill="currentColor" />
               </svg>
+            </a>
+            <a href={FACEBOOK_URL} target="_blank" rel="noreferrer" aria-label="Facebook da Compass" style={{ fontSize: "0.85rem", fontWeight: 600 }}>
+              Facebook ↗
             </a>
           </div>
         </div>
