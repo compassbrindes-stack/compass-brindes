@@ -109,7 +109,7 @@ async function etqDesenharDados(out, d){
   const bh = Math.max(28, Math.min(48, y - 22));
   if (bar) { const img = await out.embedPng(etqBytes(bar)); pg.drawImage(img, {x: 10, y: y - bh - 2, width: 150, height: bh}); txt(d.cep, 10, y - bh - 12, 8, f, cinza); }
   // 28/11: nº da NF grande ao lado do código de barras (identificação do documento)
-  if (d.nf) { txt('NOTA FISCAL', 185, y - 10, 8, fb, cinza); txt(d.nf, 185, y - 10 - 30, 32, fb); }
+  if (d.nf) { txt('NF', 185, y - 36, 20, fb); txt(d.nf, 185 + fb.widthOfTextAtSize('NF', 20) + 8, y - 36, 32, fb); }
   if (d.transp) { const t = 'Transportadora: ' + d.transp; txt(t, W - 10 - Math.min(f.widthOfTextAtSize(etqTxt(t), 9), W * 0.55), 14, 9, f, cinza, W * 0.55); }
   return pg;
 }
@@ -141,7 +141,7 @@ async function etqMontarPdf(fontes, pdfBytes, grade){
       pg.drawPage(it.e, {x: x0 + (w - ew) / 2, y: yTop - eh, width: ew, height: eh});
       // 28/11: etiqueta do Bling: nº da NF grande na área livre à direita do código de barras
       if (it.tipo === 'pdf' && it.nf) { const lx = x0 + (w - ew) / 2, tn = Math.min(34, eh * 0.15), tl = Math.max(6, tn * 0.26), xn = lx + ew * 0.42, yn = yTop - eh + eh * 0.12;
-        pg.drawText('NOTA FISCAL', {x: xn, y: yn + tn * 0.95, size: tl, font: fb, color: rgb(0.35, 0.35, 0.35)}); pg.drawText(it.nf, {x: xn, y: yn, size: tn, font: fb, color: rgb(0, 0, 0)}); }
+        const tp = tn * 0.62; pg.drawText('NF', {x: xn, y: yn, size: tp, font: fb, color: rgb(0, 0, 0)}); pg.drawText(it.nf, {x: xn + fb.widthOfTextAtSize('NF', tp) + tn * 0.25, y: yn, size: tn, font: fb, color: rgb(0, 0, 0)}); }
       // carimbo do volume
       const yb = yTop - eh - faixa + 2 * MM, hb = faixa - 3 * MM;
       pg.drawRectangle({x: x0, y: yb, width: w, height: hb, borderColor: rgb(0.1, 0.1, 0.1), borderWidth: 1.2, color: rgb(1, 1, 1)});
