@@ -8,6 +8,7 @@ import { listarDocumentos } from "@/lib/recibos";
 import catalogo from "@/data/catalogo-app.json";
 import { criarFormFrete, listarFormFrete, lerFormFrete, salvarFormFrete, textoCotacaoSaoMiguel, apagarFormFrete } from "@/lib/frete";
 import { redis } from "@/lib/redis";
+import { gastoClaude } from "@/lib/claude-gasto";
 import { criarAprovacao, listarAprovacoes, lerAprovacao, salvarAprovacao, textoPedidoAprovacao } from "@/lib/aprovacao";
 import { lerCfg, salvarCfg, listarAgente, leadsQualificados, pausarAgente, apagarEstado, tickAgente, situacaoLead } from "@/lib/agente-leads";
 import { enfileirarSaoMiguel, situacaoSaoMiguel, tickSaoMiguel, iniciarLoteSaoMiguel, tirarDoLote, forcarEnvioSaoMiguel, informarCotacao } from "@/lib/saomiguel";
@@ -92,6 +93,12 @@ const FERRAMENTAS = [
       required: ["numero"],
     },
     annotations: { readOnlyHint: false, destructiveHint: false, openWorldHint: true },
+  },
+  {
+    name: "gasto_claude",
+    description: "Gasto ESTIMADO com a API do Claude contado pelo próprio site (tokens de cada resposta × preço de tabela): atendimento WhatsApp, leitura de comprovantes e de cotações de frete. Com 'desde' (data/hora ISO), soma só a partir dali (ex.: desde a última anotação do saldo). Não é o saldo oficial.",
+    inputSchema: { type: "object", properties: { desde: { type: "string", description: "Data/hora ISO (ex.: 2026-11-25T22:52:00-03:00)." } } },
+    annotations: { readOnlyHint: true, openWorldHint: false },
   },
   {
     name: "agente_config",
@@ -406,6 +413,9 @@ export async function POST(request: Request, { params }: { params: { chave: stri
         else if (ac === "teste") dados = { envios: await testeCampanha(String(a.id || ""), Array.isArray(a.numeros) ? a.numeros.map(String) : [], a.cidade ? String(a.cidade) : "Teste", Boolean(a.cliente)) };
         else if (ac === "tick") dados = await tickCampanhas();
         else throw new Error("ação inválida");
+      }
+      else if (nome === "gasto_claude") {
+        dados = await gastoClaude(a.desde ? String(a.desde) : undefined);
       }
       else if (nome === "agente_config") {
         const muda = a.modo !== undefined || a.teste !== undefined;

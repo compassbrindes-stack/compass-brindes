@@ -3,6 +3,7 @@
 // "Como podemos ajudar?" (Cotações) → protocolo / "Chat iniciado com <atendente>" → manda o texto
 // da cotação → a atendente responde com uma imagem com o valor → lida e guardada no formulário.
 // Uma cotação por vez (fila em Redis). Nada é enviado se o formulário estiver incompleto.
+import { registrarUsoClaude } from "@/lib/claude-gasto";
 import { redis, redisGetJSON } from "@/lib/redis";
 import { enviarTexto, baixarMidia } from "@/lib/uazapi";
 import { registrarMensagem, historico } from "@/lib/conversas";
@@ -362,6 +363,7 @@ async function lerCotacao(messageid: string): Promise<{ valor?: number; prazo?: 
   });
   if (!res.ok) return null;
   const data = await res.json();
+  await registrarUsoClaude(data?.model || process.env.ANTHROPIC_MODEL || "claude-haiku-4-5", data?.usage, "frete São Miguel");
   const txt = (data?.content || []).map((x: any) => x.text || "").join("");
   const m = /\{[\s\S]*\}/.exec(txt);
   if (!m) return null;
