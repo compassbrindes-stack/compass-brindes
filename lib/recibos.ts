@@ -16,6 +16,7 @@
 // - qualquer dúvida vira pergunta no grupo e nada é baixado;
 // - cada mensagem é processada uma única vez.
 
+import { registrarUsoClaude } from "@/lib/claude-gasto";
 import {
   baixarConta,
   baixarContaPagar,
@@ -142,6 +143,7 @@ export async function lerComprovante(fileURL: string, mimetype: string): Promise
   });
   if (!res.ok) return null;
   const data = await res.json();
+  await registrarUsoClaude(data?.model || process.env.ANTHROPIC_MODEL || "claude-haiku-4-5", data?.usage, "comprovantes");
   const txt = (data?.content || []).map((c: any) => c.text || "").join("");
   const m = /\{[\s\S]*\}/.exec(txt);
   if (!m) return null;

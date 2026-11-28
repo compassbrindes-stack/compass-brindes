@@ -14,6 +14,7 @@
 //
 // Variáveis da Vercel usadas: ANTHROPIC_API_KEY (já existe), AGENTE_MODEL (opcional).
 
+import { registrarUsoClaude } from "@/lib/claude-gasto";
 import { textoRefs } from "@/lib/codigos-antigos";
 import { redis } from "@/lib/redis";
 import { historico, registrarMensagem } from "@/lib/conversas";
@@ -388,6 +389,7 @@ async function chamarClaude(system: { fixo: string; contexto: string }, turnos: 
       throw new Error("Anthropic " + ultimoErro);
     }
     const data = await res.json();
+    await registrarUsoClaude(data?.model || model, data?.usage, "atendimento WhatsApp");
     const uso = (data?.content || []).find((c: any) => c.type === "tool_use");
     if (!uso?.input) return null;
     const r = uso.input as Resposta;
