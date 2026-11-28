@@ -30,8 +30,11 @@ export function SiteFooter() {
                 <circle cx="17.3" cy="6.7" r="1.1" fill="currentColor" />
               </svg>
             </a>
-            <a href={FACEBOOK_URL} target="_blank" rel="noreferrer" aria-label="Facebook da Compass" style={{ fontSize: "0.85rem", fontWeight: 600 }}>
-              Facebook ↗
+            <a href={FACEBOOK_URL} target="_blank" rel="noreferrer" aria-label="Facebook da Compass">
+              <svg width="22" height="22" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
+                <rect x="2" y="2" width="20" height="20" rx="5" stroke="currentColor" strokeWidth="1.8" />
+                <path d="M13.2 19v-6.1h2.1l.3-2.4h-2.4V9c0-.7.2-1.2 1.2-1.2h1.3V5.7c-.2 0-1-.1-1.9-.1-1.9 0-3.1 1.1-3.1 3.2v1.7H8.6v2.4h2.1V19" fill="currentColor" />
+              </svg>
             </a>
           </div>
         </div>
