@@ -1,5 +1,5 @@
-"use client";
 // @ts-nocheck
+"use client";
 /* Etiquetas de volume (28/11) — mesma ferramenta do gestor (Logística › Etiquetas de volume), aqui no site
    para imprimir direto (no gestor do Claude a janela de impressão é bloqueada).
    (A) PDF da etiqueta do Bling: recorta a etiqueta (vetorial) · (B) nº da NF: monta a etiqueta com os dados do Bling.
