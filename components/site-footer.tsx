@@ -85,7 +85,7 @@ export function SiteFooter() {
       </div>
 
       <div className="container site-footer__bottom">
-        <span>&copy; {new Date().getFullYear()} Compass Brindes Corporativos &mdash; todos os produtos sob consulta, preços podem variar por quantidade.</span>
+        <span>&copy; {new Date().getFullYear()} Compass Brindes Corporativos Ltda &middot; CNPJ 26.123.176/0001-24 &mdash; todos os produtos sob consulta, preços podem variar por quantidade.</span>
         <span>
           <Link href="/politica-de-privacidade">Política de Privacidade</Link>
           {" · "}Feito para aproximar.
