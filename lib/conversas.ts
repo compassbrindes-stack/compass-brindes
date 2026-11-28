@@ -7,6 +7,7 @@ import { redis } from "@/lib/redis";
 export interface Contato {
   num: string; // só dígitos, com 55
   nome?: string;
+  agenda?: string; // nome salvo na agenda do celular da Compass
   ultima?: string;
   ultimaEm?: string; // ISO
   ultimaDe?: "cliente" | "compass";
@@ -27,7 +28,7 @@ export function numeroDoChat(chatid: string, alternativo?: string | null): strin
   return tenta(chatid) || tenta(alternativo) || null;
 }
 
-export async function registrarMensagem(o: { num: string; nome?: string; texto: string; tipo: string; deCompass: boolean; quando: number; id: string }) {
+export async function registrarMensagem(o: { num: string; nome?: string; agenda?: string; texto: string; tipo: string; deCompass: boolean; quando: number; id: string }) {
   const em = new Date(o.quando > 1e12 ? o.quando : o.quando * 1000 || Date.now()).toISOString();
   const atual = await redis<string | null>(["GET", K_CONTATO(o.num)]);
   let c: Contato = { num: o.num };
@@ -42,7 +43,10 @@ export async function registrarMensagem(o: { num: string; nome?: string; texto: 
   c = {
     ...c,
     num: o.num,
-    nome: !o.deCompass && o.nome ? o.nome : c.nome,
+    // 27/11: nome salvo na agenda do celular da Compass (vem também nas mensagens enviadas pela Compass);
+    // usado quando o cliente não tem nome (ex.: só a Compass escreveu, ou o WhatsApp não mandou o nome do perfil)
+    nome: !o.deCompass && o.nome ? o.nome : c.nome || (o.agenda ? o.agenda.trim() : c.nome),
+    ...(o.agenda && o.agenda.trim() ? { agenda: o.agenda.trim() } : {}),
     ultima: resumo,
     ultimaEm: em,
     ultimaDe: o.deCompass ? "compass" : "cliente",

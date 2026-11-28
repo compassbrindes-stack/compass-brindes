@@ -83,6 +83,7 @@ export async function POST(request: Request) {
     await registrarMensagem({
       num,
       nome: msg.fromMe ? "" : msg.senderName || body.chat?.wa_contactName || body.chat?.name || "",
+      agenda: String(body.chat?.wa_contactName || "").trim(),
       texto: /list|button|template|interactive/i.test(String(msg.messageType || "")) && msg.content && !msg.fromMe ? "[menu] " + JSON.stringify(msg.content).slice(0, 2500) : msg.text || c0.caption || c0.text || "",
       tipo: String(msg.messageType || ""),
       deCompass: Boolean(msg.fromMe),
@@ -99,6 +100,12 @@ export async function POST(request: Request) {
     // mensagem do cliente → o agente responde (se o número estiver liberado)
     if (num !== NUM_SAO_MIGUEL) {
       if (msg.fromMe) await pausarAgente(num).catch(() => {});
+      // 27/11: mensagem que o WhatsApp ainda não conseguiu abrir ("[Undecryptable]", tipo error) chega antes da
+      // mensagem de verdade com o MESMO id. Se o agente marcar esse id como visto, a mensagem real vira "repetida"
+      // e o cliente fica sem resposta. Então o agente ignora esses avisos e espera a mensagem real.
+      else if (/^error$/i.test(String(msg.messageType || "")) || /^\[Undecryptable\]/i.test(String(msg.text || ""))) {
+        return NextResponse.json({ ok: true, registrado: "conversa", agente: "aguardando-descriptografar" });
+      }
       else if (await numeroEmCampanha(num)) {
         // número de campanha: o atendimento automático não entra, a equipe responde; "SAIR" tira da lista
         const r = await respostaCampanha(num, msg.text || c0.text || c0.caption || "", async (t) => {

@@ -348,6 +348,7 @@ function montarTurnos(msgs: { de: string; texto: string; tipo?: string }[]) {
     const role = m.de === "compass" ? "assistant" : "user";
     let t = String(m.texto || "").trim();
     if (/^album:/i.test(t)) continue;
+    if (/^error$/i.test(m.tipo || "") || /^\[Undecryptable\]/i.test(t)) continue; // aviso "não foi possível descriptografar" (a mensagem real vem depois)
     if (/audio/i.test(m.tipo || "") || t === "[audio]") t = "[o cliente mandou um ÁUDIO que você não consegue ouvir]";
     else if (/image/i.test(m.tipo || "") || t === "[image]") t = "[o cliente mandou uma FOTO]" ;
     else if (/document/i.test(m.tipo || "") || t === "[document]") t = "[o cliente mandou um ARQUIVO]";
